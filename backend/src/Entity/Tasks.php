@@ -29,6 +29,12 @@ class Tasks
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTime $task_lastchange = null;
 
+    #[ORM\ManyToOne(inversedBy: 'tasks')]
+    private ?Status $task_status = null;
+
+    #[ORM\ManyToOne(inversedBy: 'tasks')]
+    private ?Priority $task_priority = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -90,6 +96,30 @@ class Tasks
     public function setTaskLastchange(\DateTime $task_lastchange): static
     {
         $this->task_lastchange = $task_lastchange;
+
+        return $this;
+    }
+
+    public function getTaskStatus(): ?Status
+    {
+        return $this->task_status;
+    }
+
+    public function setTaskStatus(?Status $task_status): static
+    {
+        $this->task_status = $task_status;
+
+        return $this;
+    }
+
+    public function getTaskPriority(): ?Priority
+    {
+        return $this->task_priority;
+    }
+
+    public function setTaskPriority(?Priority $task_priority): static
+    {
+        $this->task_priority = $task_priority;
 
         return $this;
     }
