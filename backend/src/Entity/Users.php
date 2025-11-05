@@ -14,9 +14,6 @@ class Users
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column]
-    private ?int $users_id = null;
-
     #[ORM\Column(length: 255)]
     private ?string $users_name = null;
 
@@ -29,22 +26,11 @@ class Users
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTime $users_createdat = null;
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
-
     public function getUsersId(): ?int
     {
         return $this->users_id;
     }
 
-    public function setUsersId(int $users_id): static
-    {
-        $this->users_id = $users_id;
-
-        return $this;
-    }
 
     public function getUsersName(): ?string
     {

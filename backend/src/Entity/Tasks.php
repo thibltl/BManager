@@ -29,11 +29,7 @@ class Tasks
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTime $tasks_laschange = null;
 
-    #[ORM\ManyToOne(inversedBy: 'theTasks')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Projects $projects_id = null;
-
-    public function getId(): ?int
+    public function getTasksId(): ?int
     {
         return $this->id;
     }
@@ -94,18 +90,6 @@ class Tasks
     public function setTasksLaschange(\DateTime $tasks_laschange): static
     {
         $this->tasks_laschange = $tasks_laschange;
-
-        return $this;
-    }
-
-    public function getProjectsId(): ?Projects
-    {
-        return $this->projects_id;
-    }
-
-    public function setProjectsId(?Projects $projects_id): static
-    {
-        $this->projects_id = $projects_id;
 
         return $this;
     }

@@ -3,8 +3,6 @@
 namespace App\Entity;
 
 use App\Repository\ProjectsRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -24,17 +22,6 @@ class Projects
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTime $projects_createdat = null;
-
-    /**
-     * @var Collection<int, Tasks>
-     */
-    #[ORM\OneToMany(targetEntity: Tasks::class, mappedBy: 'projects_id')]
-    private Collection $theTasks;
-
-    public function __construct()
-    {
-        $this->theTasks = new ArrayCollection();
-    }
 
     public function getId(): ?int
     {
@@ -73,36 +60,6 @@ class Projects
     public function setProjectsCreatedat(\DateTime $projects_createdat): static
     {
         $this->projects_createdat = $projects_createdat;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Tasks>
-     */
-    public function getTheTasks(): Collection
-    {
-        return $this->theTasks;
-    }
-
-    public function addTheTask(Tasks $theTask): static
-    {
-        if (!$this->theTasks->contains($theTask)) {
-            $this->theTasks->add($theTask);
-            $theTask->setProjectsId($this);
-        }
-
-        return $this;
-    }
-
-    public function removeTheTask(Tasks $theTask): static
-    {
-        if ($this->theTasks->removeElement($theTask)) {
-            // set the owning side to null (unless already changed)
-            if ($theTask->getProjectsId() === $this) {
-                $theTask->setProjectsId(null);
-            }
-        }
 
         return $this;
     }
