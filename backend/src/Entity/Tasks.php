@@ -15,81 +15,81 @@ class Tasks
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $tasks_title = null;
+    private ?string $task_title = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $tasks_desciption = null;
+    private ?string $task_description = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTime $tasks_duedate = null;
+    private ?\DateTime $task_dueDate = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTime $tasks_createdat = null;
+    private ?\DateTime $task_createAt = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTime $tasks_laschange = null;
+    private ?\DateTime $task_lastchange = null;
 
-    public function getTasksId(): ?int
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getTasksTitle(): ?string
+    public function getTaskTitle(): ?string
     {
-        return $this->tasks_title;
+        return $this->task_title;
     }
 
-    public function setTasksTitle(string $tasks_title): static
+    public function setTaskTitle(string $task_title): static
     {
-        $this->tasks_title = $tasks_title;
+        $this->task_title = $task_title;
 
         return $this;
     }
 
-    public function getTasksDesciption(): ?string
+    public function getTaskDescription(): ?string
     {
-        return $this->tasks_desciption;
+        return $this->task_description;
     }
 
-    public function setTasksDesciption(string $tasks_desciption): static
+    public function setTaskDescription(string $task_description): static
     {
-        $this->tasks_desciption = $tasks_desciption;
+        $this->task_description = $task_description;
 
         return $this;
     }
 
-    public function getTasksDuedate(): ?\DateTime
+    public function getTaskDueDate(): ?\DateTime
     {
-        return $this->tasks_duedate;
+        return $this->task_dueDate;
     }
 
-    public function setTasksDuedate(\DateTime $tasks_duedate): static
+    public function setTaskDueDate(\DateTime $task_dueDate): static
     {
-        $this->tasks_duedate = $tasks_duedate;
+        $this->task_dueDate = $task_dueDate;
 
         return $this;
     }
 
-    public function getTasksCreatedat(): ?\DateTime
+    public function getTaskCreateAt(): ?\DateTime
     {
-        return $this->tasks_createdat;
+        return $this->task_createAt;
     }
 
-    public function setTasksCreatedat(\DateTime $tasks_createdat): static
+    public function setTaskCreateAt(\DateTime $task_createAt): static
     {
-        $this->tasks_createdat = $tasks_createdat;
+        $this->task_createAt = $task_createAt;
 
         return $this;
     }
 
-    public function getTasksLaschange(): ?\DateTime
+    public function getTaskLastchange(): ?\DateTime
     {
-        return $this->tasks_laschange;
+        return $this->task_lastchange;
     }
 
-    public function setTasksLaschange(\DateTime $tasks_laschange): static
+    public function setTaskLastchange(\DateTime $task_lastchange): static
     {
-        $this->tasks_laschange = $tasks_laschange;
+        $this->task_lastchange = $task_lastchange;
 
         return $this;
     }
