@@ -35,6 +35,9 @@ class Tasks
     #[ORM\ManyToOne(inversedBy: 'tasks')]
     private ?Priority $task_priority = null;
 
+    #[ORM\ManyToOne(inversedBy: 'project_tasks')]
+    private ?Project $project = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -120,6 +123,18 @@ class Tasks
     public function setTaskPriority(?Priority $task_priority): static
     {
         $this->task_priority = $task_priority;
+
+        return $this;
+    }
+
+    public function getProject(): ?Project
+    {
+        return $this->project;
+    }
+
+    public function setProject(?Project $project): static
+    {
+        $this->project = $project;
 
         return $this;
     }
