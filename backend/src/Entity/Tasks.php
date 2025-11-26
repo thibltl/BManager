@@ -15,111 +15,126 @@ class Tasks
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $tasks_title = null;
+    private ?string $task_title = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $tasks_desciption = null;
+    private ?string $task_description = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTime $tasks_duedate = null;
+    private ?\DateTime $task_due_date = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTime $tasks_createdat = null;
+    private ?\DateTime $task_create_at = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTime $tasks_laschange = null;
+    private ?\DateTime $task_lastchange = null;
 
     #[ORM\ManyToOne(inversedBy: 'tasks')]
-    private ?Priority $tasks_priority = null;
+    private ?Priority $task_priority = null;
 
     #[ORM\ManyToOne(inversedBy: 'tasks')]
-    private ?Status $tasks_status = null;
+    private ?Status $task_status = null;
+
+    #[ORM\ManyToOne(inversedBy: 'tasks')]
+    private ?Project $task_project = null;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getTasksTitle(): ?string
+    public function getTaskTitle(): ?string
     {
-        return $this->tasks_title;
+        return $this->task_title;
     }
 
-    public function setTasksTitle(string $tasks_title): static
+    public function setTaskTitle(string $task_title): static
     {
-        $this->tasks_title = $tasks_title;
+        $this->task_title = $task_title;
 
         return $this;
     }
 
-    public function getTasksDesciption(): ?string
+    public function getTaskDescription(): ?string
     {
-        return $this->tasks_desciption;
+        return $this->task_description;
     }
 
-    public function setTasksDesciption(string $tasks_desciption): static
+    public function setTaskDescription(string $task_description): static
     {
-        $this->tasks_desciption = $tasks_desciption;
+        $this->task_description = $task_description;
 
         return $this;
     }
 
-    public function getTasksDuedate(): ?\DateTime
+    public function getTaskDueDate(): ?\DateTime
     {
-        return $this->tasks_duedate;
+        return $this->task_due_date;
     }
 
-    public function setTasksDuedate(\DateTime $tasks_duedate): static
+    public function setTaskDueDate(\DateTime $task_due_date): static
     {
-        $this->tasks_duedate = $tasks_duedate;
+        $this->task_due_date = $task_due_date;
 
         return $this;
     }
 
-    public function getTasksCreatedat(): ?\DateTime
+    public function getTaskCreateAt(): ?\DateTime
     {
-        return $this->tasks_createdat;
+        return $this->task_create_at;
     }
 
-    public function setTasksCreatedat(\DateTime $tasks_createdat): static
+    public function setTaskCreateAt(\DateTime $task_create_at): static
     {
-        $this->tasks_createdat = $tasks_createdat;
+        $this->task_create_at = $task_create_at;
 
         return $this;
     }
 
-    public function getTasksLaschange(): ?\DateTime
+    public function getTaskLastchange(): ?\DateTime
     {
-        return $this->tasks_laschange;
+        return $this->task_lastchange;
     }
 
-    public function setTasksLaschange(\DateTime $tasks_laschange): static
+    public function setTaskLastchange(\DateTime $task_lastchange): static
     {
-        $this->tasks_laschange = $tasks_laschange;
+        $this->task_lastchange = $task_lastchange;
 
         return $this;
     }
 
-    public function getTasksPriority(): ?Priority
+    public function getTaskPriority(): ?Priority
     {
-        return $this->tasks_priority;
+        return $this->task_priority;
     }
 
-    public function setTasksPriority(?Priority $tasks_priority): static
+    public function setTaskPriority(?Priority $task_priority): static
     {
-        $this->tasks_priority = $tasks_priority;
+        $this->task_priority = $task_priority;
 
         return $this;
     }
 
-    public function getTasksStatus(): ?Status
+    public function getTaskStatus(): ?Status
     {
-        return $this->tasks_status;
+        return $this->task_status;
     }
 
-    public function setTasksStatus(?Status $tasks_status): static
+    public function setTaskStatus(?Status $task_status): static
     {
-        $this->tasks_status = $tasks_status;
+        $this->task_status = $task_status;
+
+        return $this;
+    }
+
+    public function getTaskProject(): ?Project
+    {
+        return $this->task_project;
+    }
+
+    public function setTaskProject(?Project $task_project): static
+    {
+        $this->task_project = $task_project;
 
         return $this;
     }
