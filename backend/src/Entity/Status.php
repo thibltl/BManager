@@ -21,7 +21,7 @@ class Status
     /**
      * @var Collection<int, Tasks>
      */
-    #[ORM\OneToMany(targetEntity: Tasks::class, mappedBy: 'tasks_status')]
+    #[ORM\OneToMany(targetEntity: Tasks::class, mappedBy: 'task_status')]
     private Collection $tasks;
 
     public function __construct()
@@ -58,7 +58,7 @@ class Status
     {
         if (!$this->tasks->contains($task)) {
             $this->tasks->add($task);
-            $task->setTasksStatus($this);
+            $task->setTaskStatus($this);
         }
 
         return $this;
@@ -68,8 +68,8 @@ class Status
     {
         if ($this->tasks->removeElement($task)) {
             // set the owning side to null (unless already changed)
-            if ($task->getTasksStatus() === $this) {
-                $task->setTasksStatus(null);
+            if ($task->getTaskStatus() === $this) {
+                $task->setTaskStatus(null);
             }
         }
 

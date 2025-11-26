@@ -21,7 +21,7 @@ class Priority
     /**
      * @var Collection<int, Tasks>
      */
-    #[ORM\OneToMany(targetEntity: Tasks::class, mappedBy: 'tasks_priority')]
+    #[ORM\OneToMany(targetEntity: Tasks::class, mappedBy: 'task_priority')]
     private Collection $tasks;
 
     public function __construct()
@@ -58,7 +58,7 @@ class Priority
     {
         if (!$this->tasks->contains($task)) {
             $this->tasks->add($task);
-            $task->setTasksPriority($this);
+            $task->setTaskPriority($this);
         }
 
         return $this;
@@ -68,8 +68,8 @@ class Priority
     {
         if ($this->tasks->removeElement($task)) {
             // set the owning side to null (unless already changed)
-            if ($task->getTasksPriority() === $this) {
-                $task->setTasksPriority(null);
+            if ($task->getTaskPriority() === $this) {
+                $task->setTaskPriority(null);
             }
         }
 

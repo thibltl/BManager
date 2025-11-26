@@ -15,36 +15,36 @@ class Th
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $th_changelog = null;
+    private ?string $th_change_log = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTime $th_update = null;
+    private ?\DateTime $th_updateat = null;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getThChangelog(): ?string
+    public function getThChangeLog(): ?string
     {
-        return $this->th_changelog;
+        return $this->th_change_log;
     }
 
-    public function setThChangelog(string $th_changelog): static
+    public function setThChangeLog(string $th_change_log): static
     {
-        $this->th_changelog = $th_changelog;
+        $this->th_change_log = $th_change_log;
 
         return $this;
     }
 
-    public function getThUpdate(): ?\DateTime
+    public function getThUpdateat(): ?\DateTime
     {
-        return $this->th_update;
+        return $this->th_updateat;
     }
 
-    public function setThUpdate(\DateTime $th_update): static
+    public function setThUpdateat(\DateTime $th_updateat): static
     {
-        $this->th_update = $th_update;
+        $this->th_updateat = $th_updateat;
 
         return $this;
     }
