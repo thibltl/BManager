@@ -25,12 +25,6 @@ class Projects
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTime $projects_createdat = null;
 
-    /**
-     * @var Collection<int, Tasks>
-     */
-    #[ORM\OneToMany(targetEntity: Tasks::class, mappedBy: 'projects_id')]
-    private Collection $theTasks;
-
     public function __construct()
     {
         $this->theTasks = new ArrayCollection();
@@ -77,33 +71,4 @@ class Projects
         return $this;
     }
 
-    /**
-     * @return Collection<int, Tasks>
-     */
-    public function getTheTasks(): Collection
-    {
-        return $this->theTasks;
-    }
-
-    public function addTheTask(Tasks $theTask): static
-    {
-        if (!$this->theTasks->contains($theTask)) {
-            $this->theTasks->add($theTask);
-            $theTask->setProjectsId($this);
-        }
-
-        return $this;
-    }
-
-    public function removeTheTask(Tasks $theTask): static
-    {
-        if ($this->theTasks->removeElement($theTask)) {
-            // set the owning side to null (unless already changed)
-            if ($theTask->getProjectsId() === $this) {
-                $theTask->setProjectsId(null);
-            }
-        }
-
-        return $this;
-    }
 }

@@ -29,9 +29,11 @@ class Tasks
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTime $tasks_laschange = null;
 
-    #[ORM\ManyToOne(inversedBy: 'theTasks')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Projects $projects_id = null;
+    #[ORM\ManyToOne(inversedBy: 'tasks')]
+    private ?Priority $tasks_priority = null;
+
+    #[ORM\ManyToOne(inversedBy: 'tasks')]
+    private ?Status $tasks_status = null;
 
     public function getId(): ?int
     {
@@ -98,14 +100,26 @@ class Tasks
         return $this;
     }
 
-    public function getProjectsId(): ?Projects
+    public function getTasksPriority(): ?Priority
     {
-        return $this->projects_id;
+        return $this->tasks_priority;
     }
 
-    public function setProjectsId(?Projects $projects_id): static
+    public function setTasksPriority(?Priority $tasks_priority): static
     {
-        $this->projects_id = $projects_id;
+        $this->tasks_priority = $tasks_priority;
+
+        return $this;
+    }
+
+    public function getTasksStatus(): ?Status
+    {
+        return $this->tasks_status;
+    }
+
+    public function setTasksStatus(?Status $tasks_status): static
+    {
+        $this->tasks_status = $tasks_status;
 
         return $this;
     }
