@@ -14,7 +14,7 @@ class ProjectType extends AbstractType
         $builder
             ->add('project_name')
             ->add('project_desc')
-            ->add('project_createat')
+            ->add('project_createdAt')
         ;
     }
 

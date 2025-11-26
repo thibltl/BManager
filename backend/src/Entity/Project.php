@@ -23,7 +23,7 @@ class Project
     private ?string $project_desc = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTime $project_createat = null;
+    private ?\DateTime $project_createdAt = null;
 
     /**
      * @var Collection<int, Tasks>
@@ -65,14 +65,14 @@ class Project
         return $this;
     }
 
-    public function getProjectCreateat(): ?\DateTime
+    public function getProjectCreatedAt(): ?\DateTime
     {
-        return $this->project_createat;
+        return $this->project_createdAt;
     }
 
-    public function setProjectCreateat(\DateTime $project_createat): static
+    public function setProjectCreatedAt(\DateTime $project_createdAt): static
     {
-        $this->project_createat = $project_createat;
+        $this->project_createdAt = $project_createdAt;
 
         return $this;
     }

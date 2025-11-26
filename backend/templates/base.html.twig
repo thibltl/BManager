@@ -1,157 +1,17 @@
-{% extends 'base.html.twig' %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>{% block title %}Welcome!{% endblock %}</title>
+        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
+        {% block stylesheets %}
+        {% endblock %}
 
-{% block title %}Accueil - Gestion de Projet{% endblock %}
-
-{% block stylesheets %}
-<style>
-    body {
-        font-family: 'Segoe UI', sans-serif;
-        background-color: #f4f6f8;
-        margin: 0;
-        padding: 0;
-    }
-
-    header {
-        background-color: #2c3e50;
-        color: white;
-        padding: 20px 40px;
-    }
-
-    header h1 {
-        margin: 0;
-        font-size: 28px;
-    }
-
-    main {
-        padding: 40px;
-    }
-
-    .project-list {
-        background: white;
-        border-radius: 10px;
-        padding: 20px;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-
-    .project-list h2 {
-        margin-top: 0;
-    }
-
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 15px;
-    }
-
-    th, td {
-        text-align: left;
-        padding: 12px 15px;
-        border-bottom: 1px solid #ddd;
-    }
-
-    th {
-        background-color: #34495e;
-        color: white;
-    }
-
-    tr:hover {
-        background-color: #f1f1f1;
-    }
-
-    .btn {
-        display: inline-block;
-        padding: 10px 20px;
-        color: white;
-        background-color: #3498db;
-        border-radius: 5px;
-        text-decoration: none;
-        transition: background-color 0.2s;
-    }
-
-    .btn:hover {
-        background-color: #2980b9;
-    }
-
-    .summary {
-        margin-top: 30px;
-        display: flex;
-        justify-content: space-around;
-    }
-
-    .summary-card {
-        background: white;
-        border-radius: 8px;
-        padding: 20px;
-        width: 30%;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        text-align: center;
-    }
-
-    .summary-card h3 {
-        margin: 0;
-        color: #2c3e50;
-    }
-
-    .summary-card p {
-        font-size: 22px;
-        color: #3498db;
-        margin-top: 10px;
-        font-weight: bold;
-    }
-</style>
-{% endblock %}
-
-{% block body %}
-    <header>
-        <h1>Tableau de bord - Gestion de Projet</h1>
-    </header>
-
-    <main>
-        <div class="project-list">
-            <h2>Mes Projets</h2>
-            <a href="{{ path('project_new') }}" class="btn">+ Nouveau Projet</a>
-
-            <table>
-                <thead>
-                    <tr>
-                        <th>Nom du projet</th>
-                        <th>Chef de projet</th>
-                        <th>État</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for projet in projets %}
-                        <tr>
-                            <td>{{ projet.nom }}</td>
-                            <td>{{ projet.chef }}</td>
-                            <td>{{ projet.etat }}</td>
-                            <td>
-                                <a href="{{ path('project_show', { id: projet.id }) }}" class="btn">Voir</a>
-                            </td>
-                        </tr>
-                    {% else %}
-                        <tr>
-                            <td colspan="4">Aucun projet pour le moment.</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-
-        <div class="summary">
-            <div class="summary-card">
-                <h3>Projets actifs</h3>
-                <p>{{ stats.actifs|default(0) }}</p>
-            </div>
-            <div class="summary-card">
-                <h3>Projets terminés</h3>
-                <p>{{ stats.termines|default(0) }}</p>
-            </div>
-            <div class="summary-card">
-                <h3>Tâches en retard</h3>
-                <p>{{ stats.retard|default(0) }}</p>
-            </div>
-        </div>
-    </main>
-{% endblock %}
+        {% block javascripts %}
+            {% block importmap %}{{ importmap('app') }}{% endblock %}
+        {% endblock %}
+    </head>
+    <body>
+        {% block body %}{% endblock %}
+    </body>
+</html>
