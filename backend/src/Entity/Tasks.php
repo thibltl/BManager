@@ -18,16 +18,16 @@ class Tasks
     private ?string $task_title = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $task_description = null;
+    private ?string $task_desc = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTime $task_due_date = null;
+    private ?\DateTime $task_dueDate = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTime $task_create_at = null;
+    private ?\DateTime $task_createdAt = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTime $task_lastchange = null;
+    private ?\DateTime $task_lastChange = null;
 
     #[ORM\ManyToOne(inversedBy: 'tasks')]
     private ?Priority $task_priority = null;
@@ -55,50 +55,50 @@ class Tasks
         return $this;
     }
 
-    public function getTaskDescription(): ?string
+    public function getTaskDesc(): ?string
     {
-        return $this->task_description;
+        return $this->task_desc;
     }
 
-    public function setTaskDescription(string $task_description): static
+    public function setTaskDesc(string $task_desc): static
     {
-        $this->task_description = $task_description;
+        $this->task_desc = $task_desc;
 
         return $this;
     }
 
     public function getTaskDueDate(): ?\DateTime
     {
-        return $this->task_due_date;
+        return $this->task_dueDate;
     }
 
-    public function setTaskDueDate(\DateTime $task_due_date): static
+    public function setTaskDueDate(\DateTime $task_dueDate): static
     {
-        $this->task_due_date = $task_due_date;
+        $this->task_dueDate = $task_dueDate;
 
         return $this;
     }
 
-    public function getTaskCreateAt(): ?\DateTime
+    public function getTaskCreatedAt(): ?\DateTime
     {
-        return $this->task_create_at;
+        return $this->task_createdAt;
     }
 
-    public function setTaskCreateAt(\DateTime $task_create_at): static
+    public function setTaskCreatedAt(\DateTime $task_createdAt): static
     {
-        $this->task_create_at = $task_create_at;
+        $this->task_createdAt = $task_createdAt;
 
         return $this;
     }
 
-    public function getTaskLastchange(): ?\DateTime
+    public function getTaskLastChange(): ?\DateTime
     {
-        return $this->task_lastchange;
+        return $this->task_lastChange;
     }
 
-    public function setTaskLastchange(\DateTime $task_lastchange): static
+    public function setTaskLastChange(\DateTime $task_lastChange): static
     {
-        $this->task_lastchange = $task_lastchange;
+        $this->task_lastChange = $task_lastChange;
 
         return $this;
     }
