@@ -1,18 +1,18 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Nouveau projet{% endblock %}
+{% block title %}Nouvelle priorité{% endblock %}
 
 {% block body %}
 <div class="container mt-5">
     <div class="card shadow-sm border-0">
         <div class="card-header bg-success text-white">
-            <h1 class="h4 mb-0">Créer un nouveau projet</h1>
+            <h1 class="h4 mb-0">Créer une nouvelle priorité</h1>
         </div>
         <div class="card-body">
-            {{ include('project/_form.html.twig') }}
+            {{ include('priority/_form.html.twig') }}
         </div>
         <div class="card-footer">
-            <a href="{{ path('app_project_index') }}" class="btn btn-outline-secondary">
+            <a href="{{ path('app_priority_index') }}" class="btn btn-outline-secondary">
                 <i class="bi bi-arrow-left"></i> Retour à la liste
             </a>
         </div>
