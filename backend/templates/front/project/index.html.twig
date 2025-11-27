@@ -1,0 +1,68 @@
+{% extends 'base_front.html.twig' %}
+
+{% block title %}Liste des projets{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 text-primary">Liste des projets</h1>
+        <a href="{{ path('front_project_new') }}" class="btn btn-success">
+            <i class="bi bi-plus-circle"></i> Nouveau projet
+        </a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-hover align-middle shadow-sm">
+            <thead class="table-dark">
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Nom</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Créé le</th>
+                    <th scope="col">Tâches</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for project in projects %}
+                <tr>
+                    <td>{{ project.id }}</td>
+                    <td>{{ project.projectName }}</td>
+                    <td>{{ project.projectDesc }}</td>
+                    <td>{{ project.projectCreatedAt ? project.projectCreatedAt|date('d/m/Y') : '' }}</td>
+                    <td>
+                        {% if project.getTasks() is not empty %}
+                            <ul class="mb-0">
+                                {% for task in project.getTasks() %}
+                                    <li>
+                                        {{ task.taskTitle }}
+                                        {% if task.taskDueDate %}
+                                            ({{ task.taskDueDate|date('d/m/Y') }})
+                                        {% endif %}
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <span class="text-muted">Aucune tâche</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{{ path('front_project_show', {'id': project.id}) }}" class="btn btn-sm btn-outline-info me-2">
+                            <i class="bi bi-eye"></i> Voir
+                        </a>
+                        <a href="{{ path('front_project_edit', {'id': project.id}) }}" class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-pencil"></i> Modifier
+                        </a>
+                        {{ include('front/project/_delete_form.html.twig') }}
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="6" class="text-center text-muted">Aucun projet trouvé</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
