@@ -3,3 +3,11 @@ controllers:
         path: ../src/Controller/
         namespace: App\Controller
     type: attribute
+
+admin_projects:
+  path: ../src/Controller/Admin/project
+  controller: App\Controller\Admin\ProjectController::index
+
+front_projects:
+  path: ../src/Controller/Front/project
+  controller: App\Controller\Front\ProjectController::index
