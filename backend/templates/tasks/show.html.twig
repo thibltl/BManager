@@ -35,6 +35,18 @@
                         <th scope="row">Dernière modification</th>
                         <td>{{ task.taskLastChange ? task.taskLastChange|date('Y-m-d') : '' }}</td>
                     </tr>
+                    <tr>
+                        <th scope="row">Priorité</th>
+                        <td>{{ task.getTaskPriority().getPriorityName() }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Statut</th>
+                        <td>{{ task.getTaskStatus().getStatusName() }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Projet</th>
+                        <td>{{ task.getTaskProject().getProjectName() }}</td>
+                    </tr>
                 </tbody>
             </table>
         </div>

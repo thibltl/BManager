@@ -21,6 +21,9 @@
                     <th scope="col">Échéance</th>
                     <th scope="col">Créée le</th>
                     <th scope="col">Dernière modification</th>
+                    <th scope="col">Priorité</th>
+                    <th scope="col">Statut</th>
+                    <th scope="col">Projet</th>
                     <th scope="col">Actions</th>
                 </tr>
             </thead>
@@ -33,6 +36,9 @@
                     <td>{{ task.taskDueDate ? task.taskDueDate|date('Y-m-d') : '' }}</td>
                     <td>{{ task.taskCreatedAt ? task.taskCreatedAt|date('Y-m-d') : '' }}</td>
                     <td>{{ task.taskLastChange ? task.taskLastChange|date('Y-m-d') : '' }}</td>
+                    <td>{{ task.getTaskPriority().getPriorityName() }}</td>
+                    <td>{{ task.getTaskStatus().getStatusName() }}</td>
+                    <td>{{ task.getTaskProject().getProjectName() }}</td>
                     <td>
                         <a href="{{ path('app_tasks_show', {'id': task.id}) }}" class="btn btn-sm btn-outline-info me-2">
                             <i class="bi bi-eye"></i> Voir
@@ -44,7 +50,7 @@
                 </tr>
             {% else %}
                 <tr>
-                    <td colspan="7" class="text-center text-muted">Aucune tâche trouvée</td>
+                    <td colspan="10" class="text-center text-muted">Aucune tâche trouvée</td>
                 </tr>
             {% endfor %}
             </tbody>
