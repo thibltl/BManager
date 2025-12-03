@@ -51,14 +51,14 @@
             </table>
         </div>
         <div class="card-footer d-flex justify-content-between">
-            <a href="{{ path('app_tasks_index') }}" class="btn btn-outline-secondary">
+            <a href="{{ path('admin_tasks_index') }}" class="btn btn-outline-secondary">
                 <i class="bi bi-arrow-left"></i> Retour à la liste
             </a>
             <div>
-                <a href="{{ path('app_tasks_edit', {'id': task.id}) }}" class="btn btn-outline-primary me-2">
+                <a href="{{ path('admin_tasks_edit', {'id': task.id}) }}" class="btn btn-outline-primary me-2">
                     <i class="bi bi-pencil"></i> Modifier
                 </a>
-                {{ include('tasks/_delete_form.html.twig') }}
+                {{ include('admin/tasks/_delete_form.html.twig') }}
             </div>
         </div>
     </div>

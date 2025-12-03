@@ -11,3 +11,11 @@ admin_projects:
 front_projects:
   path: ../src/Controller/Front/project
   controller: App\Controller\Front\ProjectController::index
+
+admin_tasks:
+  path: ../src/Controller/Admin/tasks
+  controller: App\Controller\Admin\TasksController::index
+
+front_tasks:
+  path: ../src/Controller/Front/tasks
+  controller: App\Controller\Front\TasksController::index
