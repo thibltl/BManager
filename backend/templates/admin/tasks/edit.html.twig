@@ -9,13 +9,13 @@
             <h1 class="h4 mb-0">Modifier la tâche</h1>
         </div>
         <div class="card-body">
-            {{ include('tasks/_form.html.twig', {'button_label': 'Mettre à jour'}) }}
+            {{ include('admin/tasks/_form.html.twig', {'button_label': 'Mettre à jour'}) }}
         </div>
         <div class="card-footer d-flex justify-content-between">
-            <a href="{{ path('app_tasks_index') }}" class="btn btn-outline-secondary">
+            <a href="{{ path('admin_tasks_index') }}" class="btn btn-outline-secondary">
                 <i class="bi bi-arrow-left"></i> Retour à la liste
             </a>
-            {{ include('tasks/_delete_form.html.twig') }}
+            {{ include('admin/tasks/_delete_form.html.twig') }}
         </div>
     </div>
 </div>

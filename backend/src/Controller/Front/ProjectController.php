@@ -59,7 +59,7 @@ final class ProjectController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            return $this->redirectToRoute('admin_project_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('front_project_index', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('front/project/edit.html.twig', [
@@ -76,6 +76,6 @@ final class ProjectController extends AbstractController
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('admin_project_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('front_project_index', [], Response::HTTP_SEE_OTHER);
     }
 }
