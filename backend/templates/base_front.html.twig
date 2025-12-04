@@ -16,31 +16,61 @@
                 <!-- Sidebar -->
                 <nav class="sidebar">
                     <div class="logo-box mb-4">
-                        BManager <span class="status-badge">Online</span>
+                        BManager <label class="switch">
+                                    <input type="checkbox">
+                                    <span class="slider"></span>
+                                </label>
                     </div>
                     <ul class="nav flex-column">
+                        <!-- Dashboard -->
                         <li class="nav-item mb-2">
                             <a href="{{ path('app_accueil') }}"
                                class="nav-link {% if app.request.attributes.get('_route') == 'app_accueil' %}active{% endif %}">
                                 <i class="fa-solid fa-chart-line me-2"></i> Dashboard
                             </a>
                         </li>
+
+                        <!-- Menu Projets -->
                         <li class="nav-item mb-2">
-                            <a href="{{ path('front_project_index') }}" class="nav-link">
-                                <i class="fa-solid fa-folder-open me-2"></i> Mes projets
+                            <a class="nav-link d-flex justify-content-between align-items-center"
+                               data-bs-toggle="collapse" href="#menuProjets" role="button" aria-expanded="false" aria-controls="menuProjets">
+                                <span><i class="fa-solid fa-folder-open me-2"></i> Projets</span>
+                                <i class="fa-solid fa-chevron-down"></i>
                             </a>
+                            <div class="collapse" id="menuProjets">
+                                <ul class="nav flex-column sub-menu">
+                                    <li class="nav-item">
+                                        <a href="{{ path('front_project_index') }}" class="nav-link">
+                                            <i class="fa-solid fa-list me-2"></i> Gérer les projets
+                                        </a>
+                                    </li>
+                                    
+                                    
+                                </ul>
+                            </div>
                         </li>
+
+                        <!-- Menu Tâches -->
                         <li class="nav-item mb-2">
-                            <a href="{{ path('front_project_new') }}" class="nav-link">
-                                <i class="fa-solid fa-plus me-2"></i> Nouveau projet
+                            <a class="nav-link d-flex justify-content-between align-items-center"
+                               data-bs-toggle="collapse" href="#menuTaches" role="button" aria-expanded="false" aria-controls="menuTaches">
+                                <span><i class="fa-solid fa-list-check me-2"></i> Tâches</span>
+                                <i class="fa-solid fa-chevron-down"></i>
                             </a>
+                            <div class="collapse" id="menuTaches">
+                                <ul class="nav flex-column sub-menu">
+                                    <li class="nav-item">
+                                        <a href="{{ path('front_tasks_index') }}" class="nav-link">
+                                            <i class="fa-solid fa-list me-2"></i> Gérer les tâches
+                                        </a>
+                                    </li>
+                                   
+                                </ul>
+                            </div>
                         </li>
                     </ul>
 
-                    <!-- Bouton mode sombre -->
-                    <button id="darkModeToggle" class="btn btn-outline-dark mt-4 w-100">
-                        🌙 Mode sombre
-                    </button>
+    
                 </nav>
 
                 <!-- Contenu principal -->
@@ -51,13 +81,21 @@
         </div>
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-        <script>
-            document.getElementById('darkModeToggle').addEventListener('click', function() {
-                document.body.classList.toggle('dark-mode');
-                this.textContent = document.body.classList.contains('dark-mode') 
-                    ? "☀️ Mode clair" 
-                    : "🌙 Mode sombre";
-            });
-        </script>
+    <script>
+    const darkModeToggle = document.getElementById('darkModeToggle');
+
+    darkModeToggle.addEventListener('change', function() {
+        document.body.classList.toggle('dark-mode', this.checked);
+
+        // Optionnel : changer le texte du label ou ajouter une classe
+        const logoBox = document.querySelector('.logo-box');
+        if (this.checked) {
+            logoBox.setAttribute('data-mode', 'clair'); // exemple
+        } else {
+            logoBox.setAttribute('data-mode', 'sombre');
+        }
+    });
+</script>
+
     </body>
 </html>

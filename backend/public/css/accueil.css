@@ -1,6 +1,6 @@
 /* Fond gris transparent sur toute la page */
 .page-background {
-    background-color: rgba(128, 128, 128, 0.4); /* gris transparent */
+    background-color: rgba(128, 128, 128, 0.4);
     backdrop-filter: blur(8px);
     min-height: 100vh;
     display: flex;
@@ -16,7 +16,7 @@
     padding: 30px;
 }
 
-/* Sidebar en bloc blanc */
+/* Sidebar */
 .sidebar {
     background-color: #ffffff;
     border-radius: 12px;
@@ -42,6 +42,38 @@
     background-color: rgba(0, 0, 0, 0.08);
     font-weight: bold;
     box-shadow: inset 0 0 6px rgba(0,0,0,0.1);
+}
+
+/* Dropdown personnalisé */
+.sidebar .custom-dropdown {
+    background-color: #ffffff;
+    border-radius: 10px;
+    padding: 8px 0;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+    animation: dropdownFade 0.3s ease;
+}
+
+.sidebar .custom-dropdown .dropdown-item {
+    padding: 10px 16px;
+    font-size: 14px;
+    color: #2c3e50;
+    transition: all 0.2s ease-in-out;
+    border-radius: 6px;
+}
+
+.sidebar .custom-dropdown .dropdown-item:hover {
+    background-color: rgba(0,0,0,0.05);
+    transform: translateX(4px);
+}
+
+@keyframes dropdownFade {
+    from { opacity: 0; transform: translateY(-10px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.sidebar .dropdown:hover .custom-dropdown {
+    display: block;
+    margin-top: 0;
 }
 
 /* Bloc projets */
@@ -72,6 +104,44 @@
     box-shadow: 0 6px 18px rgba(0,0,0,0.15);
 }
 
+.task-sidebar-block {
+    background-color: #ffffff;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+    width: 400px;          
+    margin-right: 20px;  
+    float: left;          
+}
+
+
+.task-sidebar-block .block-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #2c3e50;
+}
+
+.task-nav .task-item {
+    background-color: rgba(0, 0, 0, 0.03);
+    border-radius: 8px;
+    padding: 12px 14px;
+    transition: background-color 0.2s ease;
+    font-size: 14px;
+    color: #2c3e50;
+}
+
+.task-nav .task-item:hover {
+    background-color: rgba(0, 0, 0, 0.06);
+    transform: translateX(4px);
+}
+
+.task-nav .badge {
+    font-size: 12px;
+    padding: 6px 10px;
+    border-radius: 12px;
+}
+
 /* Logo BManager */
 .logo-box {
     background-color: rgba(255, 255, 255, 0.2);
@@ -89,57 +159,87 @@
     backdrop-filter: blur(4px);
 }
 
-.logo-box .status-badge {
-    display: flex;
-    align-items: center;
-    background-color: #28a745;
-    color: #fff;
-    font-size: 11px;
-    font-weight: 600;
-    padding: 2px 6px;
-    border-radius: 10px;
-    box-shadow: 0 0 6px rgba(40, 167, 69, 0.6);
-    animation: pulseBadge 2s infinite;
+/* From Uiverse.io by satyamchaudharydev */ 
+/* The switch - the box around the slider */
+.switch {
+  display: block;
+  --width-of-switch: 3.0em;
+  --height-of-switch: 1em;
+  /* size of sliding icon -- sun and moon */
+  --size-of-icon: 1.4em;
+  /* it is like a inline-padding of switch */
+  --slider-offset: 0.3em;
+  position: relative;
+  width: var(--width-of-switch);
+  height: var(--height-of-switch);
 }
 
-.logo-box .status-badge::before {
-    content: "";
-    display: inline-block;
-    width: 6px;
-    height: 6px;
-    margin-right: 4px;
-    border-radius: 50%;
-    background-color: #fff;
+/* Hide default HTML checkbox */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
 }
+
+/* The slider */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #f4f4f5;
+  transition: .4s;
+  border-radius: 30px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: var(--size-of-icon,1.4em);
+  width: var(--size-of-icon,1.4em);
+  border-radius: 20px;
+  left: var(--slider-offset,0.3em);
+  top: 50%;
+  transform: translateY(-50%);
+  background: wheat;
+  ;
+ transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #303136;
+}
+
+input:checked + .slider:before {
+  left: calc(100% - (var(--size-of-icon,1.4em) + var(--slider-offset,0.3em)));
+  background: #303136;
+  /* change the value of second inset in box-shadow to change the angle and direction of the moon  */
+  box-shadow: inset -3px -2px 5px -2px #8983f7, inset -10px -4px 0 0 #a3dafb;
+}
+
+
 
 @keyframes pulseBadge {
-    0% {
-        transform: scale(1);
-        box-shadow: 0 0 6px rgba(40, 167, 69, 0.6);
-    }
-    50% {
-        transform: scale(1.05);
-        box-shadow: 0 0 10px rgba(40, 167, 69, 0.9);
-    }
-    100% {
-        transform: scale(1);
-        box-shadow: 0 0 6px rgba(40, 167, 69, 0.6);
-    }
+    0% { transform: scale(1); box-shadow: 0 0 6px rgba(40, 167, 69, 0.6); }
+    50% { transform: scale(1.05); box-shadow: 0 0 10px rgba(40, 167, 69, 0.9); }
+    100% { transform: scale(1); box-shadow: 0 0 6px rgba(40, 167, 69, 0.6); }
 }
 
 /* Mode sombre */
 body.dark-mode .page-background {
-    background-color: rgba(34, 34, 34, 0.7); /* gris foncé transparent */
+    background-color: rgb(31, 29, 29);
     backdrop-filter: blur(8px);
 }
 
 body.dark-mode .sidebar {
-    background-color: #2c2c2c;
+    background-color: #0f0f0f;
     color: #f1f1f1;
 }
 
 body.dark-mode .sidebar .nav-link {
-    color: #f1f1f1;
+    color: #0944e6;
 }
 
 body.dark-mode .sidebar .nav-link:hover {
@@ -147,12 +247,32 @@ body.dark-mode .sidebar .nav-link:hover {
     box-shadow: 0 4px 8px rgba(255,255,255,0.2);
 }
 
-body.dark-mode .dashboard-block {
-    background-color: #2c2c2c;
+body.dark-mode .dashboard-block,
+body.dark-mode .task-sidebar-block {
+    background-color: #0f0f0f;
     color: #f1f1f1;
     box-shadow: 0 6px 16px rgba(0,0,0,0.6);
 }
 
 body.dark-mode .block-title {
     color: #ffffff;
+}
+
+body.dark-mode .task-nav .task-item {
+    background-color: rgb(31, 29, 29);
+    color: #0944e6;
+}
+
+body.dark-mode .task-nav .task-item:hover {
+    background-color: rgba(255,255,255,0.1);
+}
+
+body.dark-mode .task-nav .badge {
+    background-color: #0944e6;
+    color: #fff;
+}
+
+body.dark-mode .project-card{
+    background-color: rgb(31, 29, 29);
+    color :#0944e6;
 }
