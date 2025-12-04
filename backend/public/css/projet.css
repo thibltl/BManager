@@ -1,0 +1,304 @@
+/* Glass Radio Group */
+.glass-radio-group {
+  --bg: rgba(255, 255, 255, 0.06);
+  --text: #e5e5e5;
+
+  display: flex;
+  position: relative;
+  background: var(--bg);
+  border-radius: 1rem;
+  backdrop-filter: blur(12px);
+  box-shadow:
+    inset 1px 1px 4px rgba(255, 255, 255, 0.2),
+    inset -1px -1px 6px rgba(0, 0, 0, 0.3),
+    0 4px 12px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  width: auto;           
+  min-width: 200px;     
+  flex-shrink: 0;        
+}
+
+.glass-radio-group input {
+  display: none;
+}
+
+.glass-radio-group .d-flex {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  padding: 0.6rem 1.2rem;
+  cursor: pointer;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  color: var(--text);
+  position: relative;
+  z-index: 2;
+  transition: color 0.3s ease-in-out;
+}
+
+.glass-radio-group .d-flex:hover {
+  color: white;
+}
+
+.glass-radio-group input:checked + .d-flex {
+  color: #fff;
+}
+
+.glass-glider {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: calc(100% / 3);  
+  border-radius: 1rem;
+  z-index: 1;
+  transition:
+    transform 0.5s cubic-bezier(0.37, 1.95, 0.66, 0.56),
+    background 0.4s ease-in-out,
+    box-shadow 0.4s ease-in-out;
+}
+
+#filter-all:checked ~ .glass-glider {
+  transform: translateX(0%);
+  background: linear-gradient(135deg, #c0c0c055, #e0e0e0);
+  box-shadow:
+    0 0 18px rgba(192, 192, 192, 0.5),
+    0 0 10px rgba(255, 255, 255, 0.4) inset;
+}
+
+#filter-recent:checked ~ .glass-glider {
+  transform: translateX(100%);
+  background: linear-gradient(135deg, #68e8ec55, #00eeff);
+  box-shadow:
+    0 0 18px rgba(255, 215, 0, 0.5),
+    0 0 10px rgba(255, 235, 150, 0.4) inset;
+}
+
+#filter-atoz:checked ~ .glass-glider {
+  transform: translateX(200%);
+  background: linear-gradient(135deg, #0560c255, #002fff59);
+  box-shadow:
+    0 0 18px rgba(160, 216, 255, 0.5),
+    0 0 10px rgba(200, 240, 255, 0.4) inset;
+}
+
+
+/* Cartes projets */
+
+.projects-grid {
+  display: flex;
+  flex-direction: column; 
+  gap: 20px;              
+}
+
+.project-card {
+  width: 100%;            
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.project-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+}
+
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.project-title {
+  font-size: 1.2rem;
+  color: #180303;
+  margin: 0;
+}
+
+.project-date {
+  font-size: 0.9rem;
+  color: #180303;
+}
+
+.project-desc {
+  color: #180303;
+  margin-bottom: 10px;
+}
+
+.project-tasks ul {
+  padding-left: 20px;
+  margin: 0;
+}
+
+.task-date {
+  color: #180303;
+  font-size: 0.85rem;
+}
+
+.project-actions .btn-sm {
+  cursor: pointer;
+  position: relative;
+  padding: 10px 24px;
+  font-size: 12px;
+  color: #0944e6;
+  border: 2px solid #0944e6;
+  border-radius: 34px;
+  background-color: transparent;
+  font-weight: 600;
+  transition: all 0.3s cubic-bezier(0.23, 1, 0.320, 1);
+  overflow: hidden;
+}
+
+.project-actions .btn-sm::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 50px;
+  height: 50px;
+  border-radius: inherit;
+  scale: 0;
+  z-index: -1;
+  background-color: #0944e6;
+  transition: all 0.6s cubic-bezier(0.23, 1, 0.320, 1);
+}
+
+.project-actions .btn-sm:hover::before {
+  scale: 3;
+}
+
+.project-actions .btn-sm:hover {
+  color: #ffffff;
+  scale: 1.1;
+  box-shadow: 0 0px 20px rgba(193, 163, 98,0.4);
+}
+
+.project-actions .btn-sm:active {
+  scale: 1;
+}
+
+.project-actions .btn-sm {
+  cursor: pointer;
+  position: relative;
+  padding: 10px 24px;
+  font-size: 12px;
+  color: #0944e6;
+  border: 2px solid #0944e6;
+  border-radius: 34px;
+  background-color: transparent;
+  font-weight: 600;
+  transition: all 0.3s cubic-bezier(0.23, 1, 0.320, 1);
+  overflow: hidden;
+}
+
+/*Nouveau Projet bouton*/
+
+.btn-glass-project {
+  cursor: pointer;
+  position: relative;
+  padding: 10px 24px;
+  font-size: 12px;
+  color: #0944e6;
+  border: 2px solid #0944e6;
+  border-radius: 34px;
+  background-color: transparent;
+  font-weight: 600;
+  transition: all 0.3s cubic-bezier(0.23, 1, 0.320, 1);
+  overflow: hidden;
+}
+
+.btn-glass-project::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 50px;
+  height: 50px;
+  border-radius: inherit;
+  scale: 0;
+  z-index: -1;
+  background-color: #0944e6;
+  transition: all 0.6s cubic-bezier(0.23, 1, 0.320, 1);
+}
+
+.btn-glass-project:hover::before {
+  scale: 3;
+}
+
+.btn-glass-project:hover {
+  color: #ffffff;
+  scale: 1.1;
+  box-shadow: 0 0px 20px rgba(193, 163, 98,0.4);
+}
+
+.btn-glass-project:active {
+  scale: 1;
+}
+
+.btn-glass-project {
+  cursor: pointer;
+  position: relative;
+  padding: 10px 24px;
+  font-size: 12px;
+  color: #0944e6;
+  border: 2px solid #0944e6;
+  border-radius: 34px;
+  background-color: transparent;
+  font-weight: 600;
+  transition: all 0.3s cubic-bezier(0.23, 1, 0.320, 1);
+  overflow: hidden;
+}
+
+.page-title {
+    text-shadow:0 0 3px #0061FE, 0 0 7px #0061FE, 0 0 20px #0061FE;
+    color:#0944e6;
+}
+
+/* Affichage des tâches */
+
+.task-cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 10px;
+}
+
+.task-card {
+    background: rgba(0,0,0,0.03);
+    border-radius: 12px;
+    padding: 12px 16px;
+    min-width: 180px;
+    max-width: 220px;
+    flex: 1;
+}
+
+.task-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+}
+
+.task-date {
+    font-size: 0.8rem;
+    color: #888;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: white;
+}
+
+.status-en-cours { background-color: #f1c40f; }
+.status-termine { background-color: #2ecc71; }
+.status-en-attente { background-color: #7f8c8d; }
+.status-retard { background-color: #e73333; }
