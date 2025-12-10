@@ -45,7 +45,7 @@
                     <strong>Tâches :</strong>
                     {% if project.getTasks() is not empty %}
                         <div class="kanban-board">
-                            {% for status in ['En cours', 'Terminee', 'En attente', 'Retard'] %}
+                            {% for status in ['En cours', 'Terminee', 'En attente', 'En retard'] %}
                                 {% set statusClass = '' %}
                                 {% set statusKey = status|lower %}
                                 {% if 'cours' in statusKey %}

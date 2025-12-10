@@ -4,61 +4,50 @@
 
 {% block body %}
 <div class="container mt-5">
-    <div class="card shadow-sm border-0">
-        <div class="card-header bg-info text-white">
-            <h1 class="h4 mb-0">Détails de la tâche</h1>
+    <div class="task-card shadow-sm">
+        <div class="task-header d-flex justify-content-between align-items-start mb-3">
+            <div>
+                <h1 class="h4 mb-1">{{ task.getTaskTitle() }}</h1>
+                {% if task.getTaskDesc() %}
+                    <p class="text-muted mb-1">{{ task.getTaskDesc() }}</p>
+                {% endif %}
+            {% if task.getTaskProject() %}
+                <div class="task-actions mt-3">
+                    <a href="{{ path('front_project_show', {'id': task.getTaskProject().id}) }}" class="btn-glass">
+                        <i class="bi bi-eye"></i> Voir le projet : {{ task.getTaskProject().projectName }}
+                    </a>
+                </div>
+            {% endif %}
+            </div>
+            {% if task.getTaskDueDate() %}
+                <span class="task-date">{{ task.getTaskDueDate()|date('d F Y') }}</span>
+            {% endif %}
         </div>
-        <div class="card-body">
-            <table class="table table-striped table-hover align-middle">
-                <tbody>
-                    <tr>
-                        <th scope="row">ID</th>
-                        <td>{{ task.id }}</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">Titre</th>
-                        <td>{{ task.taskTitle }}</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">Description</th>
-                        <td>{{ task.taskDesc }}</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">Échéance</th>
-                        <td>{{ task.taskDueDate ? task.taskDueDate|date('Y-m-d') : '' }}</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">Créée le</th>
-                        <td>{{ task.taskCreatedAt ? task.taskCreatedAt|date('Y-m-d') : '' }}</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">Dernière modification</th>
-                        <td>{{ task.taskLastChange ? task.taskLastChange|date('Y-m-d') : '' }}</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">Priorité</th>
-                        <td>{{ task.getTaskPriority().getPriorityName() }}</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">Statut</th>
-                        <td>{{ task.getTaskStatus().getStatusName() }}</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">Projet</th>
-                        <td>{{ task.getTaskProject().getProjectName() }}</td>
-                    </tr>
-                </tbody>
-            </table>
+
+        <div class="task-meta d-flex flex-wrap gap-2 mb-3">
+            {% if task.getTaskPriority() %}
+                <span class="priority-badge">{{ task.getTaskPriority().getPriorityName() }}</span>
+            {% endif %}
+            {% if task.getTaskStatus() %}
+                <span class="status-badge">{{ task.getTaskStatus().getStatusName() }}</span>
+            {% endif %}
+            {% if task.getTaskCreatedAt() %}
+                <span class="meta-pill">Créée le {{ task.getTaskCreatedAt()|date('d F Y') }}</span>
+            {% endif %}
+            {% if task.getTaskLastChange() %}
+                <span class="meta-pill">Modifiée le {{ task.getTaskLastChange()|date('d F Y') }}</span>
+            {% endif %}
         </div>
-        <div class="card-footer d-flex justify-content-between">
-            <a href="{{ path('front_tasks_index') }}" class="btn btn-outline-secondary">
+
+        <div class="task-actions d-flex justify-content-between mt-4">
+            <a href="{{ path('front_tasks_index') }}" class="btn-glass">
                 <i class="bi bi-arrow-left"></i> Retour à la liste
             </a>
-            <div>
-                <a href="{{ path('front_tasks_edit', {'id': task.id}) }}" class="btn btn-outline-primary me-2">
+            <div class="d-flex gap-2">
+                <a href="{{ path('front_tasks_edit', {'id': task.id}) }}" class="btn-glass">
                     <i class="bi bi-pencil"></i> Modifier
                 </a>
-                {{ include('front/tasks/_delete_form.html.twig') }}
+                {{ include('front/tasks/_delete_form.html.twig', { task: task }) }}
             </div>
         </div>
     </div>
