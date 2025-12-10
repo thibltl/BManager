@@ -29,18 +29,18 @@
     border-radius: 6px;
     padding: 10px 14px;
     font-size: 15px;
-    color: #2c3e50;
+    color: black;
+    font-weight: bold;
 }
 
 .sidebar .nav-link:hover {
     background-color: rgba(0, 0, 0, 0.05);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    transform: translateY(-2px);
+    box-shadow: 0 4px 8px white;
+    transform: translateY(-4px);
 }
 
 .sidebar .nav-link.active {
     background-color: rgba(0, 0, 0, 0.08);
-    font-weight: bold;
     box-shadow: inset 0 0 6px rgba(0,0,0,0.1);
 }
 
@@ -89,63 +89,124 @@
     font-size: 20px;
     font-weight: bold;
     margin-bottom: 20px;
-    color: #2c3e50;
+    color: black;
 }
 
-/* Cartes projet */
+/* Cartes projet cliquables (bouton) */
 .project-card {
+    display: block;
     border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    transition: transform 0.2s ease-in-out;
+    box-shadow: 0 4px 12px red;
+    transition: transform 0.15s ease-in-out, box-shadow 1s ease-in-out, background-color 0.15s ease-in-out;
+    background-color: #ffffff;
+    color: black;
+    text-decoration: none;
 }
 
 .project-card:hover {
-    transform: scale(1.02);
-    box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+    transform: scale(1.03);
+    box-shadow: 0 6px 18px;
+    background-color: #f0f8ff; /* léger bleu au hover */
 }
 
+/* Bloc tâches */
 .task-sidebar-block {
     background-color: #ffffff;
     border-radius: 12px;
     padding: 20px;
     box-shadow: 0 6px 16px rgba(0,0,0,0.1);
-    width: 400px;          
-    margin-right: 20px;  
-    float: left;          
+    width: 400px;
+    margin-right: 20px;
+    float: left;
 }
-
 
 .task-sidebar-block .block-title {
     font-size: 18px;
     font-weight: bold;
     margin-bottom: 20px;
-    color: #2c3e50;
+    color: black;
 }
 
 .task-nav .task-item {
-    background-color: rgba(0, 0, 0, 0.03);
+    background-color: white;
     border-radius: 8px;
+    box-shadow: 0 16px 18px rgba(0,0,0,0.15);
     padding: 12px 14px;
-    transition: background-color 0.2s ease;
+    transition: background-color 0.1s ease, transform 0.1s ease;
     font-size: 14px;
-    color: #2c3e50;
+    color: black;
 }
 
 .task-nav .task-item:hover {
-    background-color: rgba(0, 0, 0, 0.06);
-    transform: translateX(4px);
+    background-color: #f0f0f0;
+    transform: translateX(2px);
 }
 
-.task-nav .badge {
+/* Badges de statut (couleurs) */
+.badge-en-cours,
+.badge-en-attente,
+.badge-terminee,
+.badge-en-retard,
+.badge-sans-statut {
     font-size: 12px;
     padding: 6px 10px;
     border-radius: 12px;
+    border: 1px solid transparent;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
 }
+
+/* États */
+.badge-en-cours {
+    background-color: rgba(11, 92, 255, 0.15);
+    color: #0B5CFF;
+    border-color: rgba(11, 92, 255, 0.3);
+    animation: pulseBadge 2s infinite;
+}
+
+.badge-en-attente {
+    background-color: rgba(255, 193, 7, 0.15);
+    color: #9A6A00;
+    border-color: rgba(255, 193, 7, 0.3);
+}
+
+.badge-terminee {
+    background-color: rgba(25, 135, 84, 0.12);
+    color: #1F7A3D;
+    border-color: rgba(25, 135, 84, 0.28);
+}
+
+.badge-en-retard {
+    background-color: rgba(176, 0, 32, 0.10);
+    color: #B00020;
+    border-color: rgba(176, 0, 32, 0.28);
+}
+
+.badge-sans-statut {
+    background-color: rgba(108, 117, 125, 0.15);
+    color: #6c757d;
+    border-color: rgba(108, 117, 125, 0.3);
+}
+
+/* Animation pour En cours */
+@keyframes pulseBadge {
+    0% { transform: scale(1); box-shadow: 0 0 6px rgba(11, 92, 255, 0.6); }
+    50% { transform: scale(1.05); box-shadow: 0 0 10px rgba(11, 92, 255, 0.9); }
+    100% { transform: scale(1); box-shadow: 0 0 6px rgba(11, 92, 255, 0.6); }
+}
+
+/* Variantes de fond pour les tâches (ligne) */
+.task-en-cours { background-color: rgba(11, 92, 255, 0.05); }
+.task-en-attente { background-color: rgba(255, 193, 7, 0.05); }
+.task-terminee { background-color: rgba(25, 135, 84, 0.05); }
+.task-en-retard { background-color: rgba(176, 0, 32, 0.05); }
+.task-sans-statut { background-color: rgba(108, 117, 125, 0.05); }
 
 /* Logo BManager */
 .logo-box {
     background-color: rgba(255, 255, 255, 0.2);
-    color: #2c3e50;
+    color: black;
     padding: 10px;
     border-radius: 8px;
     box-shadow: 0 4px 10px rgba(0,0,0,0.25);
@@ -159,36 +220,28 @@
     backdrop-filter: blur(4px);
 }
 
-/* From Uiverse.io by satyamchaudharydev */ 
-/* The switch - the box around the slider */
+/* Switch dark mode (Uiverse.io) */
 .switch {
   display: block;
   --width-of-switch: 3.0em;
   --height-of-switch: 1em;
-  /* size of sliding icon -- sun and moon */
   --size-of-icon: 1.4em;
-  /* it is like a inline-padding of switch */
   --slider-offset: 0.3em;
   position: relative;
   width: var(--width-of-switch);
   height: var(--height-of-switch);
 }
 
-/* Hide default HTML checkbox */
 .switch input {
   opacity: 0;
   width: 0;
   height: 0;
 }
 
-/* The slider */
 .slider {
   position: absolute;
   cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  top: 0; left: 0; right: 0; bottom: 0;
   background-color: #f4f4f5;
   transition: .4s;
   border-radius: 30px;
@@ -204,8 +257,7 @@
   top: 50%;
   transform: translateY(-50%);
   background: wheat;
-  ;
- transition: .4s;
+  transition: .4s;
 }
 
 input:checked + .slider {
@@ -215,16 +267,7 @@ input:checked + .slider {
 input:checked + .slider:before {
   left: calc(100% - (var(--size-of-icon,1.4em) + var(--slider-offset,0.3em)));
   background: #303136;
-  /* change the value of second inset in box-shadow to change the angle and direction of the moon  */
   box-shadow: inset -3px -2px 5px -2px #8983f7, inset -10px -4px 0 0 #a3dafb;
-}
-
-
-
-@keyframes pulseBadge {
-    0% { transform: scale(1); box-shadow: 0 0 6px rgba(40, 167, 69, 0.6); }
-    50% { transform: scale(1.05); box-shadow: 0 0 10px rgba(40, 167, 69, 0.9); }
-    100% { transform: scale(1); box-shadow: 0 0 6px rgba(40, 167, 69, 0.6); }
 }
 
 /* Mode sombre */
@@ -255,24 +298,60 @@ body.dark-mode .task-sidebar-block {
 }
 
 body.dark-mode .block-title {
-    color: #ffffff;
-}
-
-body.dark-mode .task-nav .task-item {
-    background-color: rgb(31, 29, 29);
     color: #0944e6;
 }
 
-body.dark-mode .task-nav .task-item:hover {
-    background-color: rgba(255,255,255,0.1);
-}
-
-body.dark-mode .task-nav .badge {
-    background-color: #0944e6;
-    color: #fff;
-}
-
-body.dark-mode .project-card{
+/* Tâches en mode sombre */
+body.dark-mode .task-nav .task-item {
     background-color: rgb(31, 29, 29);
-    color :#0944e6;
+    color: #f1f1f1;
+}
+
+body.dark-mode .task-nav .task-item:hover {
+    box-shadow: 0 6px 16px #0944e6;
+    background-color: rgba(9, 68, 230, 0.08);
+}
+
+/* Badges en mode sombre */
+body.dark-mode .badge-en-cours {
+    background-color: rgba(11, 92, 255, 0.25);
+    color: #82b3ff;
+    border-color: rgba(11, 92, 255, 0.4);
+}
+
+body.dark-mode .badge-en-attente {
+    background-color: rgba(255, 193, 7, 0.25);
+    color: #ffda7b;
+    border-color: rgba(255, 193, 7, 0.4);
+}
+
+body.dark-mode .badge-terminee {
+    background-color: rgba(25, 135, 84, 0.25);
+    color: #7dd6a5;
+    border-color: rgba(25, 135, 84, 0.4);
+}
+
+body.dark-mode .badge-en-retard {
+    background-color: rgba(176, 0, 32, 0.25);
+    color: #ff8a9a;
+    border-color: rgba(176, 0, 32, 0.4);
+}
+
+body.dark-mode .badge-sans-statut {
+    background-color: rgba(108, 117, 125, 0.25);
+    color: #cfcfcf;
+    border-color: rgba(108, 117, 125, 0.4);
+}
+
+/* Cartes projet en mode sombre */
+body.dark-mode .project-card {
+    background-color: #0f0f0f;
+    color: #0944e6;
+    box-shadow: 0 4px 10px black;
+}
+
+body.dark-mode .project-card:hover {
+    background-color: #0944e6;
+    color: #ffffff;
+    box-shadow: 0 6px 18px #0944e6;
 }

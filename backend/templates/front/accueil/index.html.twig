@@ -7,13 +7,13 @@
     <div class="row">
         {% for project in projects %}
             <div class="col-md-4 mb-4">
-                <div class="card project-card">
+                <!-- Carte projet cliquable -->
+                <a href="{{ path('front_project_show', {id: project.id}) }}" class="card project-card text-decoration-none">
                     <div class="card-body">
                         <h5 class="card-title">{{ project.projectName }}</h5>
-                        <p class="card-text">{{ project.projectDesc }}</p>
-                        <a href="{{ path('front_project_show', {id: project.id}) }}" class="btn btn-sm btn-primary">Voir</a>
+                        
                     </div>
-                </div>
+                </a>
             </div>
         {% else %}
             <p>Aucun projet enregistré.</p>
@@ -27,12 +27,34 @@
     <ul class="nav flex-column task-nav">
         {% for task in tasks %}
             <li class="nav-item mb-2">
-                <div class="nav-link task-item d-flex justify-content-between align-items-center">
+                <div class="nav-link task-item d-flex justify-content-between align-items-center
+                    {% if task.taskStatus %}
+                        {% if task.taskStatus.statusName == 'En cours' %} task-en-cours
+                        {% elseif task.taskStatus.statusName == 'En attente' %} task-en-attente
+                        {% elseif task.taskStatus.statusName == 'Terminée' %} task-terminee
+                        {% elseif task.taskStatus.statusName == 'En retard' %} task-en-retard
+                        {% else %} task-sans-statut
+                        {% endif %}
+                    {% else %}
+                        task-sans-statut
+                    {% endif %}
+                ">
                     <div>
                         <strong>{{ task.taskTitle }}</strong><br>
                         <small class="text-muted">Échéance : {{ task.taskDueDate|date('d/m/Y') }}</small>
                     </div>
-                    <span class="badge bg-secondary">
+                    <span class="badge 
+                        {% if task.taskStatus %}
+                            {% if task.taskStatus.statusName == 'En cours' %} badge-en-cours
+                            {% elseif task.taskStatus.statusName == 'En attente' %} badge-en-attente
+                            {% elseif task.taskStatus.statusName == 'Terminée' %} badge-terminee
+                            {% elseif task.taskStatus.statusName == 'En retard' %} badge-en-retard
+                            {% else %} badge-sans-statut
+                            {% endif %}
+                        {% else %}
+                            badge-sans-statut
+                        {% endif %}
+                    ">
                         {{ task.taskStatus ? task.taskStatus.statusName : 'Sans statut' }}
                     </span>
                 </div>
