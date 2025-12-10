@@ -1,61 +1,87 @@
 {% extends 'base_front.html.twig' %}
 
-{% block title %}Liste des tâches{% endblock %}
+{% block title %}Liste des taches{% endblock %}
 
 {% block body %}
 <div class="container mt-5">
+
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h3 text-primary">Liste des tâches</h1>
-        <a href="{{ path('front_tasks_new') }}" class="btn btn-success">
-            <i class="bi bi-plus-circle"></i> Nouvelle tâche
+        <h1 class="h3 text-primary">Liste des taches</h1>
+        <a href="{{ path('front_tasks_new') }}" class="btn-glass">
+            <i class="bi bi-plus-circle"></i> Nouvelle tache
         </a>
     </div>
 
-    <div class="table-responsive">
-        <table class="table table-hover align-middle shadow-sm">
-            <thead class="table-dark">
-                <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Titre</th>
-                    <th scope="col">Description</th>
-                    <th scope="col">Échéance</th>
-                    <th scope="col">Créée le</th>
-                    <th scope="col">Dernière modification</th>
-                    <th scope="col">Priorité</th>
-                    <th scope="col">Statut</th>
-                    <th scope="col">Projet</th>
-                    <th scope="col">Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-            {% for task in tasks %}
-                <tr>
-                    <td>{{ task.id }}</td>
-                    <td>{{ task.taskTitle }}</td>
-                    <td>{{ task.taskDesc }}</td>
-                    <td>{{ task.taskDueDate ? task.taskDueDate|date('Y-m-d') : '' }}</td>
-                    <td>{{ task.taskCreatedAt ? task.taskCreatedAt|date('Y-m-d') : '' }}</td>
-                    <td>{{ task.taskLastChange ? task.taskLastChange|date('Y-m-d') : '' }}</td>
-                    <td>{{ task.getTaskPriority().getPriorityName() }}</td>
-                    <td>{{ task.getTaskStatus().getStatusName() }}</td>
-                    <td>{{ task.getTaskProject().getProjectName() }}</td>
-                    <td>
-                        <a href="{{ path('front_tasks_show', {'id': task.id}) }}" class="btn btn-sm btn-outline-info me-2">
-                            <i class="bi bi-eye"></i> Voir
-                        </a>
-                        <a href="{{ path('front_tasks_edit', {'id': task.id}) }}" class="btn btn-sm btn-outline-primary">
-                            <i class="bi bi-pencil"></i> Modifier
-                        </a>
-                        {{ include('front/tasks/_delete_form.html.twig') }}
-                    </td>
-                </tr>
-            {% else %}
-                <tr>
-                    <td colspan="10" class="text-center text-muted">Aucune tâche trouvée</td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
+    {# Construire la liste des projets uniques a partir des taches #}
+    {% set projectsMap = {} %}
+    {% for t in tasks %}
+        {% if t.getTaskProject() %}
+            {% set pid = t.getTaskProject().id %}
+            {% set pname = t.getTaskProject().getProjectName() %}
+            {% set projectsMap = projectsMap|merge({ (pid): pname }) %}
+        {% endif %}
+    {% endfor %}
+
+    <div class="kanban-board">
+        {% for pid, pname in projectsMap %}
+            <div class="kanban-column">
+                <div class="kanban-title">{{ pname }}</div>
+
+                {% set tasksForProject = [] %}
+                {% for t in tasks %}
+                    {% if t.getTaskProject() and t.getTaskProject().id == pid %}
+                        {% set tasksForProject = tasksForProject|merge([t]) %}
+                    {% endif %}
+                {% endfor %}
+
+                {% if tasksForProject is not empty %}
+                    {% for t in tasksForProject %}
+                        <div class="task-card">
+                            <div class="task-header d-flex justify-content-between align-items-start">
+                                <div class="me-2">
+                                    <strong class="task-title d-block">{{ t.taskTitle }}</strong>
+                                    {% if t.taskDesc %}
+                                        <small class="text-muted d-block">{{ t.taskDesc }}</small>
+                                    {% endif %}
+                                </div>
+                                {% if t.taskDueDate %}
+                                    <span class="task-date">{{ t.taskDueDate|date('Y-m-d') }}</span>
+                                {% endif %}
+                            </div>
+
+                            <div class="task-meta d-flex flex-wrap gap-2 mb-2">
+                                {% if t.getTaskPriority() %}
+                                    <span class="priority-badge">{{ t.getTaskPriority().getPriorityName() }}</span>
+                                {% endif %}
+                                {% if t.getTaskStatus() %}
+                                    <span class="status-badge">{{ t.getTaskStatus().getStatusName() }}</span>
+                                {% endif %}
+                                {% if t.taskCreatedAt %}
+                                    <span class="meta-pill">Creee le: {{ t.taskCreatedAt|date('Y-m-d') }}</span>
+                                {% endif %}
+                                {% if t.taskLastChange %}
+                                    <span class="meta-pill">Modifiee le: {{ t.taskLastChange|date('Y-m-d') }}</span>
+                                {% endif %}
+                            </div>
+
+                            <div class="task-actions d-flex gap-2">
+                                <a href="{{ path('front_tasks_show', {'id': t.id}) }}" class="btn-glass">
+                                    <i class="bi bi-eye"></i> Voir
+                                </a>
+                                <a href="{{ path('front_tasks_edit', {'id': t.id}) }}" class="btn-glass">
+                                    <i class="bi bi-pencil"></i> Modifier
+                                </a>
+                                {{ include('front/tasks/_delete_form.html.twig', { task: t }) }}
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-muted">Aucune tache</p>
+                {% endif %}
+            </div>
+        {% else %}
+            <p class="text-muted">Aucun projet trouve</p>
+        {% endfor %}
     </div>
 </div>
 {% endblock %}
