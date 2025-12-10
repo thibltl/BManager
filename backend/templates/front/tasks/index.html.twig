@@ -1,35 +1,32 @@
 {% extends 'base_front.html.twig' %}
 
-{% block title %}Liste des taches{% endblock %}
+{% block title %}Liste des tâches{% endblock %}
 
 {% block body %}
 <div class="container mt-5">
 
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h3 text-primary">Liste des taches</h1>
+        <h1 class="h3 text-primary">Liste des tâches</h1>
         <a href="{{ path('front_tasks_new') }}" class="btn-glass">
-            <i class="bi bi-plus-circle"></i> Nouvelle tache
+            <i class="bi bi-plus-circle"></i> Nouvelle tâche
         </a>
     </div>
 
-    {# Construire la liste des projets uniques a partir des taches #}
-    {% set projectsMap = {} %}
+    {% set projects = [] %}
     {% for t in tasks %}
-        {% if t.getTaskProject() %}
-            {% set pid = t.getTaskProject().id %}
-            {% set pname = t.getTaskProject().getProjectName() %}
-            {% set projectsMap = projectsMap|merge({ (pid): pname }) %}
+        {% if t.getTaskProject() and t.getTaskProject() not in projects %}
+            {% set projects = projects|merge([t.getTaskProject()]) %}
         {% endif %}
     {% endfor %}
 
-    <div class="kanban-board">
-        {% for pid, pname in projectsMap %}
-            <div class="kanban-column">
-                <div class="kanban-title">{{ pname }}</div>
+    <div class="kanban-board-t">
+        {% for project in projects %}
+            <div class="kanban-column-t">
+                <div class="kanban-title-t">{{ project.projectName }}</div>
 
                 {% set tasksForProject = [] %}
                 {% for t in tasks %}
-                    {% if t.getTaskProject() and t.getTaskProject().id == pid %}
+                    {% if t.getTaskProject() and t.getTaskProject().id == project.id %}
                         {% set tasksForProject = tasksForProject|merge([t]) %}
                     {% endif %}
                 {% endfor %}
@@ -39,13 +36,13 @@
                         <div class="task-card">
                             <div class="task-header d-flex justify-content-between align-items-start">
                                 <div class="me-2">
-                                    <strong class="task-title d-block">{{ t.taskTitle }}</strong>
-                                    {% if t.taskDesc %}
-                                        <small class="text-muted d-block">{{ t.taskDesc }}</small>
+                                    <strong class="task-title d-block">{{ t.getTaskTitle() }}</strong>
+                                    {% if t.getTaskDesc() %}
+                                        <small class="text-muted d-block">{{ t.getTaskDesc() }}</small>
                                     {% endif %}
                                 </div>
-                                {% if t.taskDueDate %}
-                                    <span class="task-date">{{ t.taskDueDate|date('Y-m-d') }}</span>
+                                {% if t.getTaskDueDate() %}
+                                    <span class="task-date">{{ t.getTaskDueDate()|date('d F Y') }}</span>
                                 {% endif %}
                             </div>
 
@@ -56,11 +53,11 @@
                                 {% if t.getTaskStatus() %}
                                     <span class="status-badge">{{ t.getTaskStatus().getStatusName() }}</span>
                                 {% endif %}
-                                {% if t.taskCreatedAt %}
-                                    <span class="meta-pill">Creee le: {{ t.taskCreatedAt|date('Y-m-d') }}</span>
+                                {% if t.getTaskCreatedAt() %}
+                                    <span class="meta-pill">Créée le {{ t.getTaskCreatedAt()|date('d F Y') }}</span>
                                 {% endif %}
-                                {% if t.taskLastChange %}
-                                    <span class="meta-pill">Modifiee le: {{ t.taskLastChange|date('Y-m-d') }}</span>
+                                {% if t.getTaskLastChange() %}
+                                    <span class="meta-pill">Modifiée le {{ t.getTaskLastChange()|date('d F Y') }}</span>
                                 {% endif %}
                             </div>
 
@@ -71,16 +68,14 @@
                                 <a href="{{ path('front_tasks_edit', {'id': t.id}) }}" class="btn-glass">
                                     <i class="bi bi-pencil"></i> Modifier
                                 </a>
-                                {{ include('front/tasks/_delete_form.html.twig', { task: t }) }}
+                                {{ include('front/tasks/_delete_form.html.twig', { task: t, btn_class: 'btn-glass-red' }) }}
                             </div>
                         </div>
                     {% endfor %}
                 {% else %}
-                    <p class="text-muted">Aucune tache</p>
+                    <p class="text-muted">Aucune tâche</p>
                 {% endif %}
             </div>
-        {% else %}
-            <p class="text-muted">Aucun projet trouve</p>
         {% endfor %}
     </div>
 </div>

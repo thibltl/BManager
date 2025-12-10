@@ -1,11 +1,11 @@
-/* Kanban layout */
-.kanban-board {
+/* ===== Kanban layout ===== */
+.kanban-board-t {
     display: flex;
     flex-wrap: wrap;
     gap: 16px;
 }
 
-.kanban-column {
+.kanban-column-t {
     flex: 1 1 320px;
     background: #111827;
     border: 1px solid #1f2937;
@@ -13,13 +13,14 @@
     padding: 12px;
 }
 
-.kanban-title {
+.kanban-title-t {
     color: #fff;
     font-weight: 600;
     text-align: center;
     margin-bottom: 10px;
 }
 
+/* ===== Task cards ===== */
 .task-card {
     background: #ffffff;
     border: 1px solid #e5e7eb;
@@ -28,22 +29,33 @@
     margin-bottom: 10px;
 }
 
+.task-title {
+    color: #111827;
+}
+
 .task-date {
     font-size: 0.85rem;
     color: #6b7280;
+    font-weight: 500;
 }
 
+.task-actions {
+  overflow: visible;
+}
+
+/* ===== Meta info ===== */
 .meta-pill {
     display: inline-block;
-    padding: 2px 8px;
+    padding: 4px 10px;
     font-size: 0.75rem;
     color: #374151;
     background: #f3f4f6;
     border: 1px solid #e5e7eb;
     border-radius: 999px;
+    font-style: italic;
 }
 
-/* Priorite badge */
+/* ===== Priority badge ===== */
 .priority-badge {
     display: inline-block;
     padding: 4px 10px;
@@ -54,7 +66,7 @@
     color: #fff;
 }
 
-/* Statut badge */
+/* ===== Status badge ===== */
 .status-badge {
     display: inline-block;
     padding: 4px 10px;
@@ -65,7 +77,7 @@
     color: #fff;
 }
 
-/* Boutons glass */
+/* ===== Boutons glass ===== */
 .btn-glass {
   cursor: pointer;
   position: relative;
@@ -78,31 +90,30 @@
   font-weight: 600;
   transition: all 0.3s cubic-bezier(0.23, 1, 0.320, 1);
   overflow: hidden;
+  text-decoration: none;
+  z-index: 0;
 }
 
 .btn-glass::before {
   content: '';
   position: absolute;
   inset: 0;
-  margin: auto;
-  width: 50px;
-  height: 50px;
   border-radius: inherit;
-  scale: 0;
-  z-index: -1;
   background-color: #0944e6;
-  transition: all 0.6s cubic-bezier(0.23, 1, 0.320, 1);
+  z-index: -1;
+  transform: scale(0);
+  transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 .btn-glass:hover::before {
-  scale: 3;
+  transform: scale(1); /* reste exactement à la taille du bouton */
 }
 
 .btn-glass:hover {
-  color: #ffffff;
-  scale: 1.1;
-  box-shadow: 0 0px 20px rgba(193, 163, 98,0.4);
+  color: #fff;
+  transform: scale(1.05);
 }
+
 
 .btn-glass:active {
   scale: 1;
