@@ -16,34 +16,66 @@
         <p class="project-desc">{{ project.projectDesc }}</p>
 
         <div class="project-tasks">
-            <strong>Tâches :</strong>
-            {% if project.getTasks() is not empty %}
-                <div class="task-cards">
-                    {% for task in project.getTasks() %}
-                        <div class="task-card">
-                            <div class="task-header">
-                                <strong>{{ task.taskTitle }}</strong>
-                                {% if task.taskDueDate %}
-                                    <span class="task-date">{{ task.taskDueDate|date('d/m/Y') }}</span>
-                                {% endif %}
-                            </div>
-                            {% if task.getTaskStatus() %}
-                                {% set statusName = task.getTaskStatus().statusName|lower %}
-                                {% if 'cours' in statusName %}
+                <strong>Tâches :</strong>
+                    {% if project.getTasks() is not empty %}
+                        <div class="kanban-board">
+                            {% for status in ['En cours', 'Terminee', 'En attente', 'Retard'] %}
+                                {% set statusClass = '' %}
+                                {% set statusKey = status|lower %}
+                                {% if 'cours' in statusKey %}
                                     {% set statusClass = 'status-en-cours' %}
-                                {% elseif 'termine' in statusName %}
+                                {% elseif 'termine' in statusKey %}
                                     {% set statusClass = 'status-termine' %}
-                                {% elseif 'retard' in statusName %}
+                                {% elseif 'retard' in statusKey %}
                                     {% set statusClass = 'status-retard' %}
-                                {% elseif 'attente' in statusName %}
-                                    {% set statusClass = 'status-en-attente' %}
-                                {% else %}
+                                {% elseif 'attente' in statusKey %}
                                     {% set statusClass = 'status-en-attente' %}
                                 {% endif %}
-                                <span class="status-badge {{ statusClass }}">{{ task.getTaskStatus().statusName }}</span>
-                            {% endif %}
-                        </div>
-                    {% endfor %}
+
+                                <div class="kanban-column">
+                                    <div class="kanban-title {{ statusClass }}">{{ status }}</div>
+
+                                    {% set tasks = [] %}
+                                    {% for task in project.getTasks() %}
+                                        {% if task.getTaskStatus() and task.getTaskStatus().statusName == status %}
+                                            {% set tasks = tasks|merge([task]) %}
+                                        {% endif %}
+                                    {% endfor %}
+
+                                    {% if tasks is not empty %}
+                                        {% for task in tasks %}
+                                            <div class="task-card">
+                                                <div class="task-header">
+                                                    <strong>{{ task.taskTitle }}</strong>
+                                                    {% if task.taskDueDate %}
+                                                        <span class="task-date">{{ task.taskDueDate|date('d/m/Y') }}</span>
+                                                    {% endif %}
+                                                </div>
+                                                {% if task.getTaskPriority() %}
+                                                    {% set priorityName = task.getTaskPriority().getPriorityName()|lower %}
+                                                    {% set priorityClass = '' %}
+                                                    {% if 'tres faible' in priorityName %}
+                                                        {% set priorityClass = 'priority-tres-faible' %}
+                                                    {% elseif 'faible' in priorityName %}
+                                                        {% set priorityClass = 'priority-faible' %}
+                                                    {% elseif 'moderee' in priorityName %}
+                                                        {% set priorityClass = 'priority-moderee' %}
+                                                    {% elseif 'elevee' in priorityName %}
+                                                        {% set priorityClass = 'priority-elevee' %}
+                                                    {% elseif 'tres elevee' in priorityName %}
+                                                        {% set priorityClass = 'priority-treselevee' %}
+                                                    {% endif %}
+                                                    <span class="priority-badge {{ priorityClass }}">
+                                                        {{ task.getTaskPriority().getPriorityName() }}
+                                                    </span>
+                                                {% endif %}
+                                            </div>
+                                        {% endfor %}
+                                    {% else %}
+                                        <p class="text-muted">Aucune tache</p>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
                 </div>
             {% else %}
                 <span class="text-muted">Aucune tâche</span>

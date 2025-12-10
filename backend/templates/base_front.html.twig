@@ -17,7 +17,7 @@
                 <!-- Sidebar -->
                 <nav class="sidebar">
                     <div class="logo-box mb-4">
-                        BManager <label class="switch">
+                        BManager <label class="switch" id="switch">
                                     <input type="checkbox">
                                     <span class="slider"></span>
                                 </label>
@@ -70,8 +70,6 @@
                             </div>
                         </li>
                     </ul>
-
-    
                 </nav>
 
                 <!-- Contenu principal -->
@@ -83,20 +81,32 @@
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-    const darkModeToggle = document.getElementById('darkModeToggle');
+        const darkModeToggle = document.querySelector('#switch input'); 
 
-    darkModeToggle.addEventListener('change', function() {
-        document.body.classList.toggle('dark-mode', this.checked);
-
-        // Optionnel : changer le texte du label ou ajouter une classe
-        const logoBox = document.querySelector('.logo-box');
-        if (this.checked) {
-            logoBox.setAttribute('data-mode', 'clair'); // exemple
+        
+        const darkModePref = localStorage.getItem('darkMode');
+        if (darkModePref === 'enabled') {
+            document.body.classList.add('dark-mode');
+            darkModeToggle.checked = true;
         } else {
-            logoBox.setAttribute('data-mode', 'sombre');
+            document.body.classList.remove('dark-mode');
+            darkModeToggle.checked = false;
         }
-    });
-</script>
+
+        
+        darkModeToggle.addEventListener('change', function() {
+            if (this.checked) {
+                document.body.classList.add('dark-mode');
+                localStorage.setItem('darkMode', 'enabled');
+            } else {
+                document.body.classList.remove('dark-mode');
+                localStorage.setItem('darkMode', 'disabled');
+            }
+
+            const logoBox = document.querySelector('.logo-box');
+            logoBox.setAttribute('data-mode', this.checked ? 'clair' : 'sombre');
+        });
+    </script>
 
     </body>
 </html>
