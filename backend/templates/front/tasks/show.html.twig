@@ -25,12 +25,37 @@
         </div>
 
         <div class="task-meta d-flex flex-wrap gap-2 mb-3">
+            {# PRIORITÉ avec mapping #}
             {% if task.getTaskPriority() %}
-                <span class="priority-badge">{{ task.getTaskPriority().getPriorityName() }}</span>
+                {% set priorityName = task.getTaskPriority().getPriorityName() %}
+                {% set priorityMap = {
+                    'Tres faible': 'tres-faible',
+                    'Faible': 'faible',
+                    'Modere': 'modere',
+                    'Eleve': 'eleve',
+                    'Tres eleve': 'tres-eleve'
+                } %}
+                {% set priorityClass = priorityMap[priorityName]|default('') %}
+                <span class="priority-badge {{ priorityClass ? 'priority-' ~ priorityClass : '' }}">
+                    {{ priorityName }}
+                </span>
             {% endif %}
+
+            {# STATUT avec mapping #}
             {% if task.getTaskStatus() %}
-                <span class="status-badge">{{ task.getTaskStatus().getStatusName() }}</span>
+                {% set statusName = task.getTaskStatus().getStatusName() %}
+                {% set statusMap = {
+                    'En cours': 'en-cours',
+                    'Terminee': 'termine',
+                    'En retard': 'retard',
+                    'En attente': 'en-attente'
+                } %}
+                {% set statusClass = statusMap[statusName]|default('') %}
+                <span class="status-badge {{ statusClass ? 'status-' ~ statusClass : '' }}">
+                    {{ statusName }}
+                </span>
             {% endif %}
+
             {% if task.getTaskCreatedAt() %}
                 <span class="meta-pill">Créée le {{ task.getTaskCreatedAt()|date('d F Y') }}</span>
             {% endif %}
@@ -38,6 +63,7 @@
                 <span class="meta-pill">Modifiée le {{ task.getTaskLastChange()|date('d F Y') }}</span>
             {% endif %}
         </div>
+
 
         <div class="task-actions d-flex justify-content-between mt-4">
             <a href="{{ path('front_tasks_index') }}" class="btn-glass">

@@ -47,11 +47,34 @@
                             </div>
 
                             <div class="task-meta d-flex flex-wrap gap-2 mb-2">
+
                                 {% if t.getTaskPriority() %}
-                                    <span class="priority-badge">{{ t.getTaskPriority().getPriorityName() }}</span>
+                                    {% set priorityName = t.getTaskPriority().getPriorityName() %}
+                                    {% set priorityMap = {
+                                        'Tres faible': 'tres-faible',
+                                        'Faible': 'faible',
+                                        'Modere': 'modere',
+                                        'Eleve': 'eleve',
+                                        'Tres eleve': 'tres-eleve'                                  
+                                    } %}
+                                    {% set priorityClass = priorityMap[priorityName]|default('') %}
+                                    <span class="priority-badge {{ priorityClass ? 'priority-' ~ priorityClass : '' }}">
+                                        {{ priorityName }}
+                                    </span>
                                 {% endif %}
+
                                 {% if t.getTaskStatus() %}
-                                    <span class="status-badge">{{ t.getTaskStatus().getStatusName() }}</span>
+                                    {% set statusName = t.getTaskStatus().getStatusName() %}
+                                    {% set statusMap = {
+                                        'En cours': 'en-cours',
+                                        'Terminee': 'termine',
+                                        'En retard': 'retard',
+                                        'En attente': 'en-attente'
+                                    } %}
+                                    {% set statusClass = statusMap[statusName]|default('') %}
+                                    <span class="status-badge {{ statusClass ? 'status-' ~ statusClass : '' }}">
+                                        {{ statusName }}
+                                    </span>
                                 {% endif %}
                                 {% if t.getTaskCreatedAt() %}
                                     <span class="meta-pill">Créée le {{ t.getTaskCreatedAt()|date('d F Y') }}</span>
