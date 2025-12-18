@@ -16,70 +16,65 @@
         <p class="project-desc">{{ project.projectDesc }}</p>
 
         <div class="project-tasks">
-                <strong>Tâches :</strong>
-                    {% if project.getTasks() is not empty %}
-                        <div class="kanban-board">
-                            {% for status in ['En cours', 'Terminee', 'En attente', 'En retard'] %}
-                                {% set statusClass = '' %}
-                                {% set statusKey = status|lower %}
-                                {% if 'cours' in statusKey %}
-                                    {% set statusClass = 'status-en-cours' %}
-                                {% elseif 'termine' in statusKey %}
-                                    {% set statusClass = 'status-termine' %}
-                                {% elseif 'retard' in statusKey %}
-                                    {% set statusClass = 'status-retard' %}
-                                {% elseif 'attente' in statusKey %}
-                                    {% set statusClass = 'status-en-attente' %}
-                                {% endif %}
+            <strong>Tâches :</strong>
 
-                                <div class="kanban-column">
-                                    <div class="kanban-title {{ statusClass }}">{{ status }}</div>
+            <div class="kanban-board">
+                {% for status in ['En cours', 'Terminee', 'En attente', 'En retard'] %}
+                    {% set statusClass = '' %}
+                    {% set statusKey = status|lower %}
+                    {% if 'cours' in statusKey %}
+                        {% set statusClass = 'status-en-cours' %}
+                    {% elseif 'termine' in statusKey %}
+                        {% set statusClass = 'status-termine' %}
+                    {% elseif 'retard' in statusKey %}
+                        {% set statusClass = 'status-retard' %}
+                    {% elseif 'attente' in statusKey %}
+                        {% set statusClass = 'status-en-attente' %}
+                    {% endif %}
 
-                                    {% set tasks = [] %}
-                                    {% for task in project.getTasks() %}
-                                        {% if task.getTaskStatus() and task.getTaskStatus().statusName == status %}
-                                            {% set tasks = tasks|merge([task]) %}
+                    <div class="kanban-column" data-status="{{ status }}">
+                        <div class="kanban-title {{ statusClass }}">{{ status }}</div>
+
+                        {% set tasks = [] %}
+                        {% for task in project.getTasks() %}
+                            {% if task.getTaskStatus() and task.getTaskStatus().statusName == status %}
+                                {% set tasks = tasks|merge([task]) %}
+                            {% endif %}
+                        {% endfor %}
+
+                        {% if tasks is not empty %}
+                            {% for task in tasks %}
+                                <div class="task-card" data-task-id="{{ task.id }}">
+                                    <div class="task-header drag-handle" title="Glisser pour déplacer">
+                                        <a href="{{ path('front_tasks_show', {'id': task.id}) }}" class="task-title-link">
+                                            <strong class="task-title">{{ task.taskTitle }}</strong>
+                                        </a>
+                                        {% if task.taskDueDate %}
+                                            <span class="task-date">{{ task.taskDueDate|date('d/m/Y') }}</span>
                                         {% endif %}
-                                    {% endfor %}
-
-                                    {% if tasks is not empty %}
-                                        {% for task in tasks %}
-                                            <div class="task-card">
-                                                <div class="task-header">
-                                                    <strong>{{ task.taskTitle }}</strong>
-                                                    {% if task.taskDueDate %}
-                                                        <span class="task-date">{{ task.taskDueDate|date('d/m/Y') }}</span>
-                                                    {% endif %}
-                                                </div>
-                                                {% if task.getTaskPriority() %}
-                                                    {% set priorityName = task.getTaskPriority().getPriorityName()|lower %}
-                                                    {% set priorityClass = '' %}
-                                                    {% if 'tres faible' in priorityName %}
-                                                        {% set priorityClass = 'priority-tres-faible' %}
-                                                    {% elseif 'faible' in priorityName %}
-                                                        {% set priorityClass = 'priority-faible' %}
-                                                    {% elseif 'moderee' in priorityName %}
-                                                        {% set priorityClass = 'priority-moderee' %}
-                                                    {% elseif 'elevee' in priorityName %}
-                                                        {% set priorityClass = 'priority-elevee' %}
-                                                    {% elseif 'tres elevee' in priorityName %}
-                                                        {% set priorityClass = 'priority-treselevee' %}
-                                                    {% endif %}
-                                                    <span class="priority-badge {{ priorityClass }}">
-                                                        {{ task.getTaskPriority().getPriorityName() }}
-                                                    </span>
-                                                {% endif %}
-                                            </div>
-                                        {% endfor %}
-                                    {% else %}
-                                        <p class="text-muted">Aucune tache</p>
+                                    </div>
+                                    {% if task.getTaskPriority() %}
+                                        {% set priorityName = task.getTaskPriority().getPriorityName() %}
+                                        {% set priorityMap = {
+                                            'Tres faible': 'tres-faible',
+                                            'Faible': 'faible',
+                                            'Modere': 'modere',
+                                            'Eleve': 'eleve',
+                                            'Tres eleve': 'tres-eleve'                                  
+                                        } %}
+                                        {% set priorityClass = priorityMap[priorityName]|default('') %}
+                                        <span class="priority-badge {{ priorityClass ? 'priority-' ~ priorityClass : '' }}">
+                                            {{ priorityName }}
+                                        </span>
                                     {% endif %}
                                 </div>
                             {% endfor %}
-                </div>
-            {% else %}
-                <span class="text-muted">Aucune tâche</span>
-            {% endif %}
+                        {% else %}
+                            <p class="text-muted">Aucune tâche</p>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
         </div>
 
         <div class="project-actions mt-4 d-flex justify-content-between">
@@ -96,4 +91,41 @@
     </div>
 
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const columns = document.querySelectorAll('.kanban-column');
+
+    columns.forEach(column => {
+        Sortable.create(column, {
+            group: 'kanban',
+            animation: 150,
+            handle: '.drag-handle',
+            draggable: '.task-card',
+            ghostClass: 'drag-ghost',
+            onAdd: function (evt) {
+                const item = evt.item;
+                const taskId = item.dataset.taskId;
+                const newStatus = evt.to.dataset.status;
+
+                fetch(`/front/tasks/${taskId}/status`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify({ status: newStatus })
+                })
+                .then(res => {
+                    if (!res.ok) throw new Error('Erreur serveur');
+                    return res.json();
+                })
+                .then(data => console.log('Statut mis à jour :', data))
+                .catch(err => alert('Erreur lors de la mise à jour'));
+            }
+        });
+    });
+});
+</script>
 {% endblock %}

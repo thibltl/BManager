@@ -26,18 +26,41 @@
 .status-badge.status-en-attente { background-color: #7f8c8d; }
 
 
-/* ===== Task cards ===== */
-.task-card {
-    background: #ffffff;
-    border: 1px solid #e5e7eb;
-    border-radius: 10px;
-    padding: 10px;
-    margin-bottom: 10px;
+/* ===== Task card link ===== */
+.task-card-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
 }
 
-.task-title {
-    color: #111827;
+.task-card-link:hover .task-card {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    transform: scale(1.02);
+    transition: all 0.2s ease-in-out;
 }
+
+
+/* Empêche le soulignement sur le lien de titre */
+.task-title-link {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* Poignée de drag */
+.drag-handle {
+    cursor: grab;
+}
+.drag-handle:active {
+    cursor: grabbing;
+}
+
+/* Fantôme pendant le drag */
+.drag-ghost {
+    opacity: 0.6;
+    transform: scale(0.98);
+}
+
 
 .task-date {
     font-size: 0.85rem;
