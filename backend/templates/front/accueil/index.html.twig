@@ -11,7 +11,6 @@
                 <a href="{{ path('front_project_show', {id: project.id}) }}" class="card project-card text-decoration-none">
                     <div class="card-body">
                         <h5 class="card-title">{{ project.projectName }}</h5>
-                        
                     </div>
                 </a>
             </div>
@@ -21,47 +20,80 @@
     </div>
 </div>
 
-<!-- Bloc vertical des tâches façon sidebar -->
-<div class="task-sidebar-block">
-    <h2 class="block-title">✅ Mes Taches</h2>
-    <ul class="nav flex-column task-nav">
-        {% for task in tasks %}
-            <li class="nav-item mb-2">
-                <div class="nav-link task-item d-flex justify-content-between align-items-center
-                    {% if task.taskStatus %}
-                        {% if task.taskStatus.statusName == 'En cours' %} task-en-cours
-                        {% elseif task.taskStatus.statusName == 'En attente' %} task-en-attente
-                        {% elseif task.taskStatus.statusName == 'Terminée' %} task-terminee
-                        {% elseif task.taskStatus.statusName == 'En retard' %} task-en-retard
-                        {% else %} task-sans-statut
-                        {% endif %}
-                    {% else %}
-                        task-sans-statut
-                    {% endif %}
-                ">
-                    <div>
-                        <strong>{{ task.taskTitle }}</strong><br>
-                        <small class="text-muted">Échéance : {{ task.taskDueDate|date('d/m/Y') }}</small>
-                    </div>
-                    <span class="badge 
-                        {% if task.taskStatus %}
-                            {% if task.taskStatus.statusName == 'En cours' %} badge-en-cours
-                            {% elseif task.taskStatus.statusName == 'En attente' %} badge-en-attente
-                            {% elseif task.taskStatus.statusName == 'Terminée' %} badge-terminee
-                            {% elseif task.taskStatus.statusName == 'En retard' %} badge-en-retard
-                            {% else %} badge-sans-statut
+<!-- Bloc horizontal : tâches à gauche, utilisateurs à droite -->
+<div class="row">
+    <!-- Bloc tâches -->
+    <div class="col-md-6">
+        <div class="task-sidebar-block">
+            <h2 class="block-title">✅ Mes Tâches</h2>
+            <ul class="nav flex-column task-nav">
+                {% for task in tasks %}
+                    <li class="nav-item mb-2">
+                        <div class="nav-link task-item d-flex justify-content-between align-items-center
+                            {% if task.taskStatus %}
+                                {% if task.taskStatus.statusName == 'En cours' %} task-en-cours
+                                {% elseif task.taskStatus.statusName == 'En attente' %} task-en-attente
+                                {% elseif task.taskStatus.statusName == 'Terminée' %} task-terminee
+                                {% elseif task.taskStatus.statusName == 'En retard' %} task-en-retard
+                                {% else %} task-sans-statut
+                                {% endif %}
+                            {% else %}
+                                task-sans-statut
                             {% endif %}
-                        {% else %}
-                            badge-sans-statut
-                        {% endif %}
-                    ">
-                        {{ task.taskStatus ? task.taskStatus.statusName : 'Sans statut' }}
-                    </span>
-                </div>
-            </li>
-        {% else %}
-            <li class="nav-item">Aucune tâche enregistrée.</li>
-        {% endfor %}
-    </ul>
+                        ">
+                            <div>
+                                <strong>{{ task.taskTitle }}</strong><br>
+                                <small class="text-muted">Échéance : {{ task.taskDueDate|date('d/m/Y') }}</small>
+                            </div>
+                            <span class="badge 
+                                {% if task.taskStatus %}
+                                    {% if task.taskStatus.statusName == 'En cours' %} badge-en-cours
+                                    {% elseif task.taskStatus.statusName == 'En attente' %} badge-en-attente
+                                    {% elseif task.taskStatus.statusName == 'Terminée' %} badge-terminee
+                                    {% elseif task.taskStatus.statusName == 'En retard' %} badge-en-retard
+                                    {% else %} badge-sans-statut
+                                    {% endif %}
+                                {% else %}
+                                    badge-sans-statut
+                                {% endif %}
+                            ">
+                                {{ task.taskStatus ? task.taskStatus.statusName : 'Sans statut' }}
+                            </span>
+                        </div>
+                    </li>
+                {% else %}
+                    <li class="nav-item">Aucune tâche enregistrée.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <!-- Bloc utilisateurs -->
+    <div class="col-md-1">
+        <div class="users-block mb-4">
+            <h2 class="block-title">👥 Mes utilisateurs</h2>
+            <div class="row">
+                {% for user in users %}
+                    <div class="col-md-6 mb-4">
+                        <!-- Carte utilisateur cliquable -->
+                        <a href="{{ path('user_show', {id: user.id}) }}" class="card user-card text-decoration-none">
+                            <div class="card-body">
+                                <h4 class="card-title">{{ user.name }}</h4>
+                                <h5 class="card-title">
+                                    {% for role in user.roles %}
+                                        <span class="badge badge-role">{{ role }}</span>
+                                    {% endfor %}
+                                </h5>
+
+                                
+                            </div>
+                        </a>
+                    </div>
+                {% else %}
+                    <p>Aucun utilisateur enregistré.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}

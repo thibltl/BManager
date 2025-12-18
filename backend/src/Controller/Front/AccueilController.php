@@ -3,22 +3,23 @@
 namespace App\Controller\Front;
 
 use App\Repository\ProjectRepository;
-use App\Repository\TasksRepository;
+use App\Repository\TasksRepository; // ✅ avec un "s"
+use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Annotation\Route;
 
 final class AccueilController extends AbstractController
 {
-    #[Route('/accueil', name: 'app_accueil')]
-    public function index(ProjectRepository $projectRepository, TasksRepository $tasksRepository): Response
+    #[Route('/', name: 'front_accueil')]
+    public function accueil(ProjectRepository $projectRepository, TasksRepository $tasksRepository, UserRepository $userRepository): Response
     {
-        $projects = $projectRepository->findAll();
-        $tasks = $tasksRepository->findAll();
-
         return $this->render('front/accueil/index.html.twig', [
-            'projects' => $projects,
-            'tasks' => $tasks,
+            'projects' => $projectRepository->findAll(),
+            'tasks' => $tasksRepository->findAll(), 
+            'users' => $userRepository->findAll(),
         ]);
     }
 }
+
+

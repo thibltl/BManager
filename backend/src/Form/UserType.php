@@ -2,11 +2,12 @@
 
 namespace App\Form;
 
-use App\Entity\Project;
-use App\Entity\Tasks;
 use App\Entity\User;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -15,24 +16,29 @@ class UserType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('email')
-            ->add('roles')
-            ->add('password')
-            ->add('name')
-            ->add('createdAt', null, [
-                'widget' => 'single_text',
+            ->add('name', TextType::class, [
+                'label' => 'Pseudo',
+                'required' => true,
             ])
-            ->add('projects', EntityType::class, [
-                'class' => Project::class,
-                'choice_label' => 'id',
-                'multiple' => true,
+            ->add('email', EmailType::class, [
+                'label' => 'Email',
+                'required' => true,
             ])
-            ->add('tasks', EntityType::class, [
-                'class' => Tasks::class,
-                'choice_label' => 'id',
-                'multiple' => true,
+            ->add('roles', ChoiceType::class, [
+                'label' => 'Rôles',
+                'choices' => [
+                    'Utilisateur' => 'ROLE_USER',
+                    'Administrateur' => 'ROLE_ADMIN',
+                ],
+                'expanded' => true,   // cases à cocher
+                'multiple' => true,   // plusieurs rôles possibles
             ])
-        ;
+            ->add('plainPassword', PasswordType::class, [
+                'mapped' => false,
+                'required' => true,
+                'label' => 'Mot de passe',
+                'attr' => ['autocomplete' => 'new-password'],
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

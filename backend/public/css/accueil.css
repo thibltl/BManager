@@ -22,6 +22,8 @@
     border-radius: 12px;
     box-shadow: 0 6px 16px rgba(0,0,0,0.1);
     padding: 20px;
+    margin-left: -27px;
+    margin-top : -27px;
 }
 
 .sidebar .nav-link {
@@ -83,6 +85,7 @@
     padding: 24px;
     box-shadow: 0 6px 16px rgba(0,0,0,0.1);
     margin-bottom: 30px;
+    margin-left: -18px;
 }
 
 .block-title {
@@ -118,6 +121,7 @@
     width: 400px;
     margin-right: 20px;
     float: left;
+    margin-left: -18px;
 }
 
 .task-sidebar-block .block-title {
@@ -138,9 +142,45 @@
 }
 
 .task-nav .task-item:hover {
-    background-color: #f0f0f0;
+    background-color: #f0f8ff;
     transform: translateX(2px);
 }
+
+/* Bloc utilisateurs */
+.users-block {
+    background-color: #ffffff;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+    width: 400px;
+    margin-left: 20px;
+    float: right;
+}
+
+.users-block .block-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: black;
+}
+
+/* Carte utilisateur */
+.users-block .user-card {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    padding: 16px;
+    transition: background-color 0.15s ease, transform 0.15s ease;
+    font-size: 14px;
+    color: black;
+    text-align: center;
+}
+
+.users-block .user-card:hover {
+     background-color: #f0f8ff;
+    transform: translateY(-2px);
+}
+
 
 /* Badges de statut (couleurs) */
 .badge-en-cours,
@@ -272,17 +312,24 @@ input:checked + .slider:before {
 
 /* Mode sombre */
 body.dark-mode .page-background {
-    background-color: rgb(31, 29, 29);
+    background-color: rgba(0, 0, 0, 0.979);
     backdrop-filter: blur(8px);
 }
 
 body.dark-mode .sidebar {
-    background-color: #0f0f0f;
+    background-color: rgb(0, 0, 0);
     color: #f1f1f1;
 }
 
 body.dark-mode .sidebar .nav-link {
     color: #0944e6;
+}
+
+body.dark-mode .logo-box{
+    color : blue;
+    border-radius: 8px;
+    background-color: #000000;
+    box-shadow: 0 2px 10px #0944e6;
 }
 
 body.dark-mode .sidebar .nav-link:hover {
@@ -303,13 +350,14 @@ body.dark-mode .block-title {
 
 /* Tâches en mode sombre */
 body.dark-mode .task-nav .task-item {
-    background-color: rgb(31, 29, 29);
-    color: #f1f1f1;
+    background-color: #0c0c0c;
+    color: #0944e6;
 }
 
 body.dark-mode .task-nav .task-item:hover {
-    box-shadow: 0 6px 16px #0944e6;
-    background-color: rgba(9, 68, 230, 0.08);
+    background-color: #242525;
+    color: #ffffff;
+    box-shadow: 0 6px 18px #0c0c0c;
 }
 
 /* Badges en mode sombre */
@@ -345,13 +393,37 @@ body.dark-mode .badge-sans-statut {
 
 /* Cartes projet en mode sombre */
 body.dark-mode .project-card {
-    background-color: #0f0f0f;
+    background-color: #0c0c0c;
     color: #0944e6;
     box-shadow: 0 4px 10px black;
 }
 
 body.dark-mode .project-card:hover {
-    background-color: #0944e6;
+    background-color: #242525;
     color: #ffffff;
-    box-shadow: 0 6px 18px #0944e6;
+    box-shadow: 0 6px 18px #0c0c0c;
+}
+
+/* Bloc utilisateurs en mode sombre */
+body.dark-mode .users-block {
+    background-color: #0f0f0f;
+    color: #f1f1f1;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.6);
+}
+
+body.dark-mode .users-block .block-title {
+    color: #0944e6;
+}
+
+/* Carte utilisateur en mode sombre */
+body.dark-mode .users-block .user-card {
+    background-color: #0c0c0c;
+    color: #0944e6;
+    box-shadow: 0 4px 10px black;
+}
+
+body.dark-mode .users-block .user-card:hover {
+    background-color: #242525;
+    color: #ffffff;
+    box-shadow: 0 6px 18px #0c0c0c;
 }
