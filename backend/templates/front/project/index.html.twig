@@ -10,7 +10,6 @@
         <h1 class="h4 m-0 page-title">Mes projets en cours</h1>
 
         <div class="glass-radio-group" style="flex-shrink: 0;">
-
             <input type="radio" name="filter" id="filter-all" checked>
             <label class="d-flex" for="filter-all">Tous</label>
 
@@ -26,7 +25,6 @@
         <a href="{{ path('front_project_new') }}" class="btn btn-primary btn-glass-project flex-shrink-0">
             <i class="bi bi-plus-circle"></i> Nouveau projet
         </a>
-
     </div>
 
     <div class="projects-grid">
@@ -58,48 +56,48 @@
                                     {% set statusClass = 'status-en-attente' %}
                                 {% endif %}
 
-                                <div class="kanban-column">
+                                <div class="kanban-column" data-status="{{ status }}">
                                     <div class="kanban-title {{ statusClass }}">{{ status }}</div>
 
-                                    {% set tasks = [] %}
-                                    {% for task in project.getTasks() %}
-                                        {% if task.getTaskStatus() and task.getTaskStatus().statusName == status %}
-                                            {% set tasks = tasks|merge([task]) %}
-                                        {% endif %}
-                                    {% endfor %}
+                                    <div class="tasks-list">
+                                        {% set tasks = [] %}
+                                        {% for task in project.getTasks() %}
+                                            {% if task.getTaskStatus() and task.getTaskStatus().statusName == status %}
+                                                {% set tasks = tasks|merge([task]) %}
+                                            {% endif %}
+                                        {% endfor %}
 
-                                    {% if tasks is not empty %}
-                                        {% for task in tasks %}
-                                            <div class="task-card">
-                                                <div class="task-header">
-                                                    <strong>{{ task.taskTitle }}</strong>
-                                                    {% if task.taskDueDate %}
-                                                        <span class="task-date">{{ task.taskDueDate|date('d/m/Y') }}</span>
+                                        {% if tasks is not empty %}
+                                            {% for task in tasks %}
+                                                <div class="task-card" data-task-id="{{ task.id }}">
+                                                    <div class="task-header drag-handle" title="Glisser pour déplacer">
+                                                        <a href="{{ path('front_tasks_show', {'id': task.id}) }}" class="task-title-link">
+                                                            <strong class="task-title">{{ task.taskTitle }}</strong>
+                                                        </a>
+                                                        {% if task.taskDueDate %}
+                                                            <span class="task-date">{{ task.taskDueDate|date('d/m/Y') }}</span>
+                                                        {% endif %}
+                                                    </div>
+                                                    {% if task.getTaskPriority() %}
+                                                        {% set priorityName = task.getTaskPriority().getPriorityName() %}
+                                                        {% set priorityMap = {
+                                                            'Tres faible': 'tres-faible',
+                                                            'Faible': 'faible',
+                                                            'Modere': 'modere',
+                                                            'Eleve': 'eleve',
+                                                            'Tres eleve': 'tres-eleve'                                  
+                                                        } %}
+                                                        {% set priorityClass = priorityMap[priorityName]|default('') %}
+                                                        <span class="priority-badge {{ priorityClass ? 'priority-' ~ priorityClass : '' }}">
+                                                            {{ priorityName }}
+                                                        </span>
                                                     {% endif %}
                                                 </div>
-                                                {% if task.getTaskPriority() %}
-                                                    {% set priorityName = task.getTaskPriority().getPriorityName()|lower %}
-                                                    {% set priorityClass = '' %}
-                                                    {% if 'tres faible' in priorityName %}
-                                                        {% set priorityClass = 'priority-tres-faible' %}
-                                                    {% elseif 'faible' in priorityName %}
-                                                        {% set priorityClass = 'priority-faible' %}
-                                                    {% elseif 'moderee' in priorityName %}
-                                                        {% set priorityClass = 'priority-moderee' %}
-                                                    {% elseif 'elevee' in priorityName %}
-                                                        {% set priorityClass = 'priority-elevee' %}
-                                                    {% elseif 'tres elevee' in priorityName %}
-                                                        {% set priorityClass = 'priority-treselevee' %}
-                                                    {% endif %}
-                                                    <span class="priority-badge {{ priorityClass }}">
-                                                        {{ task.getTaskPriority().getPriorityName() }}
-                                                    </span>
-                                                {% endif %}
-                                            </div>
-                                        {% endfor %}
-                                    {% else %}
-                                        <p class="text-muted">Aucune tache</p>
-                                    {% endif %}
+                                            {% endfor %}
+                                        {% else %}
+                                            <p class="text-muted">Aucune tâche</p>
+                                        {% endif %}
+                                    </div>
                                 </div>
                             {% endfor %}
                         </div>
@@ -124,4 +122,43 @@
     </div>
 
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.tasks-list').forEach(list => {
+        Sortable.create(list, {
+            group: 'kanban',
+            animation: 150,
+            handle: '.drag-handle',
+            draggable: '.task-card',
+            ghostClass: 'drag-ghost',
+            onAdd: function (evt) {
+                const item = evt.item;
+                const taskId = item.dataset.taskId;
+                const newStatus = evt.to.closest('.kanban-column').dataset.status;
+
+                fetch(`/front/tasks/${taskId}/status`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify({ status: newStatus })
+                })
+                .then(res => {
+                    if (!res.ok) throw new Error('HTTP ' + res.status);
+                    return res.json();
+                })
+                .then(data => console.log('Statut mis à jour :', data))
+                .catch(err => {
+                    // revert si erreur
+                    evt.from.insertBefore(item, evt.from.children[evt.oldIndex] || null);
+                    alert('Erreur lors de la mise à jour');
+                });
+            }
+        });
+    });
+});
+</script>
 {% endblock %}
