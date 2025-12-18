@@ -150,7 +150,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (!res.ok) throw new Error('HTTP ' + res.status);
                     return res.json();
                 })
-                .then(data => console.log('Statut mis à jour :', data))
+                .then(data => {
+                    console.log('Statut mis à jour :', data);
+                    // ✅ Rafraîchit la page après mise à jour
+                    window.location.reload();
+                })
                 .catch(err => {
                     // revert si erreur
                     evt.from.insertBefore(item, evt.from.children[evt.oldIndex] || null);
