@@ -17,8 +17,19 @@ class Th
     #[ORM\Column(length: 255)]
     private ?string $th_changelog = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTime $th_updatedAt = null;
+
+    #[ORM\ManyToOne(targetEntity: Tasks::class, inversedBy: 'history')]
+    private ?Tasks $task = null;
+
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    private ?User $author = null;
+
+    public function __construct()
+    {
+        $this->th_updatedAt = new \DateTime();
+    }
 
     public function getId(): ?int
     {
@@ -33,7 +44,6 @@ class Th
     public function setThChangelog(string $th_changelog): static
     {
         $this->th_changelog = $th_changelog;
-
         return $this;
     }
 
@@ -45,7 +55,28 @@ class Th
     public function setThUpdatedAt(\DateTime $th_updatedAt): static
     {
         $this->th_updatedAt = $th_updatedAt;
+        return $this;
+    }
 
+    public function getTask(): ?Tasks
+    {
+        return $this->task;
+    }
+
+    public function setTask(?Tasks $task): static
+    {
+        $this->task = $task;
+        return $this;
+    }
+
+    public function getAuthor(): ?User
+    {
+        return $this->author;
+    }
+
+    public function setAuthor(?User $author): static
+    {
+        $this->author = $author;
         return $this;
     }
 }

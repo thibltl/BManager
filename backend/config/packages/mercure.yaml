@@ -1,0 +1,7 @@
+mercure:
+    hubs:
+        default:
+            url: 'http://localhost:3000/.well-known/mercure'
+            public_url: 'http://localhost:3000/.well-known/mercure'
+            jwt:
+                secret: '!ChangeMe!'

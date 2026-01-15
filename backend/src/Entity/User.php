@@ -24,15 +24,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 180)]
     private ?string $email = null;
 
-    /**
-     * @var list<string> The user roles
-     */
     #[ORM\Column]
     private array $roles = [];
 
-    /**
-     * @var string The hashed password
-     */
     #[ORM\Column]
     private ?string $password = null;
 
@@ -54,13 +48,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToMany(targetEntity: Tasks::class, inversedBy: 'users')]
     private Collection $tasks;
 
+    /**
+     * @var Collection<int, Notification>
+     */
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Notification::class, cascade: ['remove'])]
+    private Collection $notifications;
+
     #[ORM\Column]
     private bool $isVerified = false;
+
+    #[ORM\Column(type: 'json')]
+    private array $notificationPreferences = [
+        'task_assigned' => true,
+        'status_changed' => true,
+        'date_changed' => true,
+        'title_changed' => true,
+        'user_added' => true,
+        'task_deleted' => true,
+    ];
 
     public function __construct()
     {
         $this->projects = new ArrayCollection();
         $this->tasks = new ArrayCollection();
+        $this->notifications = new ArrayCollection();
         $this->createdAt = new \DateTimeImmutable();
     }
 
@@ -77,49 +88,31 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setEmail(string $email): static
     {
         $this->email = $email;
-
         return $this;
     }
 
-    /**
-     * A visual identifier that represents this user.
-     *
-     * @see UserInterface
-     */
     public function getUserIdentifier(): string
     {
         return (string) $this->email;
     }
 
-    /**
-     * @see UserInterface
-     */
     public function getRoles(): array
     {
-    $roles = $this->roles;
+        $roles = $this->roles;
 
-    if (!in_array('ROLE_USER', $roles)) {
-        $roles[] = 'ROLE_USER';
+        if (!in_array('ROLE_USER', $roles)) {
+            $roles[] = 'ROLE_USER';
+        }
+
+        return array_unique($roles);
     }
 
-    return array_unique($roles);
-    }
-
-
-
-    /**
-     * @param list<string> $roles
-     */
     public function setRoles(array $roles): static
     {
         $this->roles = $roles;
-
         return $this;
     }
 
-    /**
-     * @see PasswordAuthenticatedUserInterface
-     */
     public function getPassword(): ?string
     {
         return $this->password;
@@ -128,25 +121,20 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPassword(string $password): static
     {
         $this->password = $password;
-
         return $this;
     }
 
-    /**
-     * Ensure the session doesn't contain actual password hashes by CRC32C-hashing them, as supported since Symfony 7.3.
-     */
     public function __serialize(): array
     {
         $data = (array) $this;
         $data["\0".self::class."\0password"] = hash('crc32c', $this->password);
-
         return $data;
     }
 
     #[\Deprecated]
     public function eraseCredentials(): void
     {
-        // @deprecated, to be removed when upgrading to Symfony 8
+        // Deprecated
     }
 
     public function getName(): ?string
@@ -157,7 +145,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setName(string $name): static
     {
         $this->name = $name;
-
         return $this;
     }
 
@@ -169,10 +156,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setCreatedAt(\DateTimeImmutable $createdAt): static
     {
         $this->createdAt = $createdAt;
-
         return $this;
     }
-    
 
     /**
      * @return Collection<int, Project>
@@ -187,14 +172,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         if (!$this->projects->contains($project)) {
             $this->projects->add($project);
         }
-
         return $this;
     }
 
     public function removeProject(Project $project): static
     {
         $this->projects->removeElement($project);
-
         return $this;
     }
 
@@ -211,14 +194,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         if (!$this->tasks->contains($task)) {
             $this->tasks->add($task);
         }
-
         return $this;
     }
 
     public function removeTask(Tasks $task): static
     {
         $this->tasks->removeElement($task);
-
         return $this;
     }
 
@@ -230,7 +211,25 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setIsVerified(bool $isVerified): static
     {
         $this->isVerified = $isVerified;
+        return $this;
+    }
 
+    /**
+     * @return Collection<int, Notification>
+     */
+    public function getNotifications(): Collection
+    {
+        return $this->notifications;
+    }
+
+    public function getNotificationPreferences(): array
+    {
+        return $this->notificationPreferences;
+    }
+
+    public function setNotificationPreferences(array $prefs): static
+    {
+        $this->notificationPreferences = $prefs;
         return $this;
     }
 }

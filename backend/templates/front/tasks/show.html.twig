@@ -25,7 +25,7 @@
         </div>
 
         <div class="task-meta d-flex flex-wrap gap-2 mb-3">
-            {# PRIORITÉ avec mapping #}
+            {# PRIORITÉ #}
             {% if task.getTaskPriority() %}
                 {% set priorityName = task.getTaskPriority().getPriorityName() %}
                 {% set priorityMap = {
@@ -41,7 +41,7 @@
                 </span>
             {% endif %}
 
-            {# STATUT avec mapping #}
+            {# STATUT #}
             {% if task.getTaskStatus() %}
                 {% set statusName = task.getTaskStatus().getStatusName() %}
                 {% set statusMap = {
@@ -64,7 +64,6 @@
             {% endif %}
         </div>
 
-
         <div class="task-actions d-flex justify-content-between mt-4">
             <a href="{{ path('front_tasks_index') }}" class="btn-glass">
                 <i class="bi bi-arrow-left"></i> Retour à la liste
@@ -77,5 +76,25 @@
             </div>
         </div>
     </div>
+
+    {# 🟦 BLOC HISTORIQUE DES MODIFICATIONS #}
+    <div class="task-card shadow-sm mt-4">
+        <h3 class="h5 mb-3">🕒 Historique des modifications</h3>
+
+        <ul class="history-list">
+            {% for entry in task.history %}
+                <li>
+                    <strong>{{ entry.thUpdatedAt|date('d/m/Y H:i') }}</strong> — 
+                    {{ entry.thChangelog }}
+                    {% if entry.author %}
+                        <em>(par {{ entry.author.name }})</em>
+                    {% endif %}
+                </li>
+            {% else %}
+                <p class="text-muted">Aucune modification enregistrée.</p>
+            {% endfor %}
+        </ul>
+    </div>
+
 </div>
 {% endblock %}
