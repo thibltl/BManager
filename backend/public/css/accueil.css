@@ -1,148 +1,377 @@
-/* ========================= */
-/* FOND + LAYOUT */
-/* ========================= */
+/* =========================================================
+   DESIGN SYSTEM – COLORÉ / DARK VIOLET
+========================================================= */
+
+:root {
+    /* LIGHT MODE */
+    --bg-main: #eef2ff;
+    --bg-panel: #ffffff;
+    --bg-card: #ffffff;
+
+    --text-main: #0b1026;
+    --text-muted: #5c63a4;
+
+    --primary: #3b82f6;
+    --secondary: #06b6d4;
+    --accent: #8b5cf6;
+
+    --primary-soft: rgba(59,130,246,0.15);
+    --accent-soft: rgba(139,92,246,0.15);
+
+    --border-subtle: rgba(0,0,0,0.08);
+
+    --radius-sm: 10px;
+    --radius-md: 14px;
+    --radius-lg: 20px;
+
+    --shadow-sm: 0 4px 10px rgba(59,130,246,0.15);
+    --shadow-md: 0 14px 35px rgba(59,130,246,0.25);
+
+    --transition: 0.25s cubic-bezier(.4,0,.2,1);
+}
+
+/* =========================================================
+   DARK MODE – VIOLET
+========================================================= */
+
+body.dark-mode {
+    --bg-main: #0b0620;
+    --bg-panel: #140a35;
+    --bg-card: #1b0f45;
+
+    --text-main: #ede9fe;
+    --text-muted: #b8b2e6;
+
+    --primary: #a78bfa;
+    --secondary: #38bdf8;
+    --accent: #c084fc;
+
+    --primary-soft: rgba(167,139,250,0.2);
+    --accent-soft: rgba(192,132,252,0.2);
+
+    --border-subtle: rgba(255,255,255,0.08);
+
+    --shadow-sm: 0 6px 20px rgba(0,0,0,0.6);
+    --shadow-md: 0 20px 50px rgba(0,0,0,0.8);
+}
+
+/* =========================================================
+   BASE
+========================================================= */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Inter", system-ui, sans-serif;
+    color: var(--text-main);
+    background: var(--bg-main);
+}
+
+/* =========================================================
+   BACKGROUND
+========================================================= */
 
 .page-background {
-    background-color: rgba(128, 128, 128, 0.4);
-    backdrop-filter: blur(8px);
     min-height: 100vh;
     display: flex;
-    align-items: stretch;
+    background:
+        radial-gradient(circle at top left, rgba(139,92,246,0.25), transparent 40%),
+        radial-gradient(circle at bottom right, rgba(6,182,212,0.25), transparent 40%),
+        var(--bg-main);
 }
+
+body.dark-mode .page-background {
+    background:
+        radial-gradient(circle at top, rgba(192,132,252,0.25), transparent 45%),
+        radial-gradient(circle at bottom, rgba(56,189,248,0.2), transparent 45%),
+        var(--bg-main);
+}
+
+/* =========================================================
+   LAYOUT
+========================================================= */
 
 .layout {
     display: grid;
-    grid-template-columns: 250px 1fr;
-    gap: 30px;
+    grid-template-columns: 270px 1fr;
+    gap: 32px;
     width: 100%;
-    padding: 30px;
+    padding: 32px;
 }
 
-/* ========================= */
-/* SIDEBAR */
-/* ========================= */
+/* =========================================================
+   SIDEBAR
+========================================================= */
 
 .sidebar {
-    background-color: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0 6px 16px rgba(0,0,0,0.1);
-    padding: 20px;
-    margin-left: -27px;
-    margin-top: -27px;
+    background: linear-gradient(
+        180deg,
+        var(--bg-panel),
+        var(--bg-card)
+    );
+    border-radius: var(--radius-lg);
+    padding: 22px;
+    box-shadow: var(--shadow-md);
 }
 
 .sidebar .nav-link {
-    transition: all 0.2s ease-in-out;
-    border-radius: 6px;
-    padding: 10px 14px;
-    font-size: 15px;
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    border-radius: var(--radius-md);
+    font-size: 14px;
+    font-weight: 600;
     color: black;
+    transition: var(--transition);
     font-weight: bold;
 }
 
 .sidebar .nav-link:hover {
-    background-color: rgba(0, 0, 0, 0.05);
-    box-shadow: 0 4px 8px white;
-    transform: translateY(-4px);
+    background: linear-gradient(
+        90deg,
+        var(--primary-soft),
+        var(--accent-soft)
+    );
+    color: var(--primary);
+    transform: translateX(6px);
 }
 
 .sidebar .nav-link.active {
-    background-color: rgba(0, 0, 0, 0.08);
-    box-shadow: inset 0 0 6px rgba(0,0,0,0.1);
+    background: linear-gradient(
+        90deg,
+        var(--primary),
+        var(--accent)
+    );
+    color: white;
+    box-shadow: var(--shadow-sm);
 }
 
-/* ========================= */
-/* LOGO */
-/* ========================= */
+/* =========================================================
+   LOGO
+========================================================= */
 
 .logo-box {
-    background-color: rgba(255, 255, 255, 0.2);
-    color: black;
-    padding: 10px;
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.25);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    font-size: 18px;
-    font-weight: bold;
-    letter-spacing: 0.5px;
-    backdrop-filter: blur(4px);
+    background: linear-gradient(
+        135deg,
+        var(--primary),
+        var(--accent)
+    );
+    color: white;
+    padding: 14px;
+    border-radius: var(--radius-md);
+    font-weight: 700;
+    text-align: center;
+    letter-spacing: 0.6px;
+    margin-bottom: 26px;
+    box-shadow: var(--shadow-md);
 }
 
-/* ========================= */
-/* DARK MODE SWITCH */
-/* ========================= */
+/* =========================================================
+   BLOCKS
+========================================================= */
+
+.dashboard-block,
+.task-sidebar-block,
+.users-block,
+.chart-block-modern {
+    background: linear-gradient(
+        180deg,
+        var(--bg-card),
+        rgba(255,255,255,0.85)
+    );
+    border-radius: var(--radius-lg);
+    padding: 26px;
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+}
+
+body.dark-mode
+.dashboard-block,
+body.dark-mode
+.task-sidebar-block,
+body.dark-mode
+.users-block,
+body.dark-mode
+.chart-block-modern {
+    background: linear-gradient(
+        180deg,
+        var(--bg-card),
+        #160a3a
+    );
+}
+
+.dashboard-block:hover,
+.chart-block-modern:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-md);
+}
+
+/* =========================================================
+   TITLES
+========================================================= */
+
+.block-title {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 18px;
+    background: linear-gradient(
+        90deg,
+        var(--primary),
+        var(--accent)
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* =========================================================
+   PROJECT CARDS
+========================================================= */
+
+.project-card {
+    display: block;
+    padding: 20px;
+    border-radius: var(--radius-md);
+    background: linear-gradient(
+        135deg,
+        var(--primary-soft),
+        transparent
+    );
+    color: var(--text-main);
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+.project-card:hover {
+    background: linear-gradient(
+        135deg,
+        var(--primary),
+        var(--accent)
+    );
+    color: white;
+    transform: scale(1.03);
+}
+
+/* =========================================================
+   TASKS
+========================================================= */
+
+.task-nav .task-item {
+    padding: 12px 16px;
+    border-radius: var(--radius-md);
+    background: linear-gradient(
+        135deg,
+        var(--accent-soft),
+        transparent
+    );
+    color: var(--text-main);
+    font-size: 13px;
+    transition: var(--transition);
+}
+
+.task-nav .task-item:hover {
+    background: linear-gradient(
+        135deg,
+        var(--primary),
+        var(--accent)
+    );
+    color: white;
+}
+
+/* =========================================================
+   USERS
+========================================================= */
+
+.users-block .user-card {
+    padding: 18px;
+    border-radius: var(--radius-md);
+    background: linear-gradient(
+        135deg,
+        var(--primary-soft),
+        transparent
+    );
+    text-align: center;
+    transition: var(--transition);
+}
+
+.users-block .user-card:hover {
+    background: linear-gradient(
+        135deg,
+        var(--primary),
+        var(--accent)
+    );
+    color: white;
+}
+
+/* =========================================================
+   BADGES
+========================================================= */
+
+.badge-en-cours {
+    background: linear-gradient(90deg, var(--primary), var(--accent));
+    color: white;
+}
+
+.badge-en-attente {
+    background: linear-gradient(90deg, #facc15, #fb923c);
+    color: #3f2d00;
+}
+
+.badge-terminee {
+    background: linear-gradient(90deg, #22c55e, #4ade80);
+    color: #052e16;
+}
+
+.badge-en-retard {
+    background: linear-gradient(90deg, #ef4444, #f97316);
+    color: white;
+}
+
+.badge-sans-statut {
+    background: rgba(255,255,255,0.25);
+    color: var(--text-muted);
+}
+
+/* =========================================================
+   SWITCH DARK MODE
+========================================================= */
 
 .switch {
-  display: block;
-  --width-of-switch: 3.0em;
-  --height-of-switch: 1em;
-  --size-of-icon: 1.4em;
-  --slider-offset: 0.3em;
-  position: relative;
-  width: var(--width-of-switch);
-  height: var(--height-of-switch);
+    position: relative;
+    width: 44px;
+    height: 22px;
 }
 
 .switch input {
-  opacity: 0;
-  width: 0;
-  height: 0;
+    display: none;
 }
 
 .slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background-color: #f4f4f5;
-  transition: .4s;
-  border-radius: 30px;
+    position: absolute;
+    inset: 0;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--primary), var(--accent));
 }
 
-.slider:before {
-  position: absolute;
-  content: "";
-  height: var(--size-of-icon);
-  width: var(--size-of-icon);
-  border-radius: 20px;
-  left: var(--slider-offset);
-  top: 50%;
-  transform: translateY(-50%);
-  background: wheat;
-  transition: .4s;
+.slider::before {
+    content: "";
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    background: white;
+    border-radius: 50%;
+    left: 3px;
+    top: 50%;
+    transform: translateY(-50%);
+    transition: var(--transition);
 }
 
-input:checked + .slider {
-  background-color: #303136;
+.switch input:checked + .slider::before {
+    transform: translate(22px, -50%);
 }
 
-input:checked + .slider:before {
-  left: calc(100% - (var(--size-of-icon) + var(--slider-offset)));
-  background: #303136;
-  box-shadow: inset -3px -2px 5px -2px #8983f7, inset -10px -4px 0 0 #a3dafb;
-}
 
-/* ========================= */
-/* DASHBOARD BLOCKS */
-/* ========================= */
-
-.dashboard-block {
-    background-color: #ffffff;
-    border-radius: 16px;
-    padding: 24px;
-    box-shadow: 0 6px 16px rgba(0,0,0,0.1);
-    margin-bottom: 30px;
-    margin-left: -18px;
-}
-
-.block-title {
-    font-size: 20px;
-    font-weight: bold;
-    margin-bottom: 20px;
-    color: black;
-}
 
 /* ========================= */
 /* NOTIFICATIONS — ICON */
