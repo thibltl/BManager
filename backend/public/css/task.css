@@ -11,6 +11,12 @@
     border: 1px solid #1f2937;
     border-radius: 12px;
     padding: 12px;
+    transition: 0.25s ease;
+}
+
+.kanban-column-t:hover {
+    border-color: #3b82f6;
+    box-shadow: 0 0 12px rgba(59, 130, 246, 0.25);
 }
 
 .kanban-title-t {
@@ -20,56 +26,32 @@
     margin-bottom: 10px;
 }
 
-.status-badge.status-en-cours { background-color: #f1c40f; }
-.status-badge.status-termine { background-color: #2ecc71; }
-.status-badge.status-retard { background-color: #e74c3c; }
-.status-badge.status-en-attente { background-color: #7f8c8d; }
-
-
-/* ===== Task card link ===== */
-.task-card-link {
-    display: block;
-    text-decoration: none;
-    color: inherit;
-    cursor: pointer;
+/* ===== Task card ===== */
+.task-card {
+    background: #1f2937;
+    border: 1px solid #374151;
+    border-radius: 12px;
+    padding: 14px;
+    margin-bottom: 12px;
+    transition: 0.25s ease;
 }
 
-.task-card-link:hover .task-card {
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    transform: scale(1.02);
-    transition: all 0.2s ease-in-out;
+.task-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+    border-color: #3b82f6;
 }
 
-
-/* Empêche le soulignement sur le lien de titre */
-.task-title-link {
-    text-decoration: none;
-    color: inherit;
+.task-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #f9fafb;
 }
-
-/* Poignée de drag */
-.drag-handle {
-    cursor: grab;
-}
-.drag-handle:active {
-    cursor: grabbing;
-}
-
-/* Fantôme pendant le drag */
-.drag-ghost {
-    opacity: 0.6;
-    transform: scale(0.98);
-}
-
 
 .task-date {
     font-size: 0.85rem;
-    color: #6b7280;
+    color: #9ca3af;
     font-weight: 500;
-}
-
-.task-actions {
-  overflow: visible;
 }
 
 /* ===== Meta info ===== */
@@ -91,50 +73,35 @@
     border-radius: 999px;
     font-size: 0.75rem;
     font-weight: 600;
-    background-color: #3b82f6;
     color: #fff;
 }
-
-.priority-badge.priority-faible,
-.priority-badge.priority-tres-faible,
-.priority-badge.priority-modere,
-.priority-badge.priority-eleve,
-.priority-badge.priority-tres-eleve,
-
-/* États */
 
 .priority-badge.priority-tres-faible {
     background-color: rgb(228, 219, 219);
     color: #747070;
-    border-color: rgba(228, 219, 219, 0.3);
 }
 
 .priority-badge.priority-faible {
     background-color: rgba(11, 92, 255, 0.15);
     color: #0B5CFF;
-    border-color: rgba(11, 92, 255, 0.3);
 }
 
 .priority-badge.priority-modere {
     background-color: rgba(255, 193, 7, 0.15);
     color: #9A6A00;
-    border-color: rgba(255, 193, 7, 0.3);
 }
 
 .priority-badge.priority-eleve {
     background-color: rgba(25, 135, 84, 0.12);
     color: #1F7A3D;
-    border-color: rgba(25, 135, 84, 0.28);
 }
 
 .priority-badge.priority-tres-eleve {
     background-color: rgba(176, 0, 32, 0.10);
     color: #B00020;
-    border-color: rgba(176, 0, 32, 0.28);
     animation: pulseBadge 2s infinite;
 }
 
-/* Animation pour En cours */
 @keyframes pulseBadge {
     0% { transform: scale(1); box-shadow: 0 0 6px rgba(176, 0, 32, 0.6); }
     50% { transform: scale(1.05); box-shadow: 0 0 10px rgba(176, 0, 32, 0.9); }
@@ -148,9 +115,18 @@
     border-radius: 999px;
     font-size: 0.75rem;
     font-weight: 600;
-    background-color: #10b981;
     color: #fff;
 }
+
+.status-badge.status-en-cours { background-color: #f1c40f; }
+.status-badge.status-termine { background-color: #2ecc71; }
+.status-badge.status-retard { background-color: #e74c3c; }
+.status-badge.status-en-attente { background-color: #7f8c8d; }
+
+/* ===== Drag ===== */
+.drag-handle { cursor: grab; }
+.drag-handle:active { cursor: grabbing; }
+.drag-ghost { opacity: 0.6; transform: scale(0.98); }
 
 /* ===== Boutons glass ===== */
 .btn-glass {
@@ -180,16 +156,77 @@
   transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
-.btn-glass:hover::before {
-  transform: scale(1); /* reste exactement à la taille du bouton */
+.btn-glass:hover::before { transform: scale(1); }
+.btn-glass:hover { color: #fff; transform: scale(1.05); }
+.btn-glass:active { scale: 1; }
+
+/* ===== Filtres ===== */
+#search,
+#status,
+#project {
+    border-radius: 8px;
+    border: 1px solid #1f2937;
+    padding: 10px 14px;
+    background-color: #1f2937;
+    color: #f9fafb;
+    font-size: 14px;
+    width: 100%;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    margin-bottom: 10px;
 }
 
-.btn-glass:hover {
-  color: #fff;
-  transform: scale(1.05);
+#priority {
+    border-radius: 8px;
+    border: 1px solid #1f2937;
+    padding: 10px 14px;
+    background-color: #1f2937;
+    color: #f9fafb;
+    font-size: 14px;
+    width: 100%;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    margin-bottom: 10px;
 }
 
 
-.btn-glass:active {
-  scale: 1;
+#search::placeholder { color: #9ca3af; }
+
+#search:focus,
+#status:focus,
+#project:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+    outline: none;
+}
+
+.row.mb-4 { margin-bottom: 2rem !important; }
+
+/* ===== Bouton Réinitialiser ===== */
+.btn-reset {
+    background: #374151;
+    color: #f9fafb;
+    border: 1px solid #4b5563;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: 0.25s ease;
+}
+
+.btn-reset:hover {
+    background: #4b5563;
+    border-color: #6b7280;
+}
+
+.btn-reset:active {
+    transform: scale(0.97);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    #search,
+    #status,
+    #project {
+        font-size: 13px;
+        padding: 8px 12px;
+    }
 }
