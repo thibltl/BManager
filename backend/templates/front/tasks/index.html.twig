@@ -19,6 +19,53 @@
         {% endif %}
     {% endfor %}
 
+    {# ----------------------------- #
+       FILTRES
+       ----------------------------- #}
+    <div class="row mb-4">
+
+        <div class="col-md-3">
+            <input id="search" class="form-control" placeholder="Rechercher une tâche...">
+        </div>
+
+        <div class="col-md-3">
+            <select id="status" class="form-select">
+                <option value="">Tous les statuts</option>
+                <option value="En cours">En cours</option>
+                <option value="Terminee">Terminée</option>
+                <option value="En retard">En retard</option>
+                <option value="En attente">En attente</option>
+            </select>
+        </div>
+
+        <div class="col-md-3">
+            <select id="priority" class="form-select">
+                <option value="">Toutes les priorités</option>
+                <option value="Tres faible">Très faible</option>
+                <option value="Faible">Faible</option>
+                <option value="Modere">Modérée</option>
+                <option value="Eleve">Élevée</option>
+                <option value="Tres eleve">Très élevée</option>
+            </select>
+        </div>
+
+        <div class="col-md-3">
+            <select id="project" class="form-select">
+                <option value="">Tous les projets</option>
+                {% for project in projects %}
+                    <option value="{{ project.projectName }}">{{ project.projectName }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="col-12 mt-2">
+            <button id="reset-filters" class="btn-reset">Réinitialiser</button>
+        </div>
+    </div>
+
+    {# ----------------------------- #
+       KANBAN
+       ----------------------------- #}
     <div class="kanban-board-t">
         {% for project in projects %}
             <div class="kanban-column-t">
@@ -34,6 +81,7 @@
                 {% if tasksForProject is not empty %}
                     {% for t in tasksForProject %}
                         <div class="task-card">
+
                             <div class="task-header d-flex justify-content-between align-items-start">
                                 <div class="me-2">
                                     <strong class="task-title d-block">{{ t.getTaskTitle() }}</strong>
@@ -55,7 +103,7 @@
                                         'Faible': 'faible',
                                         'Modere': 'modere',
                                         'Eleve': 'eleve',
-                                        'Tres eleve': 'tres-eleve'                                  
+                                        'Tres eleve': 'tres-eleve'
                                     } %}
                                     {% set priorityClass = priorityMap[priorityName]|default('') %}
                                     <span class="priority-badge {{ priorityClass ? 'priority-' ~ priorityClass : '' }}">
@@ -76,6 +124,7 @@
                                         {{ statusName }}
                                     </span>
                                 {% endif %}
+
                                 {% if t.getTaskCreatedAt() %}
                                     <span class="meta-pill">Créée le {{ t.getTaskCreatedAt()|date('d F Y') }}</span>
                                 {% endif %}
@@ -93,13 +142,63 @@
                                 </a>
                                 {{ include('front/tasks/_delete_form.html.twig', { task: t, btn_class: 'btn-glass-red' }) }}
                             </div>
+
                         </div>
                     {% endfor %}
-                {% else %}
-                    <p class="text-muted">Aucune tâche</p>
                 {% endif %}
             </div>
         {% endfor %}
     </div>
 </div>
+
+{# ----------------------------- #
+   SCRIPT DE FILTRAGE STRICT + PRIORITÉ
+   ----------------------------- #}
+<script>
+function applyFilters() {
+    const search = document.getElementById('search').value.toLowerCase();
+    const status = document.getElementById('status').value;
+    const project = document.getElementById('project').value;
+    const priority = document.getElementById('priority').value;
+
+    document.querySelectorAll('.kanban-column-t').forEach(column => {
+        const columnTitle = column.querySelector('.kanban-title-t').textContent.trim();
+        let visibleTasks = 0;
+
+        column.querySelectorAll('.task-card').forEach(card => {
+            const title = card.querySelector('.task-title').textContent.toLowerCase();
+            const desc = (card.querySelector('.text-muted')?.textContent || "").toLowerCase();
+            const cardStatus = card.querySelector('.status-badge').textContent.trim();
+            const cardPriority = card.querySelector('.priority-badge').textContent.trim();
+
+            const matchSearch = !search || title.includes(search) || desc.includes(search);
+            const matchStatus = !status || cardStatus === status;
+            const matchProject = !project || columnTitle === project;
+            const matchPriority = !priority || cardPriority === priority;
+
+            const isVisible = matchSearch && matchStatus && matchProject && matchPriority;
+
+            card.style.display = isVisible ? "block" : "none";
+            if (isVisible) visibleTasks++;
+        });
+
+        column.style.display = visibleTasks > 0 ? "block" : "none";
+    });
+}
+
+["search", "status", "project", "priority"].forEach(id => {
+    document.getElementById(id).addEventListener(id === "search" ? "input" : "change", applyFilters);
+});
+
+document.getElementById("reset-filters").addEventListener("click", () => {
+    document.getElementById("search").value = "";
+    document.getElementById("status").value = "";
+    document.getElementById("project").value = "";
+    document.getElementById("priority").value = "";
+    applyFilters();
+});
+
+window.addEventListener("DOMContentLoaded", applyFilters);
+</script>
+
 {% endblock %}
