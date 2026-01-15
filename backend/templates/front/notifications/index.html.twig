@@ -1,0 +1,33 @@
+{% extends 'base_front.html.twig' %}
+
+{% block body %}
+
+<div class="dashboard-block">
+    <h2 class="block-title">🔔 Notifications</h2>
+
+    <div class="notif-actions mb-3">
+        <a href="{{ path('notifications_read_all') }}" class="btn btn-sm btn-primary">
+            Tout marquer comme lu
+        </a>
+    </div>
+
+    <ul class="notif-list">
+        {% for notif in notifications %}
+            <li class="notif-item {{ notif.isRead ? 'read' : 'unread' }}">
+                <div>
+                    <strong>{{ notif.createdAt|date('d/m/Y H:i') }}</strong> — {{ notif.message }}
+                </div>
+
+                {% if not notif.isRead %}
+                    <a href="{{ path('notifications_read', {id: notif.id}) }}" class="notif-mark-read">
+                        Marquer comme lu
+                    </a>
+                {% endif %}
+            </li>
+        {% else %}
+            <p>Aucune notification.</p>
+        {% endfor %}
+    </ul>
+</div>
+
+{% endblock %}

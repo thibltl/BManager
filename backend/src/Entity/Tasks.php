@@ -46,9 +46,16 @@ class Tasks
     #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'tasks')]
     private Collection $users;
 
+    /**
+     * @var Collection<int, Th>
+     */
+    #[ORM\OneToMany(mappedBy: 'task', targetEntity: Th::class, cascade: ['persist', 'remove'])]
+    private Collection $history;
+
     public function __construct()
     {
         $this->users = new ArrayCollection();
+        $this->history = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -64,7 +71,6 @@ class Tasks
     public function setTaskTitle(string $task_title): static
     {
         $this->task_title = $task_title;
-
         return $this;
     }
 
@@ -76,7 +82,6 @@ class Tasks
     public function setTaskDesc(string $task_desc): static
     {
         $this->task_desc = $task_desc;
-
         return $this;
     }
 
@@ -88,7 +93,6 @@ class Tasks
     public function setTaskDueDate(\DateTime $task_dueDate): static
     {
         $this->task_dueDate = $task_dueDate;
-
         return $this;
     }
 
@@ -100,7 +104,6 @@ class Tasks
     public function setTaskCreatedAt(\DateTime $task_createdAt): static
     {
         $this->task_createdAt = $task_createdAt;
-
         return $this;
     }
 
@@ -112,7 +115,6 @@ class Tasks
     public function setTaskLastChange(\DateTime $task_lastChange): static
     {
         $this->task_lastChange = $task_lastChange;
-
         return $this;
     }
 
@@ -124,7 +126,6 @@ class Tasks
     public function setTaskPriority(?Priority $task_priority): static
     {
         $this->task_priority = $task_priority;
-
         return $this;
     }
 
@@ -136,7 +137,6 @@ class Tasks
     public function setTaskStatus(?Status $task_status): static
     {
         $this->task_status = $task_status;
-
         return $this;
     }
 
@@ -148,7 +148,6 @@ class Tasks
     public function setTaskProject(?Project $task_project): static
     {
         $this->task_project = $task_project;
-
         return $this;
     }
 
@@ -166,7 +165,6 @@ class Tasks
             $this->users->add($user);
             $user->addTask($this);
         }
-
         return $this;
     }
 
@@ -175,7 +173,14 @@ class Tasks
         if ($this->users->removeElement($user)) {
             $user->removeTask($this);
         }
-
         return $this;
+    }
+
+    /**
+     * @return Collection<int, Th>
+     */
+    public function getHistory(): Collection
+    {
+        return $this->history;
     }
 }
