@@ -1,13 +1,13 @@
 {% extends 'base_front.html.twig' %}
 
 {% block body %}
+
 <!-- Bloc projets -->
 <div class="dashboard-block mb-4">
     <h2 class="block-title">🗂️ Mes projets</h2>
     <div class="row">
         {% for project in projects %}
             <div class="col-md-4 mb-4">
-                <!-- Carte projet cliquable -->
                 <a href="{{ path('front_project_show', {id: project.id}) }}" class="card project-card text-decoration-none">
                     <div class="card-body">
                         <h5 class="card-title">{{ project.projectName }}</h5>
@@ -20,80 +20,115 @@
     </div>
 </div>
 
-<!-- Bloc horizontal : tâches à gauche, utilisateurs à droite -->
-<div class="row">
-    <!-- Bloc tâches -->
-    <div class="col-md-6">
-        <div class="task-sidebar-block">
-            <h2 class="block-title">✅ Mes Tâches</h2>
-            <ul class="nav flex-column task-nav">
-                {% for task in tasks %}
-                    <li class="nav-item mb-2">
-                        <div class="nav-link task-item d-flex justify-content-between align-items-center
-                            {% if task.taskStatus %}
-                                {% if task.taskStatus.statusName == 'En cours' %} task-en-cours
-                                {% elseif task.taskStatus.statusName == 'En attente' %} task-en-attente
-                                {% elseif task.taskStatus.statusName == 'Terminée' %} task-terminee
-                                {% elseif task.taskStatus.statusName == 'En retard' %} task-en-retard
-                                {% else %} task-sans-statut
-                                {% endif %}
-                            {% else %}
-                                task-sans-statut
-                            {% endif %}
-                        ">
-                            <div>
-                                <strong>{{ task.taskTitle }}</strong><br>
-                                <small class="text-muted">Échéance : {{ task.taskDueDate|date('d/m/Y') }}</small>
-                            </div>
-                            <span class="badge 
-                                {% if task.taskStatus %}
-                                    {% if task.taskStatus.statusName == 'En cours' %} badge-en-cours
-                                    {% elseif task.taskStatus.statusName == 'En attente' %} badge-en-attente
-                                    {% elseif task.taskStatus.statusName == 'Terminée' %} badge-terminee
-                                    {% elseif task.taskStatus.statusName == 'En retard' %} badge-en-retard
-                                    {% else %} badge-sans-statut
-                                    {% endif %}
-                                {% else %}
-                                    badge-sans-statut
-                                {% endif %}
-                            ">
-                                {{ task.taskStatus ? task.taskStatus.statusName : 'Sans statut' }}
-                            </span>
-                        </div>
-                    </li>
-                {% else %}
-                    <li class="nav-item">Aucune tâche enregistrée.</li>
-                {% endfor %}
-            </ul>
-        </div>
-    </div>
+<!-- Bloc graphique moderne -->
+<div class="chart-block-modern mb-5">
+    <h2 class="block-title">📊 Suivi des tâches par projet</h2>
+    <canvas id="tasksByProjectChart" height="120"></canvas>
+</div>
 
-    <!-- Bloc utilisateurs -->
-    <div class="col-md-1">
-        <div class="users-block mb-4">
-            <h2 class="block-title">👥 Mes utilisateurs</h2>
-            <div class="row">
+<!-- Tableau des tâches par utilisateur -->
+<div class="dashboard-block mb-5">
+    <h2 class="block-title">👥 Tâches par utilisateur</h2>
+
+    <div class="table-responsive">
+        <table class="table user-task-table">
+            <thead>
+                <tr>
+                    <th>Utilisateur</th>
+                    <th>En cours</th>
+                    <th>En attente</th>
+                    <th>Terminées</th>
+                    <th>En retard</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+
                 {% for user in users %}
-                    <div class="col-md-6 mb-4">
-                        <!-- Carte utilisateur cliquable -->
-                        <a href="{{ path('user_show', {id: user.id}) }}" class="card user-card text-decoration-none">
-                            <div class="card-body">
-                                <h4 class="card-title">{{ user.name }}</h4>
-                                <h5 class="card-title">
-                                    {% for role in user.roles %}
-                                        <span class="badge badge-role">{{ role }}</span>
-                                    {% endfor %}
-                                </h5>
+                    {% set enCours = 0 %}
+                    {% set enAttente = 0 %}
+                    {% set terminee = 0 %}
+                    {% set enRetard = 0 %}
 
-                                
-                            </div>
-                        </a>
-                    </div>
+                    {% for task in tasks %}
+                        {% if user.tasks.contains(task) %}
+                            {% if task.taskStatus.statusName == 'En cours' %}
+                                {% set enCours = enCours + 1 %}
+                            {% elseif task.taskStatus.statusName == 'En attente' %}
+                                {% set enAttente = enAttente + 1 %}
+                            {% elseif task.taskStatus.statusName == 'Terminée' %}
+                                {% set terminee = terminee + 1 %}
+                            {% elseif task.taskStatus.statusName == 'En retard' %}
+                                {% set enRetard = enRetard + 1 %}
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+
+                    {% set total = enCours + enAttente + terminee + enRetard %}
+
+                    <tr>
+                        <td><strong>{{ user.name }}</strong></td>
+                        <td><span class="badge badge-en-cours">{{ enCours }}</span></td>
+                        <td><span class="badge badge-en-attente">{{ enAttente }}</span></td>
+                        <td><span class="badge badge-terminee">{{ terminee }}</span></td>
+                        <td><span class="badge badge-en-retard">{{ enRetard }}</span></td>
+                        <td><strong>{{ total }}</strong></td>
+                    </tr>
+
                 {% else %}
-                    <p>Aucun utilisateur enregistré.</p>
+                    <tr><td colspan="6">Aucun utilisateur trouvé.</td></tr>
                 {% endfor %}
-            </div>
-        </div>
+
+            </tbody>
+        </table>
     </div>
 </div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+const projectsData = {{ projectsData|json_encode|raw }};
+
+const labels = Object.keys(projectsData);
+
+const enCours = labels.map(p => projectsData[p]['En cours']);
+const terminee = labels.map(p => projectsData[p]['Terminee']);
+const enRetard = labels.map(p => projectsData[p]['En retard']);
+const enAttente = labels.map(p => projectsData[p]['En attente']);
+
+const ctx = document.getElementById('tasksByProjectChart').getContext('2d');
+
+new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: labels,
+        datasets: [
+            { label: 'En cours', data: enCours, backgroundColor: 'rgba(11, 92, 255, 0.6)', borderRadius: 10 },
+            { label: 'Terminée', data: terminee, backgroundColor: 'rgba(25, 135, 84, 0.6)', borderRadius: 10 },
+            { label: 'En retard', data: enRetard, backgroundColor: 'rgba(176, 0, 32, 0.6)', borderRadius: 10 },
+            { label: 'En attente', data: enAttente, backgroundColor: 'rgba(255, 193, 7, 0.6)', borderRadius: 10 }
+        ]
+    },
+    options: {
+        responsive: true,
+        scales: {
+            y: {
+                min: 0,
+                max: 10,
+                ticks: {
+                    stepSize: 1,
+                    color: document.body.classList.contains('dark-mode') ? '#fff' : '#000'
+                }
+            },
+            x: {
+                ticks: {
+                    color: document.body.classList.contains('dark-mode') ? '#fff' : '#000'
+                }
+            }
+        }
+    }
+});
+</script>
+
 {% endblock %}

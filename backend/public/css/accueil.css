@@ -95,7 +95,7 @@
     color: black;
 }
 
-/* Cartes projet cliquables (bouton) */
+/* Cartes projet cliquables */
 .project-card {
     display: block;
     border-radius: 12px;
@@ -109,7 +109,7 @@
 .project-card:hover {
     transform: scale(1.03);
     box-shadow: 0 6px 18px;
-    background-color: #f0f8ff; /* léger bleu au hover */
+    background-color: #f0f8ff;
 }
 
 /* Bloc tâches */
@@ -177,12 +177,11 @@
 }
 
 .users-block .user-card:hover {
-     background-color: #f0f8ff;
+    background-color: #f0f8ff;
     transform: translateY(-2px);
 }
 
-
-/* Badges de statut (couleurs) */
+/* Badges */
 .badge-en-cours,
 .badge-en-attente,
 .badge-terminee,
@@ -197,7 +196,6 @@
     gap: 6px;
 }
 
-/* États */
 .badge-en-cours {
     background-color: rgba(11, 92, 255, 0.15);
     color: #0B5CFF;
@@ -229,21 +227,20 @@
     border-color: rgba(108, 117, 125, 0.3);
 }
 
-/* Animation pour En cours */
 @keyframes pulseBadge {
     0% { transform: scale(1); box-shadow: 0 0 6px rgba(11, 92, 255, 0.6); }
     50% { transform: scale(1.05); box-shadow: 0 0 10px rgba(11, 92, 255, 0.9); }
     100% { transform: scale(1); box-shadow: 0 0 6px rgba(11, 92, 255, 0.6); }
 }
 
-/* Variantes de fond pour les tâches (ligne) */
+/* Variantes de fond */
 .task-en-cours { background-color: rgba(11, 92, 255, 0.05); }
 .task-en-attente { background-color: rgba(255, 193, 7, 0.05); }
 .task-terminee { background-color: rgba(25, 135, 84, 0.05); }
 .task-en-retard { background-color: rgba(176, 0, 32, 0.05); }
 .task-sans-statut { background-color: rgba(108, 117, 125, 0.05); }
 
-/* Logo BManager */
+/* Logo */
 .logo-box {
     background-color: rgba(255, 255, 255, 0.2);
     color: black;
@@ -260,7 +257,7 @@
     backdrop-filter: blur(4px);
 }
 
-/* Switch dark mode (Uiverse.io) */
+/* Switch dark mode */
 .switch {
   display: block;
   --width-of-switch: 3.0em;
@@ -327,7 +324,6 @@ body.dark-mode .sidebar .nav-link {
 
 body.dark-mode .logo-box{
     color : blue;
-    border-radius: 8px;
     background-color: #000000;
     box-shadow: 0 2px 10px #0944e6;
 }
@@ -348,7 +344,6 @@ body.dark-mode .block-title {
     color: #0944e6;
 }
 
-/* Tâches en mode sombre */
 body.dark-mode .task-nav .task-item {
     background-color: #0c0c0c;
     color: #0944e6;
@@ -360,7 +355,6 @@ body.dark-mode .task-nav .task-item:hover {
     box-shadow: 0 6px 18px #0c0c0c;
 }
 
-/* Badges en mode sombre */
 body.dark-mode .badge-en-cours {
     background-color: rgba(11, 92, 255, 0.25);
     color: #82b3ff;
@@ -391,7 +385,6 @@ body.dark-mode .badge-sans-statut {
     border-color: rgba(108, 117, 125, 0.4);
 }
 
-/* Cartes projet en mode sombre */
 body.dark-mode .project-card {
     background-color: #0c0c0c;
     color: #0944e6;
@@ -404,7 +397,6 @@ body.dark-mode .project-card:hover {
     box-shadow: 0 6px 18px #0c0c0c;
 }
 
-/* Bloc utilisateurs en mode sombre */
 body.dark-mode .users-block {
     background-color: #0f0f0f;
     color: #f1f1f1;
@@ -415,7 +407,6 @@ body.dark-mode .users-block .block-title {
     color: #0944e6;
 }
 
-/* Carte utilisateur en mode sombre */
 body.dark-mode .users-block .user-card {
     background-color: #0c0c0c;
     color: #0944e6;
@@ -426,4 +417,38 @@ body.dark-mode .users-block .user-card:hover {
     background-color: #242525;
     color: #ffffff;
     box-shadow: 0 6px 18px #0c0c0c;
+}
+
+/* ===== Bloc graphique moderne ===== */
+.chart-block-modern {
+    background-color: #ffffff;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+    margin-bottom: 30px;
+    margin-left: -18px;
+    transition: 0.25s ease;
+}
+
+.chart-block-modern:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 22px rgba(0,0,0,0.15);
+}
+
+body.dark-mode .chart-block-modern {
+    background-color: #0f0f0f;
+    color: #f1f1f1;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.6);
+}
+
+body.dark-mode .chart-block-modern:hover {
+    box-shadow: 0 10px 22px rgba(0,0,0,0.8);
+}
+
+.chartjs-text {
+    color: black !important;
+}
+
+body.dark-mode .chartjs-text {
+    color: white !important;
 }
