@@ -28,21 +28,30 @@ final class TasksController extends AbstractController
     #[Route('/new', name: 'front_tasks_new', methods: ['GET', 'POST'])]
     public function new(
         Request $request,
-        EntityManagerInterface $entityManager,
+        EntityManagerInterface $em,
         NotificationService $notifier,
         TaskHistoryService $history
     ): Response {
         $task = new Tasks();
-        $form = $this->createForm(TasksType::class, $task);
+
+        // Récupération des utilisateurs du projet sélectionné (si déjà choisi)
+        $projectUsers = [];
+
+        if ($task->getTaskProject()) {
+            $projectUsers = $task->getTaskProject()->getUsers();
+        }
+
+        $form = $this->createForm(TasksType::class, $task, [
+            'project_users' => $projectUsers,
+        ]);
+
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            $task->setTaskCreatedAt(new \DateTime());
-            $task->setTaskLastChange(new \DateTime());
-
-            $entityManager->persist($task);
-            $entityManager->flush();
+            // Dates auto-gérées par l'entité (constructor + touch())
+            $em->persist($task);
+            $em->flush();
 
             // Historique création
             $history->log($task, "Tâche créée", $this->getUser());
@@ -51,7 +60,8 @@ final class TasksController extends AbstractController
             foreach ($task->getUsers() as $user) {
                 $notifier->notify(
                     $user,
-                    "Une nouvelle tâche vous a été assignée : {$task->getTaskTitle()}"
+                    "Une nouvelle tâche vous a été assignée : {$task->getTaskTitle()}",
+                    "task_assigned"
                 );
             }
 
@@ -76,7 +86,7 @@ final class TasksController extends AbstractController
     public function edit(
         Request $request,
         Tasks $task,
-        EntityManagerInterface $entityManager,
+        EntityManagerInterface $em,
         NotificationService $notifier,
         TaskHistoryService $history
     ): Response {
@@ -86,8 +96,15 @@ final class TasksController extends AbstractController
         $oldUsers = clone $task->getUsers();
         $oldTitle = $task->getTaskTitle();
         $oldDueDate = $task->getTaskDueDate();
+        $oldPriority = $task->getTaskPriority();
 
-        $form = $this->createForm(TasksType::class, $task);
+        // Filtrer les utilisateurs du projet
+        $projectUsers = $task->getTaskProject()?->getUsers() ?? [];
+
+        $form = $this->createForm(TasksType::class, $task, [
+            'project_users' => $projectUsers,
+        ]);
+
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -119,6 +136,15 @@ final class TasksController extends AbstractController
                 );
             }
 
+            // Changement de priorité
+            if ($task->getTaskPriority() !== $oldPriority) {
+                $history->log(
+                    $task,
+                    "Priorité modifiée : {$oldPriority?->getName()} → {$task->getTaskPriority()?->getName()}",
+                    $this->getUser()
+                );
+            }
+
             // Nouveaux utilisateurs assignés
             foreach ($task->getUsers() as $user) {
                 if (!$oldUsers->contains($user)) {
@@ -131,13 +157,13 @@ final class TasksController extends AbstractController
 
                     $notifier->notify(
                         $user,
-                        "Vous avez été assigné à la tâche : {$task->getTaskTitle()}"
+                        "Vous avez été assigné à la tâche : {$task->getTaskTitle()}",
+                        "task_assigned"
                     );
                 }
             }
 
-            $task->setTaskLastChange(new \DateTime());
-            $entityManager->flush();
+            $em->flush();
 
             return $this->redirectToRoute('front_tasks_show', ['id' => $task->getId()]);
         }
@@ -152,15 +178,15 @@ final class TasksController extends AbstractController
     public function delete(
         Request $request,
         Tasks $task,
-        EntityManagerInterface $entityManager,
+        EntityManagerInterface $em,
         TaskHistoryService $history
     ): Response {
         if ($this->isCsrfTokenValid('delete'.$task->getId(), $request->getPayload()->getString('_token'))) {
 
             $history->log($task, "Tâche supprimée", $this->getUser());
 
-            $entityManager->remove($task);
-            $entityManager->flush();
+            $em->remove($task);
+            $em->flush();
         }
 
         return $this->redirectToRoute('front_tasks_index');
@@ -171,7 +197,7 @@ final class TasksController extends AbstractController
         int $id,
         Request $request,
         TasksRepository $tasksRepository,
-        EntityManagerInterface $entityManager,
+        EntityManagerInterface $em,
         TaskHistoryService $history
     ): Response {
         $task = $tasksRepository->find($id);
@@ -186,7 +212,7 @@ final class TasksController extends AbstractController
             return $this->json(['error' => 'Statut manquant'], 400);
         }
 
-        $status = $entityManager->getRepository(Status::class)
+        $status = $em->getRepository(Status::class)
             ->findOneBy(['status_name' => $newStatusName]);
 
         if (!$status) {
@@ -195,9 +221,8 @@ final class TasksController extends AbstractController
 
         $oldStatus = $task->getTaskStatus();
         $task->setTaskStatus($status);
-        $task->setTaskLastChange(new \DateTime());
 
-        $entityManager->flush();
+        $em->flush();
 
         // Historique
         $history->log(

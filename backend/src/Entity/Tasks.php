@@ -19,17 +19,17 @@ class Tasks
     #[ORM\Column(length: 255)]
     private ?string $task_title = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(type: Types::TEXT)]
     private ?string $task_desc = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTime $task_dueDate = null;
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+    private ?\DateTimeImmutable $task_dueDate = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTime $task_createdAt = null;
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+    private ?\DateTimeImmutable $task_createdAt = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTime $task_lastChange = null;
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+    private ?\DateTimeImmutable $task_lastChange = null;
 
     #[ORM\ManyToOne(inversedBy: 'tasks')]
     private ?Priority $task_priority = null;
@@ -52,10 +52,15 @@ class Tasks
     #[ORM\OneToMany(mappedBy: 'task', targetEntity: Th::class, cascade: ['persist', 'remove'])]
     private Collection $history;
 
+    #[ORM\Column]
+    private int $position = 0;
+
     public function __construct()
     {
         $this->users = new ArrayCollection();
         $this->history = new ArrayCollection();
+        $this->task_createdAt = new \DateTimeImmutable();
+        $this->task_lastChange = new \DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -71,6 +76,7 @@ class Tasks
     public function setTaskTitle(string $task_title): static
     {
         $this->task_title = $task_title;
+        $this->touch();
         return $this;
     }
 
@@ -82,37 +88,39 @@ class Tasks
     public function setTaskDesc(string $task_desc): static
     {
         $this->task_desc = $task_desc;
+        $this->touch();
         return $this;
     }
 
-    public function getTaskDueDate(): ?\DateTime
+    public function getTaskDueDate(): ?\DateTimeImmutable
     {
         return $this->task_dueDate;
     }
 
-    public function setTaskDueDate(\DateTime $task_dueDate): static
+    public function setTaskDueDate(\DateTimeImmutable $task_dueDate): static
     {
         $this->task_dueDate = $task_dueDate;
+        $this->touch();
         return $this;
     }
 
-    public function getTaskCreatedAt(): ?\DateTime
+    public function getTaskCreatedAt(): ?\DateTimeImmutable
     {
         return $this->task_createdAt;
     }
 
-    public function setTaskCreatedAt(\DateTime $task_createdAt): static
+    public function setTaskCreatedAt(\DateTimeImmutable $task_createdAt): static
     {
         $this->task_createdAt = $task_createdAt;
         return $this;
     }
 
-    public function getTaskLastChange(): ?\DateTime
+    public function getTaskLastChange(): ?\DateTimeImmutable
     {
         return $this->task_lastChange;
     }
 
-    public function setTaskLastChange(\DateTime $task_lastChange): static
+    public function setTaskLastChange(\DateTimeImmutable $task_lastChange): static
     {
         $this->task_lastChange = $task_lastChange;
         return $this;
@@ -126,6 +134,7 @@ class Tasks
     public function setTaskPriority(?Priority $task_priority): static
     {
         $this->task_priority = $task_priority;
+        $this->touch();
         return $this;
     }
 
@@ -137,6 +146,7 @@ class Tasks
     public function setTaskStatus(?Status $task_status): static
     {
         $this->task_status = $task_status;
+        $this->touch();
         return $this;
     }
 
@@ -148,6 +158,7 @@ class Tasks
     public function setTaskProject(?Project $task_project): static
     {
         $this->task_project = $task_project;
+        $this->touch();
         return $this;
     }
 
@@ -164,6 +175,7 @@ class Tasks
         if (!$this->users->contains($user)) {
             $this->users->add($user);
             $user->addTask($this);
+            $this->touch();
         }
         return $this;
     }
@@ -172,6 +184,7 @@ class Tasks
     {
         if ($this->users->removeElement($user)) {
             $user->removeTask($this);
+            $this->touch();
         }
         return $this;
     }
@@ -182,5 +195,54 @@ class Tasks
     public function getHistory(): Collection
     {
         return $this->history;
+    }
+
+    public function addHistory(Th $entry): static
+    {
+        if (!$this->history->contains($entry)) {
+            $this->history->add($entry);
+            $entry->setTask($this);
+        }
+        return $this;
+    }
+
+    public function removeHistory(Th $entry): static
+    {
+        if ($this->history->removeElement($entry)) {
+            if ($entry->getTask() === $this) {
+                $entry->setTask(null);
+            }
+        }
+        return $this;
+    }
+
+    public function getPosition(): int
+    {
+        return $this->position;
+    }
+
+    public function setPosition(int $position): static
+    {
+        $this->position = $position;
+        return $this;
+    }
+
+    public function isLate(): bool
+    {
+        if (!$this->task_dueDate) {
+            return false;
+        }
+
+        $now = new \DateTimeImmutable();
+        $isTerminee = $this->task_status && method_exists($this->task_status, 'getName')
+            ? mb_strtolower($this->task_status->getName()) === 'terminée'
+            : false;
+
+        return $this->task_dueDate < $now && !$isTerminee;
+    }
+
+    private function touch(): void
+    {
+        $this->task_lastChange = new \DateTimeImmutable();
     }
 }
