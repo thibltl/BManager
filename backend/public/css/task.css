@@ -1,27 +1,10 @@
-/* ===== Variables Design Moderne ===== */
-:root {
-    --primary: #6366f1;
-    --primary-light: #818cf8;
-    --secondary: #ec4899;
-    --accent-cyan: #06b6d4;
-    --accent-orange: #f97316;
-    --success: #10b981;
-    --warning: #f59e0b;
-    --danger: #ef4444;
-    --bg-main: #f5f5f7;
-    --bg-card: #ffffff;
-    --sidebar-bg: #2d2d3a;
-    --text-primary: #1f2937;
-    --text-secondary: #6b7280;
-    --text-muted: #9ca3af;
-    --border-color: #e5e7eb;
-    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
-    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
-    --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.12);
-    --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.06);
-}
+/* =========================================================
+   DESIGN SYSTEM – COLORÉ / DARK VIOLET (Variables déjà définies)
+========================================================= */
 
-/* ===== Background ===== */
+/* =========================================================
+   BACKGROUND
+========================================================= */
 body {
     background: var(--bg-main);
     min-height: 100vh;
@@ -32,23 +15,49 @@ body {
 }
 
 .container.mt-5 {
-    background: var(--bg-card);
-    border-radius: 24px;
+    background: linear-gradient(
+        180deg,
+        var(--bg-card),
+        rgba(255,255,255,0.85)
+    );
+    border-radius: var(--radius-lg);
     padding: 2.5rem;
-    box-shadow: var(--shadow-card);
-    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--border-subtle);
 }
 
-/* ===== Header Moderne ===== */
+body.dark-mode .container.mt-5 {
+    background: linear-gradient(
+        180deg,
+        var(--bg-card),
+        #160a3a
+    );
+}
+
+/* =========================================================
+   HEADER MODERNE
+========================================================= */
 .page-header-modern {
-    background: var(--bg-card);
-    border: 1px solid var(--border-color);
-    border-radius: 20px;
+    background: linear-gradient(
+        180deg,
+        var(--bg-card),
+        rgba(255,255,255,0.85)
+    );
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
     padding: 2rem 2.5rem;
     margin-bottom: 2rem;
-    box-shadow: var(--shadow-card);
+    box-shadow: var(--shadow-md);
     position: relative;
     overflow: visible;
+}
+
+body.dark-mode .page-header-modern {
+    background: linear-gradient(
+        180deg,
+        var(--bg-card),
+        #160a3a
+    );
 }
 
 .page-header-modern::before,
@@ -71,47 +80,63 @@ body {
 .modern-title {
     font-size: 2.5rem;
     font-weight: 800;
-    color: var(--text-primary);
     margin: 0 0 0.5rem 0;
     letter-spacing: -1px;
-    text-shadow: none;
-    background: none;
-    -webkit-text-fill-color: initial;
+    background: linear-gradient(
+        90deg,
+        var(--primary),
+        var(--accent)
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
 .header-subtitle {
-    color: var(--text-secondary);
+    color: var(--text-muted);
     font-size: 1rem;
     margin: 0;
     font-weight: 500;
 }
 
-/* ===== Filters Section ===== */
+/* =========================================================
+   FILTERS SECTION
+========================================================= */
 .filters-wrapper {
-    background: var(--bg-card);
-    border: 1px solid var(--border-color);
-    border-radius: 20px;
+    background: linear-gradient(
+        180deg,
+        var(--bg-card),
+        rgba(255,255,255,0.85)
+    );
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
     padding: 2rem;
     margin-bottom: 2rem;
-    box-shadow: var(--shadow-card);
+    box-shadow: var(--shadow-sm);
+}
+
+body.dark-mode .filters-wrapper {
+    background: linear-gradient(
+        180deg,
+        var(--bg-card),
+        #160a3a
+    );
 }
 
 .filters-header {
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    color: var(--text-primary);
+    color: var(--text-main);
     font-weight: 700;
     font-size: 1.1rem;
     margin-bottom: 1.5rem;
     padding-bottom: 1rem;
-    border-bottom: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-subtle);
 }
 
 .filters-header i {
     color: var(--primary);
     font-size: 1.3rem;
-    filter: none;
 }
 
 .filters-grid {
@@ -131,7 +156,7 @@ body {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    color: var(--text-secondary);
+    color: var(--text-muted);
     font-size: 0.85rem;
     font-weight: 600;
     text-transform: uppercase;
@@ -144,14 +169,14 @@ body {
 }
 
 .form-control, .form-select {
-    border-radius: 12px;
-    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-subtle);
     padding: 13px 18px;
-    background: var(--bg-main);
-    color: var(--text-primary);
+    background: var(--bg-panel);
+    color: var(--text-main);
     font-size: 14px;
     width: 100%;
-    transition: all 0.3s ease;
+    transition: var(--transition);
     font-weight: 500;
 }
 
@@ -161,14 +186,14 @@ body {
 
 .form-control:focus, .form-select:focus {
     border-color: var(--primary);
-    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+    box-shadow: 0 0 0 4px var(--primary-soft);
     outline: none;
     background: var(--bg-card);
 }
 
 .form-select option {
     background: var(--bg-card);
-    color: var(--text-primary);
+    color: var(--text-main);
 }
 
 .filters-actions {
@@ -176,19 +201,19 @@ body {
     justify-content: center;
     margin-top: 1.25rem;
     padding-top: 1.25rem;
-    border-top: 1px solid var(--border-color);
+    border-top: 1px solid var(--border-subtle);
 }
 
 .btn-reset {
-    background: var(--bg-main);
-    color: var(--text-primary);
-    border: 1px solid var(--border-color);
+    background: var(--bg-panel);
+    color: var(--text-main);
+    border: 1px solid var(--border-subtle);
     padding: 12px 28px;
-    border-radius: 12px;
+    border-radius: var(--radius-md);
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: var(--transition);
     box-shadow: var(--shadow-sm);
     display: flex;
     align-items: center;
@@ -196,17 +221,24 @@ body {
 }
 
 .btn-reset:hover {
-    background: var(--bg-card);
+    background: linear-gradient(
+        135deg,
+        var(--primary-soft),
+        var(--accent-soft)
+    );
     border-color: var(--primary);
     transform: translateY(-2px);
     box-shadow: var(--shadow-md);
+    color: var(--primary);
 }
 
 .btn-reset:active {
     transform: translateY(0);
 }
 
-/* ===== Kanban Layout ===== */
+/* =========================================================
+   KANBAN LAYOUT
+========================================================= */
 .kanban-board-t {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
@@ -214,14 +246,26 @@ body {
 }
 
 .kanban-column-t {
-    background: var(--bg-card);
-    border: 1px solid var(--border-color);
-    border-radius: 20px;
+    background: linear-gradient(
+        180deg,
+        var(--bg-card),
+        rgba(255,255,255,0.85)
+    );
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
     padding: 1.5rem;
-    transition: all 0.3s ease;
-    box-shadow: var(--shadow-card);
+    transition: var(--transition);
+    box-shadow: var(--shadow-sm);
     position: relative;
     overflow: visible;
+}
+
+body.dark-mode .kanban-column-t {
+    background: linear-gradient(
+        180deg,
+        var(--bg-card),
+        #160a3a
+    );
 }
 
 .kanban-column-t::before {
@@ -231,15 +275,15 @@ body {
     left: 0;
     right: 0;
     height: 4px;
-    background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent-cyan));
-    border-radius: 20px 20px 0 0;
+    background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
     opacity: 0;
-    transition: opacity 0.3s ease;
+    transition: var(--transition);
 }
 
 .kanban-column-t:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--shadow-lg);
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-md);
 }
 
 .kanban-column-t:hover::before {
@@ -247,39 +291,51 @@ body {
 }
 
 .kanban-title-t {
-    color: var(--text-primary);
+    color: var(--text-main);
     font-weight: 800;
     font-size: 1.15rem;
     text-align: center;
     margin-bottom: 1.25rem;
     padding-bottom: 0.75rem;
-    border-bottom: 2px solid var(--border-color);
+    border-bottom: 2px solid var(--border-subtle);
     text-transform: uppercase;
     letter-spacing: 1px;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    text-shadow: none;
 }
 
 .kanban-title-t i {
     color: var(--primary);
     font-size: 1.3rem;
-    filter: none;
 }
 
-/* ===== Task Card ===== */
+/* =========================================================
+   TASK CARD
+========================================================= */
 .task-card {
-    background: linear-gradient(135deg, #fafafa 0%, #ffffff 100%);
-    border: 1px solid var(--border-color);
-    border-radius: 16px;
+    background: linear-gradient(
+        135deg,
+        var(--bg-card),
+        rgba(255,255,255,0.9)
+    );
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
     padding: 1.25rem;
     margin-bottom: 1rem;
-    transition: all 0.3s ease;
+    transition: var(--transition);
     box-shadow: var(--shadow-sm);
     position: relative;
     overflow: hidden;
+}
+
+body.dark-mode .task-card {
+    background: linear-gradient(
+        135deg,
+        var(--bg-card),
+        #160a3a
+    );
 }
 
 .task-card::before {
@@ -289,9 +345,9 @@ body {
     left: 0;
     width: 4px;
     height: 100%;
-    background: linear-gradient(180deg, var(--primary), var(--secondary));
+    background: linear-gradient(180deg, var(--primary), var(--accent));
     opacity: 0;
-    transition: opacity 0.3s ease;
+    transition: var(--transition);
 }
 
 .task-card:hover {
@@ -319,15 +375,14 @@ body {
 .task-title {
     font-size: 1.1rem;
     font-weight: 700;
-    color: var(--text-primary);
+    color: var(--text-main);
     display: block;
     margin-bottom: 0.5rem;
     line-height: 1.4;
-    text-shadow: none;
 }
 
 .task-description {
-    color: var(--text-secondary);
+    color: var(--text-muted);
     font-size: 0.875rem;
     line-height: 1.5;
     display: block;
@@ -335,32 +390,33 @@ body {
 
 .task-date {
     font-size: 0.8rem;
-    color: var(--text-primary);
+    color: var(--primary);
     font-weight: 600;
-    background: #f0f9ff;
+    background: var(--primary-soft);
     padding: 8px 14px;
-    border-radius: 12px;
-    border: 1px solid #e0f2fe;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-subtle);
     white-space: nowrap;
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    box-shadow: none;
 }
 
 .task-date i {
     font-size: 0.9rem;
-    color: var(--accent-cyan);
+    color: var(--primary);
 }
 
-/* ===== Task Meta ===== */
+/* =========================================================
+   TASK META
+========================================================= */
 .task-meta {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
     margin-bottom: 1rem;
     padding-bottom: 1rem;
-    border-bottom: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-subtle);
 }
 
 .meta-pill {
@@ -369,9 +425,9 @@ body {
     gap: 0.375rem;
     padding: 6px 14px;
     font-size: 0.75rem;
-    color: var(--text-secondary);
-    background: var(--bg-main);
-    border: 1px solid var(--border-color);
+    color: var(--text-muted);
+    background: var(--bg-panel);
+    border: 1px solid var(--border-subtle);
     border-radius: 999px;
     font-weight: 500;
 }
@@ -380,7 +436,9 @@ body {
     font-size: 0.7rem;
 }
 
-/* ===== Priority Badge Style Dashboard ===== */
+/* =========================================================
+   PRIORITY BADGE
+========================================================= */
 .priority-badge {
     display: inline-flex;
     align-items: center;
@@ -390,7 +448,7 @@ body {
     font-size: 0.75rem;
     font-weight: 700;
     border: none;
-    transition: all 0.3s ease;
+    transition: var(--transition);
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
@@ -400,43 +458,45 @@ body {
 }
 
 .priority-badge.priority-tres-faible {
-    background: linear-gradient(135deg, #e2e8f0, #cbd5e1);
-    color: #64748b;
+    background: rgba(156, 163, 175, 0.15);
+    color: var(--text-muted);
 }
 
 .priority-badge.priority-faible {
-    background: linear-gradient(135deg, #93c5fd, #60a5fa);
-    color: #1e40af;
+    background: var(--primary-soft);
+    color: var(--primary);
 }
 
 .priority-badge.priority-modere {
-    background: linear-gradient(135deg, #fde047, #facc15);
-    color: #a16207;
+    background: rgba(251, 191, 36, 0.15);
+    color: #d97706;
 }
 
 .priority-badge.priority-eleve {
-    background: linear-gradient(135deg, #86efac, #4ade80);
-    color: #15803d;
+    background: rgba(34, 197, 94, 0.15);
+    color: #16a34a;
 }
 
 .priority-badge.priority-tres-eleve {
-    background: linear-gradient(135deg, #fca5a5, #f87171);
-    color: #991b1b;
+    background: rgba(239, 68, 68, 0.15);
+    color: #dc2626;
     animation: pulseSubtle 3s ease-in-out infinite;
 }
 
 @keyframes pulseSubtle {
     0%, 100% { 
         transform: scale(1);
-        box-shadow: 0 2px 8px rgba(248, 113, 113, 0.3);
+        box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
     }
     50% { 
         transform: scale(1.03);
-        box-shadow: 0 4px 16px rgba(248, 113, 113, 0.4);
+        box-shadow: 0 4px 16px rgba(239, 68, 68, 0.4);
     }
 }
 
-/* ===== Status Badge Style Dashboard ===== */
+/* =========================================================
+   STATUS BADGE
+========================================================= */
 .status-badge {
     display: inline-flex;
     align-items: center;
@@ -446,7 +506,7 @@ body {
     font-size: 0.75rem;
     font-weight: 700;
     border: none;
-    transition: all 0.3s ease;
+    transition: var(--transition);
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
@@ -456,33 +516,37 @@ body {
 }
 
 .status-badge.status-en-cours {
-    background: linear-gradient(135deg, #fde047, #facc15);
-    color: #a16207;
+    background: linear-gradient(90deg, var(--primary), var(--accent));
+    color: white;
 }
 
 .status-badge.status-termine {
-    background: linear-gradient(135deg, #86efac, #4ade80);
-    color: #15803d;
+    background: linear-gradient(90deg, #22c55e, #4ade80);
+    color: #052e16;
 }
 
 .status-badge.status-retard {
-    background: linear-gradient(135deg, #fca5a5, #f87171);
-    color: #991b1b;
+    background: linear-gradient(90deg, #ef4444, #f97316);
+    color: white;
 }
 
 .status-badge.status-en-attente {
-    background: linear-gradient(135deg, #e2e8f0, #cbd5e1);
-    color: #475569;
+    background: linear-gradient(90deg, #facc15, #fb923c);
+    color: #3f2d00;
 }
 
-/* ===== Task Actions ===== */
+/* =========================================================
+   TASK ACTIONS
+========================================================= */
 .task-actions {
     display: flex;
     gap: 0.5rem;
     flex-wrap: wrap;
 }
 
-/* ===== Buttons Modern Style ===== */
+/* =========================================================
+   BUTTONS MODERN STYLE
+========================================================= */
 .btn-glass {
     cursor: pointer;
     position: relative;
@@ -491,9 +555,9 @@ body {
     font-weight: 700;
     color: var(--primary);
     border: 2px solid var(--primary);
-    border-radius: 12px;
+    border-radius: var(--radius-md);
     background: var(--bg-card);
-    transition: all 0.3s ease;
+    transition: var(--transition);
     overflow: hidden;
     text-decoration: none;
     display: inline-flex;
@@ -508,10 +572,10 @@ body {
     position: absolute;
     inset: 0;
     border-radius: inherit;
-    background: var(--primary);
+    background: linear-gradient(90deg, var(--primary), var(--accent));
     z-index: -1;
     opacity: 0;
-    transition: opacity 0.3s ease;
+    transition: var(--transition);
 }
 
 .btn-glass:hover {
@@ -534,19 +598,21 @@ body {
 }
 
 .btn-glass-red {
-    color: var(--danger);
-    border-color: var(--danger);
+    color: #ef4444;
+    border-color: #ef4444;
 }
 
 .btn-glass-red::before {
-    background: var(--danger);
+    background: linear-gradient(90deg, #ef4444, #f97316);
 }
 
 .btn-glass-red:hover {
     box-shadow: 0 4px 16px rgba(239, 68, 68, 0.3);
 }
 
-/* ===== Responsive ===== */
+/* =========================================================
+   RESPONSIVE
+========================================================= */
 @media (max-width: 768px) {
     .modern-title {
         font-size: 1.75rem;
