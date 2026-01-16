@@ -10,14 +10,22 @@
             <h5 class="project-title">Modifier : {{ project.projectName }}</h5>
         </div>
 
-        <div class="project-form mt-3">
-            {{ include('front/project/_form.html.twig') }}
-        </div>
+        {# 🔒 Formulaire visible uniquement si l'utilisateur est membre du projet #}
+        {% if project.users.contains(app.user) %}
+            <div class="project-form mt-3">
+                {{ include('front/project/_form.html.twig') }}
+            </div>
+        {% else %}
+            <div class="alert alert-danger mt-3">
+                Vous n'avez pas les droits nécessaires pour modifier ce projet.
+            </div>
+        {% endif %}
 
         <div class="project-actions mt-4 d-flex justify-content-between">
             <a href="{{ path('front_project_index') }}" class="btn btn-sm btn-glass-project">
                 <i class="bi bi-arrow-left"></i> Retour à la liste
             </a>
+
             <a href="{{ path('front_project_show', {'id': project.id}) }}" class="btn btn-sm btn-glass-project">
                 <i class="bi bi-eye"></i> Voir le projet
             </a>

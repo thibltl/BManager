@@ -11,9 +11,20 @@
                 <h1 class="modern-title">Liste des tâches</h1>
                 <p class="header-subtitle">Gérez vos projets efficacement</p>
             </div>
-            <a href="{{ path('front_tasks_new') }}" class="btn-glass">
-                <i class="bi bi-plus-circle"></i> Nouvelle tâche
-            </a>
+
+            {# 🔒 Bouton visible uniquement si l'utilisateur est membre d'au moins un projet #}
+            {% set canCreate = false %}
+            {% for t in tasks %}
+                {% if t.taskProject and t.taskProject.users.contains(app.user) %}
+                    {% set canCreate = true %}
+                {% endif %}
+            {% endfor %}
+
+            {% if canCreate %}
+                <a href="{{ path('front_tasks_new') }}" class="btn-glass">
+                    <i class="bi bi-plus-circle"></i> Nouvelle tâche
+                </a>
+            {% endif %}
         </div>
     </div>
 
@@ -176,10 +187,15 @@
                                 <a href="{{ path('front_tasks_show', {'id': t.id}) }}" class="btn-glass btn-small">
                                     <i class="bi bi-eye"></i> Voir
                                 </a>
-                                <a href="{{ path('front_tasks_edit', {'id': t.id}) }}" class="btn-glass btn-small">
-                                    <i class="bi bi-pencil"></i> Modifier
-                                </a>
-                                {{ include('front/tasks/_delete_form.html.twig', { task: t, btn_class: 'btn-glass-red btn-small' }) }}
+
+                                {# 🔒 Modifier et supprimer uniquement si membre du projet #}
+                                {% if t.taskProject.users.contains(app.user) %}
+                                    <a href="{{ path('front_tasks_edit', {'id': t.id}) }}" class="btn-glass btn-small">
+                                        <i class="bi bi-pencil"></i> Modifier
+                                    </a>
+
+                                    {{ include('front/tasks/_delete_form.html.twig', { task: t, btn_class: 'btn-glass-red btn-small' }) }}
+                                {% endif %}
                             </div>
 
                         </div>

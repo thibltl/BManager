@@ -28,13 +28,16 @@ class Project
     /**
      * @var Collection<int, Tasks>
      */
-    #[ORM\OneToMany(targetEntity: Tasks::class, mappedBy: 'task_project')]
+    #[ORM\OneToMany(targetEntity: Tasks::class, mappedBy: 'task_project', orphanRemoval: true)]
     private Collection $tasks;
 
     /**
      * @var Collection<int, User>
+     *
+     * Project est maintenant PROPRIÉTAIRE de la relation ManyToMany.
      */
-    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'projects')]
+    #[ORM\ManyToMany(targetEntity: User::class)]
+    #[ORM\JoinTable(name: 'project_members')]
     private Collection $users;
 
     public function __construct()
@@ -56,7 +59,6 @@ class Project
     public function setProjectName(string $project_name): static
     {
         $this->project_name = $project_name;
-
         return $this;
     }
 
@@ -68,7 +70,6 @@ class Project
     public function setProjectDesc(string $project_desc): static
     {
         $this->project_desc = $project_desc;
-
         return $this;
     }
 
@@ -80,7 +81,6 @@ class Project
     public function setProjectCreatedAt(\DateTime $project_createdAt): static
     {
         $this->project_createdAt = $project_createdAt;
-
         return $this;
     }
 
@@ -98,19 +98,16 @@ class Project
             $this->tasks->add($task);
             $task->setTaskProject($this);
         }
-
         return $this;
     }
 
     public function removeTask(Tasks $task): static
     {
         if ($this->tasks->removeElement($task)) {
-            // set the owning side to null (unless already changed)
             if ($task->getTaskProject() === $this) {
                 $task->setTaskProject(null);
             }
         }
-
         return $this;
     }
 
@@ -126,18 +123,13 @@ class Project
     {
         if (!$this->users->contains($user)) {
             $this->users->add($user);
-            $user->addProject($this);
         }
-
         return $this;
     }
 
     public function removeUser(User $user): static
     {
-        if ($this->users->removeElement($user)) {
-            $user->removeProject($this);
-        }
-
+        $this->users->removeElement($user);
         return $this;
     }
 }

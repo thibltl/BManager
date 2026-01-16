@@ -3,7 +3,6 @@
 namespace App\Form;
 
 use App\Entity\Priority;
-use App\Entity\Project;
 use App\Entity\Status;
 use App\Entity\Tasks;
 use App\Entity\User;
@@ -37,7 +36,7 @@ class TasksType extends AbstractType
 
             ->add('task_priority', EntityType::class, [
                 'class' => Priority::class,
-                'choice_label' => 'name', // beaucoup mieux que id
+                'choice_label' => 'name',
                 'label' => 'Priorité',
                 'placeholder' => 'Choisir une priorité',
             ])
@@ -49,17 +48,15 @@ class TasksType extends AbstractType
                 'placeholder' => 'Choisir un statut',
             ])
 
-            ->add('task_project', EntityType::class, [
-                'class' => Project::class,
-                'choice_label' => 'projectName',
-                'label' => 'Projet',
-                'placeholder' => 'Sélectionner un projet',
-            ])
+            // ❌ SUPPRIMÉ : le projet ne doit pas être modifiable
+            // ->add('task_project', ...)
 
             ->add('users', EntityType::class, [
                 'class' => User::class,
                 'choices' => $projectUsers, // uniquement les membres du projet
-                'choice_label' => 'name',
+                'choice_label' => function (User $user) {
+                    return $user->getName() ?: $user->getEmail();
+                },
                 'label' => 'Assigner à',
                 'multiple' => true,
                 'expanded' => false,

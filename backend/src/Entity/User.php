@@ -38,8 +38,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * @var Collection<int, Project>
+     *
+     * Côté inverse de Project::$users
      */
-    #[ORM\ManyToMany(targetEntity: Project::class, inversedBy: 'users')]
+    #[ORM\ManyToMany(targetEntity: Project::class, mappedBy: 'users')]
     private Collection $projects;
 
     /**

@@ -81,11 +81,16 @@
             <a href="{{ path('front_project_index') }}" class="btn btn-sm btn-glass-project">
                 <i class="bi bi-arrow-left"></i> Retour à la liste
             </a>
+
             <div>
-                <a href="{{ path('front_project_edit', {'id': project.id}) }}" class="btn btn-sm btn-glass-project me-2">
-                    <i class="bi bi-pencil"></i> Modifier
-                </a>
-                {{ include('front/project/_delete_form.html.twig') }}
+                {# 🔒 Modifier et supprimer uniquement si membre du projet #}
+                {% if project.users.contains(app.user) %}
+                    <a href="{{ path('front_project_edit', {'id': project.id}) }}" class="btn btn-sm btn-glass-project me-2">
+                        <i class="bi bi-pencil"></i> Modifier
+                    </a>
+
+                    {{ include('front/project/_delete_form.html.twig') }}
+                {% endif %}
             </div>
         </div>
     </div>
@@ -123,11 +128,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 })
                 .then(data => {
                     console.log('Statut mis à jour :', data);
-                    // ✅ Rafraîchit la page après mise à jour
                     window.location.reload();
                 })
                 .catch(err => {
-                    // revert si erreur
                     evt.from.insertBefore(item, evt.from.children[evt.oldIndex] || null);
                     alert('Erreur lors de la mise à jour');
                 });
