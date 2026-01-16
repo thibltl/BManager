@@ -2,7 +2,9 @@
 
 namespace App\Repository;
 
+use App\Entity\Project;
 use App\Entity\Tasks;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -16,28 +18,37 @@ class TasksRepository extends ServiceEntityRepository
         parent::__construct($registry, Tasks::class);
     }
 
-    //    /**
-    //     * @return Tasks[] Returns an array of Tasks objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('t')
-    //            ->andWhere('t.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('t.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    /**
+     * Retourne toutes les tâches d’un projet.
+     *
+     * @return Tasks[]
+     */
+    public function findByProject(Project $project): array
+    {
+        return $this->createQueryBuilder('t')
+            ->andWhere('t.task_project = :project')
+            ->setParameter('project', $project)
+            ->orderBy('t.task_dueDate', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 
-    //    public function findOneBySomeField($value): ?Tasks
-    //    {
-    //        return $this->createQueryBuilder('t')
-    //            ->andWhere('t.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    /**
+     * Retourne les tâches d’un projet visibles par un utilisateur.
+     * (Optionnel mais utile si tu veux filtrer par assignation)
+     *
+     * @return Tasks[]
+     */
+    public function findForUserInProject(User $user, Project $project): array
+    {
+        return $this->createQueryBuilder('t')
+            ->leftJoin('t.users', 'u')
+            ->andWhere('t.task_project = :project')
+            ->andWhere('u = :user OR u IS NULL')
+            ->setParameter('project', $project)
+            ->setParameter('user', $user)
+            ->orderBy('t.task_dueDate', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 }

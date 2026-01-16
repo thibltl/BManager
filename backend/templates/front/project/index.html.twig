@@ -56,7 +56,10 @@
                                     {% set statusClass = 'status-en-attente' %}
                                 {% endif %}
 
-                                <div class="kanban-column" data-status="{{ status }}">
+                                <div class="kanban-column"
+                                     data-status="{{ status }}"
+                                     data-project-id="{{ project.id }}">
+
                                     <div class="kanban-title {{ statusClass }}">{{ status }}</div>
 
                                     <div class="tasks-list">
@@ -69,7 +72,10 @@
 
                                         {% if tasks is not empty %}
                                             {% for task in tasks %}
-                                                <div class="task-card" data-task-id="{{ task.id }}">
+                                                <div class="task-card"
+                                                     data-task-id="{{ task.id }}"
+                                                     data-project-id="{{ project.id }}">
+
                                                     <div class="task-header drag-handle" title="Glisser pour déplacer">
                                                         <a href="{{ path('front_tasks_show', {'id': task.id}) }}" class="task-title-link">
                                                             <strong class="task-title">{{ task.taskTitle }}</strong>
@@ -78,6 +84,7 @@
                                                             <span class="task-date">{{ task.taskDueDate|date('d/m/Y') }}</span>
                                                         {% endif %}
                                                     </div>
+
                                                     {% if task.getTaskPriority() %}
                                                         {% set priorityName = task.getTaskPriority().getPriorityName() %}
                                                         {% set priorityMap = {
@@ -85,7 +92,7 @@
                                                             'Faible': 'faible',
                                                             'Modere': 'modere',
                                                             'Eleve': 'eleve',
-                                                            'Tres eleve': 'tres-eleve'                                  
+                                                            'Tres eleve': 'tres-eleve'
                                                         } %}
                                                         {% set priorityClass = priorityMap[priorityName]|default('') %}
                                                         <span class="priority-badge {{ priorityClass ? 'priority-' ~ priorityClass : '' }}">
@@ -107,13 +114,18 @@
                 </div>
 
                 <div class="project-actions mt-3">
+
                     <a href="{{ path('front_project_show', {'id': project.id}) }}" class="btn btn-sm btn-outline-light me-2">
                         <i class="bi bi-eye"></i> Voir
                     </a>
-                    <a href="{{ path('front_project_edit', {'id': project.id}) }}" class="btn btn-sm btn-outline-info me-2">
-                        <i class="bi bi-pencil"></i> Modifier
-                    </a>
-                    {{ include('front/project/_delete_form.html.twig') }}
+
+                    {% if project.users.contains(app.user) %}
+                        <a href="{{ path('front_project_edit', {'id': project.id}) }}" class="btn btn-sm btn-outline-info me-2">
+                            <i class="bi bi-pencil"></i> Modifier
+                        </a>
+
+                        {{ include('front/project/_delete_form.html.twig') }}
+                    {% endif %}
                 </div>
             </div>
         {% else %}
@@ -124,6 +136,7 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+
 <script>
 document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.tasks-list').forEach(list => {
@@ -133,8 +146,20 @@ document.addEventListener('DOMContentLoaded', () => {
             handle: '.drag-handle',
             draggable: '.task-card',
             ghostClass: 'drag-ghost',
+
             onAdd: function (evt) {
                 const item = evt.item;
+
+                const taskProjectId = item.dataset.projectId;
+                const targetProjectId = evt.to.closest('.kanban-column').dataset.projectId;
+
+                // 🔒 Vérification : même projet ?
+                if (taskProjectId !== targetProjectId) {
+                    evt.from.insertBefore(item, evt.from.children[evt.oldIndex] || null);
+                    alert("Impossible de déplacer une tâche vers un autre projet.");
+                    return;
+                }
+
                 const taskId = item.dataset.taskId;
                 const newStatus = evt.to.closest('.kanban-column').dataset.status;
 
@@ -152,11 +177,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 })
                 .then(data => {
                     console.log('Statut mis à jour :', data);
-                    // ✅ Rafraîchit la page après mise à jour
                     window.location.reload();
                 })
                 .catch(err => {
-                    // revert si erreur
                     evt.from.insertBefore(item, evt.from.children[evt.oldIndex] || null);
                     alert('Erreur lors de la mise à jour');
                 });
@@ -165,4 +188,5 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 </script>
+
 {% endblock %}

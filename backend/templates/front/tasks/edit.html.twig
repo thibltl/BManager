@@ -8,15 +8,20 @@
         <div class="card-header bg-primary text-white">
             <h1 class="h4 mb-0">Modifier la tâche</h1>
         </div>
+
         <div class="card-body">
             {{ include('front/tasks/_form.html.twig', {'button_label': 'Mettre à jour'}) }}
         </div>
+
         <div class="card-footer d-flex justify-content-between">
             <a href="{{ path('front_tasks_index') }}" class="btn-glass">
                 <i class="bi bi-arrow-left"></i> Retour à la liste
             </a>
-            {# Suppression de la tâche, bouton rouge #}
-            {{ include('front/tasks/_delete_form.html.twig', { 'btn_class': 'btn-glass-red' }) }}
+
+            {# 🔒 Suppression uniquement si l'utilisateur est membre du projet #}
+            {% if task.taskProject.users.contains(app.user) %}
+                {{ include('front/tasks/_delete_form.html.twig', { 'btn_class': 'btn-glass-red' }) }}
+            {% endif %}
         </div>
     </div>
 </div>

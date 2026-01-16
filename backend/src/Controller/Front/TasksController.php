@@ -4,6 +4,7 @@ namespace App\Controller\Front;
 
 use App\Entity\Tasks;
 use App\Entity\Status;
+use App\Entity\Project;
 use App\Form\TasksType;
 use App\Repository\TasksRepository;
 use App\Service\NotificationService;
@@ -17,46 +18,68 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/front/tasks')]
 final class TasksController extends AbstractController
 {
-    #[Route(name: 'front_tasks_index', methods: ['GET'])]
-    public function index(TasksRepository $tasksRepository): Response
+    /**
+     * Liste des tâches d’un projet
+     */
+    #[Route('/project/{id}', name: 'front_tasks_by_project', methods: ['GET'])]
+    public function byProject(Project $project, TasksRepository $tasksRepository): Response
     {
+        // 🔒 Vérification d’accès
+        if (!$project->getUsers()->contains($this->getUser())) {
+            throw $this->createAccessDeniedException('Accès refusé.');
+        }
+
         return $this->render('front/tasks/index.html.twig', [
-            'tasks' => $tasksRepository->findAll(),
+            'project' => $project,
+            'tasks' => $tasksRepository->findBy(['task_project' => $project]),
         ]);
     }
 
-    #[Route('/new', name: 'front_tasks_new', methods: ['GET', 'POST'])]
+    /**
+     * Création d’une tâche dans un projet
+     */
+    #[Route('/new/{projectId}', name: 'front_tasks_new', methods: ['GET', 'POST'])]
     public function new(
+        int $projectId,
         Request $request,
         EntityManagerInterface $em,
         NotificationService $notifier,
         TaskHistoryService $history
     ): Response {
-        $task = new Tasks();
+        $project = $em->getRepository(Project::class)->find($projectId);
 
-        // Récupération des utilisateurs du projet sélectionné (si déjà choisi)
-        $projectUsers = [];
-
-        if ($task->getTaskProject()) {
-            $projectUsers = $task->getTaskProject()->getUsers();
+        if (!$project) {
+            throw $this->createNotFoundException('Projet introuvable.');
         }
 
+        // 🔒 Vérification d’accès
+        if (!$project->getUsers()->contains($this->getUser())) {
+            throw $this->createAccessDeniedException('Accès refusé.');
+        }
+
+        $task = new Tasks();
+        $task->setTaskProject($project);
+
         $form = $this->createForm(TasksType::class, $task, [
-            'project_users' => $projectUsers,
+            'project_users' => $project->getUsers(),
         ]);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            // Dates auto-gérées par l'entité (constructor + touch())
+            // 🔒 Revalidation des utilisateurs assignés
+            foreach ($task->getUsers() as $user) {
+                if (!$project->getUsers()->contains($user)) {
+                    throw $this->createAccessDeniedException('Utilisateur non autorisé pour ce projet.');
+                }
+            }
+
             $em->persist($task);
             $em->flush();
 
-            // Historique création
             $history->log($task, "Tâche créée", $this->getUser());
 
-            // Notifications aux utilisateurs assignés
             foreach ($task->getUsers() as $user) {
                 $notifier->notify(
                     $user,
@@ -65,23 +88,37 @@ final class TasksController extends AbstractController
                 );
             }
 
-            return $this->redirectToRoute('front_tasks_index');
+            return $this->redirectToRoute('front_tasks_by_project', [
+                'id' => $project->getId()
+            ]);
         }
 
         return $this->render('front/tasks/new.html.twig', [
             'task' => $task,
             'form' => $form,
+            'project' => $project,
         ]);
     }
 
+    /**
+     * Affichage d’une tâche
+     */
     #[Route('/{id}', name: 'front_tasks_show', methods: ['GET'])]
     public function show(Tasks $task): Response
     {
+        // 🔒 Vérification d’accès
+        if (!$task->getTaskProject()->getUsers()->contains($this->getUser())) {
+            throw $this->createAccessDeniedException('Accès refusé.');
+        }
+
         return $this->render('front/tasks/show.html.twig', [
             'task' => $task,
         ]);
     }
 
+    /**
+     * Modification d’une tâche
+     */
     #[Route('/{id}/edit', name: 'front_tasks_edit', methods: ['GET', 'POST'])]
     public function edit(
         Request $request,
@@ -91,64 +128,87 @@ final class TasksController extends AbstractController
         TaskHistoryService $history
     ): Response {
 
-        // Sauvegarde des anciennes valeurs
-        $oldStatus = $task->getTaskStatus();
-        $oldUsers = clone $task->getUsers();
-        $oldTitle = $task->getTaskTitle();
-        $oldDueDate = $task->getTaskDueDate();
+        // 🔒 Vérification d’accès
+        if (!$task->getTaskProject()->getUsers()->contains($this->getUser())) {
+            throw $this->createAccessDeniedException('Accès refusé.');
+        }
+
+        $oldProject  = $task->getTaskProject();
+        $oldStatus   = $task->getTaskStatus();
+        $oldUsers    = clone $task->getUsers();
+        $oldTitle    = $task->getTaskTitle();
+        $oldDueDate  = $task->getTaskDueDate();
         $oldPriority = $task->getTaskPriority();
 
-        // Filtrer les utilisateurs du projet
-        $projectUsers = $task->getTaskProject()?->getUsers() ?? [];
-
         $form = $this->createForm(TasksType::class, $task, [
-            'project_users' => $projectUsers,
+            'project_users' => $oldProject->getUsers(),
         ]);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            // Changement de statut
+            // 🔒 Empêcher le changement de projet non autorisé
+            if ($task->getTaskProject() !== $oldProject) {
+                // soit on bloque totalement :
+                $task->setTaskProject($oldProject);
+                // soit on pourrait vérifier l’accès au nouveau projet, mais ici on interdit.
+            }
+
+            // 🔒 Revalidation des utilisateurs assignés
+            foreach ($task->getUsers() as $user) {
+                if (!$oldProject->getUsers()->contains($user)) {
+                    throw $this->createAccessDeniedException('Utilisateur non autorisé pour ce projet.');
+                }
+            }
+
+            // Historique (statut, date, titre, priorité, assignations)
             if ($task->getTaskStatus() !== $oldStatus) {
                 $history->log(
                     $task,
-                    "Statut modifié : {$oldStatus->getStatusName()} → {$task->getTaskStatus()->getStatusName()}",
+                    sprintf(
+                        "Statut modifié : %s → %s",
+                        $oldStatus?->getStatusName() ?? 'Aucun',
+                        $task->getTaskStatus()?->getStatusName() ?? 'Aucun'
+                    ),
                     $this->getUser()
                 );
             }
 
-            // Changement de date
             if ($task->getTaskDueDate() != $oldDueDate) {
                 $history->log(
                     $task,
-                    "Date modifiée : {$oldDueDate?->format('d/m/Y')} → {$task->getTaskDueDate()?->format('d/m/Y')}",
+                    sprintf(
+                        "Date modifiée : %s → %s",
+                        $oldDueDate?->format('d/m/Y') ?? 'Aucune',
+                        $task->getTaskDueDate()?->format('d/m/Y') ?? 'Aucune'
+                    ),
                     $this->getUser()
                 );
             }
 
-            // Changement de titre
             if ($task->getTaskTitle() !== $oldTitle) {
                 $history->log(
                     $task,
-                    "Titre modifié : \"$oldTitle\" → \"{$task->getTaskTitle()}\"",
+                    "Titre modifié : \"{$oldTitle}\" → \"{$task->getTaskTitle()}\"",
                     $this->getUser()
                 );
             }
 
-            // Changement de priorité
             if ($task->getTaskPriority() !== $oldPriority) {
                 $history->log(
                     $task,
-                    "Priorité modifiée : {$oldPriority?->getName()} → {$task->getTaskPriority()?->getName()}",
+                    sprintf(
+                        "Priorité modifiée : %s → %s",
+                        $oldPriority?->getPriorityName() ?? 'Aucune',
+                        $task->getTaskPriority()?->getPriorityName() ?? 'Aucune'
+                    ),
                     $this->getUser()
                 );
             }
 
-            // Nouveaux utilisateurs assignés
             foreach ($task->getUsers() as $user) {
                 if (!$oldUsers->contains($user)) {
-
                     $history->log(
                         $task,
                         "Nouvel utilisateur assigné : {$user->getName()}",
@@ -174,6 +234,9 @@ final class TasksController extends AbstractController
         ]);
     }
 
+    /**
+     * Suppression d’une tâche
+     */
     #[Route('/{id}', name: 'front_tasks_delete', methods: ['POST'])]
     public function delete(
         Request $request,
@@ -181,6 +244,14 @@ final class TasksController extends AbstractController
         EntityManagerInterface $em,
         TaskHistoryService $history
     ): Response {
+
+        // 🔒 Vérification d’accès
+        if (!$task->getTaskProject()->getUsers()->contains($this->getUser())) {
+            throw $this->createAccessDeniedException('Accès refusé.');
+        }
+
+        $project = $task->getTaskProject();
+
         if ($this->isCsrfTokenValid('delete'.$task->getId(), $request->getPayload()->getString('_token'))) {
 
             $history->log($task, "Tâche supprimée", $this->getUser());
@@ -189,9 +260,14 @@ final class TasksController extends AbstractController
             $em->flush();
         }
 
-        return $this->redirectToRoute('front_tasks_index');
+        return $this->redirectToRoute('front_tasks_by_project', [
+            'id' => $project->getId()
+        ]);
     }
 
+    /**
+     * Mise à jour du statut (Kanban)
+     */
     #[Route('/{id}/status', name: 'front_tasks_update_status', methods: ['POST'])]
     public function updateStatus(
         int $id,
@@ -201,11 +277,23 @@ final class TasksController extends AbstractController
         TaskHistoryService $history
     ): Response {
         $task = $tasksRepository->find($id);
+
         if (!$task) {
             return $this->json(['error' => 'Tâche non trouvée'], 404);
         }
 
+        // 🔒 Vérification d’accès
+        if (!$task->getTaskProject()->getUsers()->contains($this->getUser())) {
+            return $this->json(['error' => 'Accès refusé'], 403);
+        }
+
         $data = json_decode($request->getContent(), true);
+
+        // 🔒 CSRF
+        if (!isset($data['_token']) || !$this->isCsrfTokenValid('task_status', $data['_token'])) {
+            return $this->json(['error' => 'Token CSRF invalide'], 403);
+        }
+
         $newStatusName = $data['status'] ?? null;
 
         if (!$newStatusName) {
@@ -224,10 +312,13 @@ final class TasksController extends AbstractController
 
         $em->flush();
 
-        // Historique
         $history->log(
             $task,
-            "Statut modifié : {$oldStatus->getStatusName()} → {$status->getStatusName()}",
+            sprintf(
+                "Statut modifié : %s → %s",
+                $oldStatus?->getStatusName() ?? 'Aucun',
+                $status->getStatusName()
+            ),
             $this->getUser()
         );
 
