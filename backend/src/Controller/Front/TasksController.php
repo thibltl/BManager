@@ -4,10 +4,10 @@ namespace App\Controller\Front;
 
 use App\Entity\Tasks;
 use App\Entity\Status;
+use App\Entity\Priority;
 use App\Entity\Project;
 use App\Form\TasksType;
 use App\Repository\TasksRepository;
-use App\Service\NotificationService;
 use App\Service\TaskHistoryService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -24,7 +24,6 @@ final class TasksController extends AbstractController
     #[Route('/project/{id}', name: 'front_tasks_by_project', methods: ['GET'])]
     public function byProject(Project $project, TasksRepository $tasksRepository): Response
     {
-        // 🔒 Vérification d’accès
         if (!$project->getUsers()->contains($this->getUser())) {
             throw $this->createAccessDeniedException('Accès refusé.');
         }
@@ -43,7 +42,6 @@ final class TasksController extends AbstractController
         int $projectId,
         Request $request,
         EntityManagerInterface $em,
-        NotificationService $notifier,
         TaskHistoryService $history
     ): Response {
         $project = $em->getRepository(Project::class)->find($projectId);
@@ -52,7 +50,6 @@ final class TasksController extends AbstractController
             throw $this->createNotFoundException('Projet introuvable.');
         }
 
-        // 🔒 Vérification d’accès
         if (!$project->getUsers()->contains($this->getUser())) {
             throw $this->createAccessDeniedException('Accès refusé.');
         }
@@ -60,18 +57,40 @@ final class TasksController extends AbstractController
         $task = new Tasks();
         $task->setTaskProject($project);
 
+        // 🔥 Filtrage des utilisateurs assignables
+        $assignableUsers = $project->getUsers()->filter(fn($u) =>
+            in_array('ROLE_USER', $u->getRoles())
+        )->toArray();
+
         $form = $this->createForm(TasksType::class, $task, [
-            'project_users' => $project->getUsers(),
+            'project_users' => $assignableUsers,
         ]);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            // 🔒 Revalidation des utilisateurs assignés
             foreach ($task->getUsers() as $user) {
                 if (!$project->getUsers()->contains($user)) {
                     throw $this->createAccessDeniedException('Utilisateur non autorisé pour ce projet.');
+                }
+            }
+
+            // Statut par défaut
+            if (!$task->getTaskStatus()) {
+                $defaultStatus = $em->getRepository(Status::class)
+                    ->findOneBy(['status_name' => 'À faire']);
+                if ($defaultStatus) {
+                    $task->setTaskStatus($defaultStatus);
+                }
+            }
+
+            // Priorité par défaut
+            if (!$task->getTaskPriority()) {
+                $defaultPriority = $em->getRepository(Priority::class)
+                    ->findOneBy(['priority_name' => 'Moyenne']);
+                if ($defaultPriority) {
+                    $task->setTaskPriority($defaultPriority);
                 }
             }
 
@@ -79,14 +98,6 @@ final class TasksController extends AbstractController
             $em->flush();
 
             $history->log($task, "Tâche créée", $this->getUser());
-
-            foreach ($task->getUsers() as $user) {
-                $notifier->notify(
-                    $user,
-                    "Une nouvelle tâche vous a été assignée : {$task->getTaskTitle()}",
-                    "task_assigned"
-                );
-            }
 
             return $this->redirectToRoute('front_tasks_by_project', [
                 'id' => $project->getId()
@@ -103,10 +114,9 @@ final class TasksController extends AbstractController
     /**
      * Affichage d’une tâche
      */
-    #[Route('/{id}', name: 'front_tasks_show', methods: ['GET'])]
+    #[Route('/show/{id}', name: 'front_tasks_show', methods: ['GET'])]
     public function show(Tasks $task): Response
     {
-        // 🔒 Vérification d’accès
         if (!$task->getTaskProject()->getUsers()->contains($this->getUser())) {
             throw $this->createAccessDeniedException('Accès refusé.');
         }
@@ -124,11 +134,8 @@ final class TasksController extends AbstractController
         Request $request,
         Tasks $task,
         EntityManagerInterface $em,
-        NotificationService $notifier,
         TaskHistoryService $history
     ): Response {
-
-        // 🔒 Vérification d’accès
         if (!$task->getTaskProject()->getUsers()->contains($this->getUser())) {
             throw $this->createAccessDeniedException('Accès refusé.');
         }
@@ -140,29 +147,29 @@ final class TasksController extends AbstractController
         $oldDueDate  = $task->getTaskDueDate();
         $oldPriority = $task->getTaskPriority();
 
+        // 🔥 Filtrage des utilisateurs assignables
+        $assignableUsers = $oldProject->getUsers()->filter(fn($u) =>
+            in_array('ROLE_USER', $u->getRoles())
+        )->toArray();
+
         $form = $this->createForm(TasksType::class, $task, [
-            'project_users' => $oldProject->getUsers(),
+            'project_users' => $assignableUsers,
         ]);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            // 🔒 Empêcher le changement de projet non autorisé
             if ($task->getTaskProject() !== $oldProject) {
-                // soit on bloque totalement :
                 $task->setTaskProject($oldProject);
-                // soit on pourrait vérifier l’accès au nouveau projet, mais ici on interdit.
             }
 
-            // 🔒 Revalidation des utilisateurs assignés
             foreach ($task->getUsers() as $user) {
                 if (!$oldProject->getUsers()->contains($user)) {
                     throw $this->createAccessDeniedException('Utilisateur non autorisé pour ce projet.');
                 }
             }
 
-            // Historique (statut, date, titre, priorité, assignations)
             if ($task->getTaskStatus() !== $oldStatus) {
                 $history->log(
                     $task,
@@ -214,12 +221,6 @@ final class TasksController extends AbstractController
                         "Nouvel utilisateur assigné : {$user->getName()}",
                         $this->getUser()
                     );
-
-                    $notifier->notify(
-                        $user,
-                        "Vous avez été assigné à la tâche : {$task->getTaskTitle()}",
-                        "task_assigned"
-                    );
                 }
             }
 
@@ -237,15 +238,13 @@ final class TasksController extends AbstractController
     /**
      * Suppression d’une tâche
      */
-    #[Route('/{id}', name: 'front_tasks_delete', methods: ['POST'])]
+    #[Route('/{id}/delete', name: 'front_tasks_delete', methods: ['POST'])]
     public function delete(
         Request $request,
         Tasks $task,
         EntityManagerInterface $em,
         TaskHistoryService $history
     ): Response {
-
-        // 🔒 Vérification d’accès
         if (!$task->getTaskProject()->getUsers()->contains($this->getUser())) {
             throw $this->createAccessDeniedException('Accès refusé.');
         }
@@ -253,7 +252,6 @@ final class TasksController extends AbstractController
         $project = $task->getTaskProject();
 
         if ($this->isCsrfTokenValid('delete'.$task->getId(), $request->getPayload()->getString('_token'))) {
-
             $history->log($task, "Tâche supprimée", $this->getUser());
 
             $em->remove($task);
@@ -282,14 +280,12 @@ final class TasksController extends AbstractController
             return $this->json(['error' => 'Tâche non trouvée'], 404);
         }
 
-        // 🔒 Vérification d’accès
         if (!$task->getTaskProject()->getUsers()->contains($this->getUser())) {
             return $this->json(['error' => 'Accès refusé'], 403);
         }
 
         $data = json_decode($request->getContent(), true);
 
-        // 🔒 CSRF
         if (!isset($data['_token']) || !$this->isCsrfTokenValid('task_status', $data['_token'])) {
             return $this->json(['error' => 'Token CSRF invalide'], 403);
         }

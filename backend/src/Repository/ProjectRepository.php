@@ -25,11 +25,12 @@ class ProjectRepository extends ServiceEntityRepository
     public function findForUser(User $user): array
     {
         return $this->createQueryBuilder('p')
-            ->join('p.users', 'u')
+            ->innerJoin('p.users', 'u')
             ->andWhere('u = :user')
             ->setParameter('user', $user)
             ->orderBy('p.project_createdAt', 'DESC')
             ->getQuery()
             ->getResult();
     }
+
 }

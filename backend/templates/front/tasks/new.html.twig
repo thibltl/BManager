@@ -8,11 +8,16 @@
         <div class="card-header bg-success text-white">
             <h1 class="h4 mb-0">Créer une nouvelle tâche</h1>
         </div>
+
         <div class="card-body">
-            {{ include('front/tasks/_form.html.twig', {'button_label': 'Créer'}) }}
+            {{ include('front/tasks/_form.html.twig', {
+                button_label: 'Créer',
+                project: project
+            }) }}
         </div>
+
         <div class="card-footer d-flex justify-content-start gap-2">
-            <a href="{{ path('front_tasks_index') }}" class="btn-glass">
+            <a href="{{ path('front_tasks_by_project', { id: project.id }) }}" class="btn-glass">
                 <i class="bi bi-arrow-left"></i> Retour à la liste
             </a>
         </div>

@@ -22,46 +22,52 @@ class TasksType extends AbstractType
         $builder
             ->add('task_title', null, [
                 'label' => 'Titre de la tâche',
+                'required' => true,
             ])
 
             ->add('task_desc', TextareaType::class, [
                 'label' => 'Description',
+                'required' => false,
                 'attr' => ['rows' => 4],
             ])
 
             ->add('task_dueDate', DateType::class, [
                 'label' => 'Date d\'échéance',
                 'widget' => 'single_text',
+                'required' => false,
             ])
 
             ->add('task_priority', EntityType::class, [
                 'class' => Priority::class,
-                'choice_label' => 'name',
+                'choice_label' => 'priorityName', // 🔥 correction
                 'label' => 'Priorité',
                 'placeholder' => 'Choisir une priorité',
+                'required' => true,
             ])
 
             ->add('task_status', EntityType::class, [
                 'class' => Status::class,
-                'choice_label' => 'name',
+                'choice_label' => 'statusName', // 🔥 correction
                 'label' => 'Statut',
                 'placeholder' => 'Choisir un statut',
+                'required' => true,
             ])
-
-            // ❌ SUPPRIMÉ : le projet ne doit pas être modifiable
-            // ->add('task_project', ...)
 
             ->add('users', EntityType::class, [
                 'class' => User::class,
-                'choices' => $projectUsers, // uniquement les membres du projet
-                'choice_label' => function (User $user) {
-                    return $user->getName() ?: $user->getEmail();
-                },
+                'choices' => $projectUsers,
+                'choice_label' => fn(User $user) => $user->getName() ?: $user->getEmail(),
                 'label' => 'Assigner à',
                 'multiple' => true,
-                'expanded' => false,
+                'expanded' => true,
                 'required' => false,
+                'by_reference' => false,
+                'attr' => [
+                    'multiple' => 'multiple',
+                    'size' => 5,
+                ],
             ]);
+
     }
 
     public function configureOptions(OptionsResolver $resolver): void

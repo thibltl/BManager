@@ -65,13 +65,12 @@
         </div>
 
         <div class="task-actions d-flex justify-content-between mt-4">
-            <a href="{{ path('front_tasks_index') }}" class="btn-glass">
+            <a href="{{ path('front_tasks_by_project', { id: task.taskProject.id }) }}" class="btn-glass">
                 <i class="bi bi-arrow-left"></i> Retour à la liste
             </a>
 
             <div class="d-flex gap-2">
 
-                {# 🔒 Modifier et supprimer uniquement si membre du projet #}
                 {% if task.taskProject.users.contains(app.user) %}
                     <a href="{{ path('front_tasks_edit', {'id': task.id}) }}" class="btn-glass">
                         <i class="bi bi-pencil"></i> Modifier
@@ -82,6 +81,7 @@
 
             </div>
         </div>
+
     </div>
 
     {# 🟦 BLOC HISTORIQUE DES MODIFICATIONS #}
