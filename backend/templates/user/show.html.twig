@@ -3,48 +3,117 @@
 {% block title %}Détail utilisateur{% endblock %}
 
 {% block body %}
-<div class="user-show">
-
-    <table class="user-card">
-        <tbody>
-
-            <tr class="user-title">
-                <td class="user-name">{{ user.name }}</td>
-            </tr>
-
-            <tr class="user-row">
-                <td><strong>ID :</strong> {{ user.id }}</td>
-            </tr>
-
-            <tr class="user-row">
-                <td><strong>Email :</strong> {{ user.email }}</td>
-            </tr>
-
-            <tr class="user-row">
-                <td>
-                    <strong>Rôles :</strong>
-                    {% if user.roles is not empty %}
-                        {% for role in user.roles %}
-                            <span class="user-role">{{ role }}</span>
-                        {% endfor %}
-                    {% else %}
-                        Aucun rôle
-                    {% endif %}
-                </td>
-            </tr>
-
-            <tr class="user-row">
-                <td><strong>Créé le :</strong> {{ user.createdAt|date('d/m/Y') }}</td>
-            </tr>
-
-        </tbody>
-    </table>
-
-    <div class="user-actions">
-        <a href="{{ path('user_index') }}" class="btn-user secondary">Retour</a>
-        <a href="{{ path('user_edit', {'id': user.id}) }}" class="btn-user primary">Modifier</a>
-        {{ include('user/_delete_form.html.twig') }}
+<div class="users-page-wrapper">
+    
+    <!-- Header de la page -->
+    <div class="page-header-modern">
+        <div class="header-content">
+            <div class="header-title-section">
+                <h1 class="modern-title">
+                    <i class="fa-solid fa-user"></i>
+                    Détail de l'utilisateur
+                </h1>
+                <p class="header-subtitle">Informations complètes de {{ user.name }}</p>
+            </div>
+            <div class="header-actions">
+                <a href="{{ path('user_index') }}" class="btn-glass btn-secondary">
+                    <i class="fa-solid fa-arrow-left"></i>
+                    Retour
+                </a>
+                <a href="{{ path('user_edit', {'id': user.id}) }}" class="btn-glass btn-primary">
+                    <i class="fa-solid fa-pen"></i>
+                    Modifier
+                </a>
+            </div>
+        </div>
     </div>
 
+    <!-- Carte utilisateur -->
+    <div class="users-table-wrapper">
+        <div class="user-detail-card">
+            <!-- Avatar et nom -->
+            <div class="user-detail-header">
+                <div class="user-avatar-large">
+                    {{ user.name|first|upper }}
+                </div>
+                <div class="user-detail-title">
+                    <h2>{{ user.name }}</h2>
+                    <span class="user-id-badge">#{{ user.id }}</span>
+                </div>
+            </div>
+
+            <!-- Informations -->
+            <div class="user-detail-body">
+                <div class="detail-row">
+                    <div class="detail-label">
+                        <i class="fa-solid fa-envelope"></i>
+                        Email
+                    </div>
+                    <div class="detail-value">
+                        <a href="mailto:{{ user.email }}" class="email-link">
+                            {{ user.email }}
+                        </a>
+                    </div>
+                </div>
+
+                <div class="detail-row">
+                    <div class="detail-label">
+                        <i class="fa-solid fa-shield-halved"></i>
+                        Rôles
+                    </div>
+                    <div class="detail-value">
+                        {% if user.roles is not empty %}
+                            {% for role in user.roles %}
+                                {% if role == 'ROLE_ADMIN' %}
+                                    <span class="role-badge role-admin">
+                                        <i class="fa-solid fa-shield"></i>
+                                        Admin
+                                    </span>
+                                {% elseif role == 'ROLE_USER' %}
+                                    <span class="role-badge role-user">
+                                        <i class="fa-solid fa-user"></i>
+                                        User
+                                    </span>
+                                {% else %}
+                                    <span class="role-badge role-user">
+                                        <i class="fa-solid fa-tag"></i>
+                                        {{ role }}
+                                    </span>
+                                {% endif %}
+                            {% endfor %}
+                        {% else %}
+                            <span class="text-muted">Aucun rôle</span>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="detail-row">
+                    <div class="detail-label">
+                        <i class="fa-solid fa-calendar"></i>
+                        Créé le
+                    </div>
+                    <div class="detail-value">
+                        <span class="date-text">
+                            <i class="fa-regular fa-clock"></i>
+                            {{ user.createdAt|date('d/m/Y à H:i') }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="user-detail-footer">
+                <a href="{{ path('user_index') }}" class="btn-glass btn-secondary">
+                    <i class="fa-solid fa-arrow-left"></i>
+                    Retour à la liste
+                </a>
+                <a href="{{ path('user_edit', {'id': user.id}) }}" class="btn-glass btn-primary">
+                    <i class="fa-solid fa-pen"></i>
+                    Modifier
+                </a>
+                {{ include('user/_delete_form.html.twig') }}
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}

@@ -15,8 +15,6 @@
         <link rel="stylesheet" href="{{ asset('css/projet.css') }}">
         <link rel="stylesheet" href="{{ asset('css/task.css') }}">
         <link rel="stylesheet" href="{{ asset('css/user.css') }}">
-
-        
     </head>
 
     <body>
@@ -30,6 +28,7 @@
                     <div class="sidebar-header">
                         <!-- Logo -->
                         <div class="logo-box">
+                            <i class="fa-solid fa-briefcase me-2"></i>
                             BManager
                         </div>
 
@@ -55,84 +54,95 @@
                         </div>
                     </div>
 
-                    <!-- NAVIGATION -->
-                    <ul class="nav flex-column">
+                    <!-- NAVIGATION PRINCIPALE -->
+                    <div class="sidebar-content">
+                        <ul class="nav flex-column">
 
-                        <!-- Dashboard -->
-                        <li class="nav-item mb-2">
-                            <a href="{{ path('front_accueil') }}"
-                               class="nav-link {% if app.request.attributes.get('_route') == 'app_accueil' %}active{% endif %}">
-                                <i class="fa-solid fa-chart-line me-2"></i> Dashboard
-                            </a>
-                        </li>
+                            <!-- Dashboard -->
+                            <li class="nav-item mb-2">
+                                <a href="{{ path('front_accueil') }}"
+                                   class="nav-link {% if app.request.attributes.get('_route') == 'app_accueil' %}active{% endif %}">
+                                    <i class="fa-solid fa-chart-line me-2"></i> Dashboard
+                                </a>
+                            </li>
 
-                        <!-- Menu Projets -->
-                        <li class="nav-item mb-2">
-                            <a class="nav-link d-flex justify-content-between align-items-center"
-                               data-bs-toggle="collapse" href="#menuProjets" role="button">
-                                <span><i class="fa-solid fa-folder-open me-2"></i> Projets</span>
-                                <i class="fa-solid fa-chevron-down"></i>
-                            </a>
-                            <div class="collapse" id="menuProjets">
-                                <ul class="nav flex-column sub-menu">
-                                    <li class="nav-item">
-                                        <a href="{{ path('front_project_index') }}" class="nav-link">
-                                            <i class="fa-solid fa-list me-2"></i> Gérer les projets
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </li>
+                            <!-- Menu Projets -->
+                            <li class="nav-item mb-2">
+                                <a class="nav-link d-flex justify-content-between align-items-center"
+                                   data-bs-toggle="collapse" href="#menuProjets" role="button">
+                                    <span><i class="fa-solid fa-folder-open me-2"></i> Projets</span>
+                                    <i class="fa-solid fa-chevron-down"></i>
+                                </a>
+                                <div class="collapse" id="menuProjets">
+                                    <ul class="nav flex-column sub-menu">
+                                        <li class="nav-item">
+                                            <a href="{{ path('front_project_index') }}" class="nav-link">
+                                                <i class="fa-solid fa-list me-2"></i> Gérer les projets
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
 
-                        <!-- Menu Tâches -->
-                        <li class="nav-item mb-2">
-                            <a class="nav-link d-flex justify-content-between align-items-center"
-                               data-bs-toggle="collapse" href="#menuTaches" role="button">
-                                <span><i class="fa-solid fa-list-check me-2"></i> Tâches</span>
-                                <i class="fa-solid fa-chevron-down"></i>
-                            </a>
-                            <div class="collapse" id="menuTaches">
-                                <ul class="nav flex-column sub-menu">
-                                    <li class="nav-item">
-                                        <a href="{{ path('front_project_index') }}" class="nav-link">
-                                            <i class="fa-solid fa-list me-2"></i> Gérer les tâches
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </li>
+                            <!-- Menu Tâches -->
+                            <li class="nav-item mb-2">
+                                <a class="nav-link d-flex justify-content-between align-items-center"
+                                   data-bs-toggle="collapse" href="#menuTaches" role="button">
+                                    <span><i class="fa-solid fa-list-check me-2"></i> Tâches</span>
+                                    <i class="fa-solid fa-chevron-down"></i>
+                                </a>
+                                <div class="collapse" id="menuTaches">
+                                    <ul class="nav flex-column sub-menu">
+                                        <li class="nav-item">
+                                            <a href="{{ path('front_project_index') }}" class="nav-link">
+                                                <i class="fa-solid fa-list me-2"></i> Gérer les tâches
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
 
-                        <!-- Menu Stats (admin) -->
-                        {% if is_granted('ROLE_ADMIN') %}
-                        <li class="nav-item mb-2">
-                            <a class="nav-link d-flex justify-content-between align-items-center"
-                               data-bs-toggle="collapse" href="#menuStats" role="button">
-                                <span><i class="fa-solid fa-chart-area me-2 ms-1"></i> Statistiques</span>
-                                <i class="fa-solid fa-chevron-down"></i>
-                            </a>
-                        </li>
-                        {% endif %}
+                            <!-- Menu Stats (admin) -->
+                            {% if is_granted('ROLE_ADMIN') %}
+                            <li class="nav-item mb-2">
+                                <a class="nav-link d-flex justify-content-between align-items-center"
+                                   data-bs-toggle="collapse" href="#menuStats" role="button">
+                                    <span><i class="fa-solid fa-chart-area me-2"></i> Statistiques</span>
+                                    <i class="fa-solid fa-chevron-down"></i>
+                                </a>
+                            </li>
+                            {% endif %}
 
-                        <!-- Menu Utilisateurs (admin) -->
-                        {% if is_granted('ROLE_ADMIN') %}
-                        <li class="nav-item mb-2">
-                            <a class="nav-link d-flex justify-content-between align-items-center"
-                               data-bs-toggle="collapse" href="#menuUsers" role="button">
-                                <span><i class="fa-solid fa-user me-2 ms-1"></i> Utilisateurs</span>
-                                <i class="fa-solid fa-chevron-down"></i>
-                            </a>
-                            <div class="collapse" id="menuUsers">
-                                <ul class="nav flex-column sub-menu">
-                                    <li class="nav-item">
-                                        <a href="{{ path('user_index') }}" class="nav-link">
-                                            <i class="fa-solid fa-user me-2 ms-1"></i> Gérer les utilisateurs
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </li>
-                        {% endif %}
-                    </ul>
+                            <!-- Menu Utilisateurs (admin) -->
+                            {% if is_granted('ROLE_ADMIN') %}
+                            <li class="nav-item mb-2">
+                                <a class="nav-link d-flex justify-content-between align-items-center"
+                                   data-bs-toggle="collapse" href="#menuUsers" role="button">
+                                    <span><i class="fa-solid fa-users me-2"></i> Utilisateurs</span>
+                                    <i class="fa-solid fa-chevron-down"></i>
+                                </a>
+                                <div class="collapse" id="menuUsers">
+                                    <ul class="nav flex-column sub-menu">
+                                        <li class="nav-item">
+                                            <a href="{{ path('user_index') }}" class="nav-link">
+                                                <i class="fa-solid fa-users-gear me-2"></i> Gérer les utilisateurs
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                            {% endif %}
+
+                            <!-- Déconnexion -->
+                            {% if app.user %}
+                            <li class="nav-item mb-2">
+                                <a href="{{ path('app_logout') }}" class="nav-link">
+                                    <i class="fa-solid fa-right-from-bracket me-2"></i> Déconnexion
+                                </a>
+                            </li>
+                            {% endif %}
+                        </ul>
+                    </div>
                 </nav>
 
                 <!-- Contenu principal -->

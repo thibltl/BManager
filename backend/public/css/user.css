@@ -612,54 +612,468 @@ body.dark-mode .users-table-wrapper {
     }
 
 }
-/* ===============================
-   USER SHOW PAGE
-================================ */
+/* =========================================================
+   USER DETAIL PAGE
+========================================================= */
 
-.user-show {
-    max-width: 900px;
-    margin: auto;
+.user-detail-card {
+    background: linear-gradient(
+        180deg,
+        var(--bg-card),
+        rgba(255,255,255,0.85)
+    );
+    border-radius: var(--radius-lg);
+    padding: 0;
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
 }
 
-.user-card {
-    width: 100%;
-    background: var(--card-bg, #ffffff);
-    border-radius: 16px;
-    padding: 24px;
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
-    border-collapse: collapse;
+body.dark-mode .user-detail-card {
+    background: linear-gradient(
+        180deg,
+        var(--bg-card),
+        #160a3a
+    );
 }
 
-.user-title td {
-    font-size: 24px;
+/* Header avec avatar */
+.user-detail-header {
+    background: linear-gradient(
+        135deg,
+        var(--primary),
+        var(--accent)
+    );
+    padding: 3rem 2rem;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    color: white;
+}
+
+.user-avatar-large {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
     font-weight: 700;
-    padding-bottom: 16px;
+    color: white;
+    border: 4px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
 }
 
-.user-row td {
-    padding: 14px 0;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+.user-detail-title h2 {
+    margin: 0 0 0.5rem 0;
+    font-size: 2rem;
+    font-weight: 700;
+    color: white;
 }
 
-.user-row:last-child td {
-    border-bottom: none;
+.user-id-badge {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.9rem;
+    font-weight: 600;
+    backdrop-filter: blur(10px);
 }
 
-.user-role {
-    display: inline-block;
-    background: #6366f1;
-    color: #fff;
-    padding: 6px 14px;
-    margin-right: 6px;
-    border-radius: 999px;
-    font-size: 12px;
+/* Body avec informations */
+.user-detail-body {
+    padding: 2rem;
+}
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    border-radius: var(--radius-md);
+    background: var(--bg-panel);
+    border: 2px solid var(--border-subtle);
+    transition: var(--transition);
+}
+
+.detail-row:hover {
+    background: linear-gradient(
+        90deg,
+        var(--primary-soft),
+        var(--accent-soft)
+    );
+    border-color: var(--primary);
+    transform: translateX(6px);
+}
+
+.detail-label {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-weight: 700;
+    color: var(--text-main);
+    font-size: 1rem;
+}
+
+.detail-label i {
+    color: var(--primary);
+    font-size: 1.2rem;
+}
+
+.detail-value {
+    font-size: 1rem;
+    color: var(--text-muted);
+}
+
+/* Footer avec actions */
+.user-detail-footer {
+    padding: 2rem;
+    background: var(--bg-panel);
+    border-top: 2px solid var(--border-subtle);
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+}
+
+.btn-glass {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    text-decoration: none;
+    transition: var(--transition);
+    border: 2px solid transparent;
+}
+
+.btn-glass.btn-primary {
+    background: linear-gradient(90deg, var(--primary), var(--accent));
+    color: white;
+    box-shadow: var(--shadow-sm);
+}
+
+.btn-glass.btn-primary:hover {
+    background: linear-gradient(90deg, var(--accent), var(--primary));
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.btn-glass.btn-secondary {
+    background: var(--bg-panel);
+    color: var(--text-main);
+    border-color: var(--border-subtle);
+}
+
+.btn-glass.btn-secondary:hover {
+    background: var(--primary-soft);
+    border-color: var(--primary);
+    color: var(--primary);
+}
+/* =========================================================
+   FORM CARD
+========================================================= */
+
+.form-card {
+    background: linear-gradient(
+        180deg,
+        var(--bg-card),
+        rgba(255,255,255,0.85)
+    );
+    border-radius: var(--radius-lg);
+    padding: 0;
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+}
+
+body.dark-mode .form-card {
+    background: linear-gradient(
+        180deg,
+        var(--bg-card),
+        #160a3a
+    );
+}
+
+.form-header {
+    background: linear-gradient(
+        135deg,
+        var(--primary-soft),
+        var(--accent-soft)
+    );
+    padding: 2rem;
+    border-bottom: 2px solid var(--border-subtle);
+}
+
+.form-title {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: linear-gradient(
+        90deg,
+        var(--primary),
+        var(--accent)
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.form-body {
+    padding: 2rem;
+}
+
+.form-footer {
+    padding: 1.5rem 2rem;
+    background: var(--bg-panel);
+    border-top: 2px solid var(--border-subtle);
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+}
+
+/* =========================================================
+   FORM FIELDS
+========================================================= */
+
+.form-body .form-group,
+.form-body .mb-3 {
+    margin-bottom: 1.5rem;
+}
+
+.form-body label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    color: var(--text-main);
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+}
+
+.form-body input[type="text"],
+.form-body input[type="email"],
+.form-body input[type="password"],
+.form-body select,
+.form-body textarea {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    border: 2px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    background: var(--bg-panel);
+    color: var(--text-main);
+    font-size: 1rem;
+    transition: var(--transition);
+}
+
+.form-body input:focus,
+.form-body select:focus,
+.form-body textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+    background: linear-gradient(
+        90deg,
+        var(--primary-soft),
+        transparent
+    );
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* =========================================================
+   CUSTOM CHECKBOXES
+========================================================= */
+
+.form-body input[type="checkbox"] {
+    display: none;
+}
+
+.form-body input[type="checkbox"] + label {
+    position: relative;
+    padding-left: 3rem;
+    cursor: pointer;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    padding: 1rem 1rem 1rem 3.5rem;
+    border: 2px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    background: var(--bg-panel);
+    transition: var(--transition);
+    margin-bottom: 0.75rem;
     font-weight: 500;
 }
 
-.user-actions {
-    margin-top: 24px;
+.form-body input[type="checkbox"] + label::before {
+    content: '';
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 24px;
+    height: 24px;
+    border: 2px solid var(--border-subtle);
+    border-radius: 6px;
+    background: var(--bg-panel);
+    transition: var(--transition);
+}
+
+.form-body input[type="checkbox"] + label::after {
+    content: '✓';
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%) scale(0);
+    width: 24px;
+    height: 24px;
     display: flex;
-    gap: 12px;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    font-size: 14px;
+    transition: var(--transition);
+}
+
+.form-body input[type="checkbox"]:checked + label {
+    background: linear-gradient(
+        90deg,
+        var(--primary-soft),
+        transparent
+    );
+    border-color: var(--primary);
+}
+
+.form-body input[type="checkbox"]:checked + label::before {
+    background: linear-gradient(90deg, var(--primary), var(--accent));
+    border-color: var(--primary);
+}
+
+.form-body input[type="checkbox"]:checked + label::after {
+    transform: translateY(-50%) scale(1);
+}
+
+.form-body input[type="checkbox"] + label:hover {
+    background: linear-gradient(
+        90deg,
+        var(--primary-soft),
+        transparent
+    );
+    border-color: var(--primary);
+    transform: translateX(4px);
+}
+
+/* =========================================================
+   ROLES SECTION
+========================================================= */
+
+.form-body .roles-section {
+    margin-bottom: 1.5rem;
+}
+
+.form-body .roles-section > label:first-child {
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: var(--text-main);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.form-body .roles-section > label:first-child::before {
+    content: '🛡️';
+    font-size: 1.2rem;
+}
+
+/* =========================================================
+   BUTTONS
+========================================================= */
+
+.form-body .btn,
+.form-body button[type="submit"] {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.875rem 1.75rem;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: var(--transition);
+    background: linear-gradient(90deg, var(--primary), var(--accent));
+    color: white;
+    box-shadow: var(--shadow-sm);
+}
+
+.form-body .btn:hover,
+.form-body button[type="submit"]:hover {
+    background: linear-gradient(90deg, var(--accent), var(--primary));
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+/* =========================================================
+   ERROR MESSAGES
+========================================================= */
+
+.form-body .invalid-feedback,
+.form-body .form-error-message {
+    color: #ef4444;
+    font-size: 0.85rem;
+    margin-top: 0.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.form-body .invalid-feedback::before,
+.form-body .form-error-message::before {
+    content: '⚠';
+}
+
+.form-body .is-invalid {
+    border-color: #ef4444;
+}
+
+/* =========================================================
+   DELETE BUTTON
+========================================================= */
+
+.form-footer form {
+    display: inline;
+}
+
+.form-footer .btn-delete,
+.form-footer button[type="submit"].btn-danger {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.875rem 1.75rem;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    border: 2px solid #ef4444;
+    cursor: pointer;
+    transition: var(--transition);
+    background: transparent;
+    color: #ef4444;
+}
+
+.form-footer .btn-delete:hover,
+.form-footer button[type="submit"].btn-danger:hover {
+    background: linear-gradient(90deg, #ef4444, #dc2626);
+    color: white;
+    border-color: transparent;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+.form-footer .btn-delete i,
+.form-footer button[type="submit"].btn-danger i {
+    font-size: 1rem;
 }
 
 /* ===============================

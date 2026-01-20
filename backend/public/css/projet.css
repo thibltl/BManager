@@ -119,9 +119,20 @@ body.dark-mode .project-card {
   );
 }
 
-.project-card:hover {
+.project-card:hover,
+.project-card:focus {
+  background-color: var(--accent);
   transform: translateY(-6px);
   box-shadow: var(--shadow-md);
+}
+
+body.dark-mode .project-card:hover,
+body.dark-mode .project-card:focus {
+  background: linear-gradient(
+    180deg,
+    var(--bg-card),
+    #160a3a
+  ) !important;
 }
 
 .card-header {
@@ -151,7 +162,12 @@ body.dark-mode .project-card {
 
 .project-desc {
   color: var(--text-main);
-  margin-bottom: 10px;
+  margin-bottom: 1.5rem;
+}
+
+.project-card .project-desc i {
+  color: var(--primary);
+  margin-right: 0.5rem;
 }
 
 .project-tasks ul {
@@ -403,4 +419,298 @@ body.dark-mode .kanban-column {
     transform: scale(1); 
     box-shadow: 0 0 6px rgba(239, 68, 68, 0.4);
   }
+}
+
+/* =========================================================
+   SHOW PROJECT - AMÉLIORATIONS
+========================================================= */
+
+.tasks-header {
+    display: flex;
+    align-items: center;
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    color: var(--text-main);
+    font-weight: 700;
+}
+
+.tasks-header i {
+    color: var(--primary);
+}
+
+.task-title-link {
+    text-decoration: none;
+    color: var(--text-main);
+    transition: var(--transition);
+}
+
+.task-title-link:hover {
+    color: var(--primary);
+}
+
+.task-title-link:hover .task-title {
+    text-decoration: underline;
+}
+
+.task-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    cursor: grab;
+}
+
+.task-header:active {
+    cursor: grabbing;
+}
+
+.empty-state-text {
+    text-align: center;
+    padding: 2rem 1rem;
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+.empty-state-text i {
+    display: block;
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    opacity: 0.3;
+}
+
+/* Ghost pendant le drag */
+.drag-ghost {
+    opacity: 0.4;
+    background: linear-gradient(
+        90deg,
+        var(--primary-soft),
+        var(--accent-soft)
+    );
+    transform: rotate(2deg);
+}
+
+/* Animation des icônes */
+.fa-folder-open {
+    animation: iconBounce 2s infinite;
+}
+
+@keyframes iconBounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-3px); }
+}
+
+/* =========================================================
+   PROJECT FORM STYLES
+========================================================= */
+
+.project-form {
+    padding: 1.5rem 0;
+}
+
+.project-form .form-group,
+.project-form .mb-3 {
+    margin-bottom: 1.5rem;
+}
+
+.project-form label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    color: var(--text-main);
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+}
+
+.project-form input[type="text"],
+.project-form input[type="date"],
+.project-form textarea,
+.project-form select {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    border: 2px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    background: var(--bg-panel);
+    color: var(--text-main);
+    font-size: 1rem;
+    transition: var(--transition);
+}
+
+.project-form textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+.project-form input:focus,
+.project-form textarea:focus,
+.project-form select:focus {
+    outline: none;
+    border-color: var(--primary);
+    background: linear-gradient(
+        90deg,
+        var(--primary-soft),
+        transparent
+    );
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.project-form .btn,
+.project-form button[type="submit"] {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.875rem 1.75rem;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    border: 2px solid var(--primary);
+    cursor: pointer;
+    transition: var(--transition);
+    background: transparent;
+    color: var(--primary);
+    position: relative;
+    overflow: hidden;
+}
+
+.project-form .btn::before,
+.project-form button[type="submit"]::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    width: 50px;
+    height: 50px;
+    border-radius: inherit;
+    scale: 0;
+    z-index: -1;
+    background: linear-gradient(90deg, var(--primary), var(--accent));
+    transition: all 0.6s cubic-bezier(0.23, 1, 0.320, 1);
+}
+
+.project-form .btn:hover::before,
+.project-form button[type="submit"]:hover::before {
+    scale: 3;
+}
+
+.project-form .btn:hover,
+.project-form button[type="submit"]:hover {
+    color: #ffffff;
+    scale: 1.05;
+    box-shadow: var(--shadow-sm);
+}
+
+/* Messages d'erreur */
+.project-form .invalid-feedback,
+.project-form .form-error-message {
+    color: #ef4444;
+    font-size: 0.85rem;
+    margin-top: 0.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.project-form .invalid-feedback::before,
+.project-form .form-error-message::before {
+    content: '⚠';
+}
+
+.project-form .is-invalid {
+    border-color: #ef4444;
+}
+
+/* Style pour les select multiples */
+.project-form select[multiple] {
+    min-height: 150px;
+}
+
+.project-form select[multiple] option {
+    padding: 0.5rem;
+    border-radius: var(--radius-sm);
+    margin-bottom: 0.25rem;
+}
+
+.project-form select[multiple] option:checked {
+    background: linear-gradient(90deg, var(--primary), var(--accent));
+    color: white;
+}
+
+/* Animation de l'icône folder-plus */
+.fa-folder-plus {
+    animation: iconPulse 2s infinite;
+}
+
+@keyframes iconPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+/* =========================================================
+   DELETE BUTTON FOR PROJECTS
+========================================================= */
+
+.project-actions form {
+    display: inline;
+}
+
+.project-actions .btn-delete,
+.project-actions button[type="submit"].btn-danger,
+.project-actions .btn-sm.btn-outline-danger {
+    cursor: pointer;
+    position: relative;
+    padding: 10px 24px;
+    font-size: 12px;
+    color: #ef4444;
+    border: 2px solid #ef4444;
+    border-radius: 34px;
+    background-color: transparent;
+    font-weight: 600;
+    transition: all 0.3s cubic-bezier(0.23, 1, 0.320, 1);
+    overflow: hidden;
+}
+
+.project-actions .btn-delete::before,
+.project-actions button[type="submit"].btn-danger::before,
+.project-actions .btn-sm.btn-outline-danger::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    width: 50px;
+    height: 50px;
+    border-radius: inherit;
+    scale: 0;
+    z-index: -1;
+    background: linear-gradient(90deg, #ef4444, #dc2626);
+    transition: all 0.6s cubic-bezier(0.23, 1, 0.320, 1);
+}
+
+.project-actions .btn-delete:hover::before,
+.project-actions button[type="submit"].btn-danger:hover::before,
+.project-actions .btn-sm.btn-outline-danger:hover::before {
+    scale: 3;
+}
+
+.project-actions .btn-delete:hover,
+.project-actions button[type="submit"].btn-danger:hover,
+.project-actions .btn-sm.btn-outline-danger:hover {
+    color: #ffffff;
+    scale: 1.1;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+.project-actions .btn-delete:active,
+.project-actions button[type="submit"].btn-danger:active,
+.project-actions .btn-sm.btn-outline-danger:active {
+    scale: 1;
+}
+
+/* Animation de l'icône pen-to-square */
+.fa-pen-to-square {
+    animation: iconRotate 3s infinite;
+}
+
+@keyframes iconRotate {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(-5deg); }
+    75% { transform: rotate(5deg); }
 }

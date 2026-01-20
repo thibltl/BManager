@@ -156,6 +156,8 @@ body.dark-mode .page-background {
     align-items: center;
 }
 
+
+
 /* =========================================================
    NOTIFICATIONS — ICON
 ========================================================= */
@@ -397,22 +399,16 @@ body.dark-mode .chart-block-modern {
     background: linear-gradient(
         135deg,
         var(--primary-soft),
-        transparent
+        
     );
     color: var(--text-main);
     text-decoration: none;
     transition: var(--transition);
 }
 
-.project-card:hover {
-    background: linear-gradient(
-        135deg,
-        var(--primary),
-        var(--accent)
-    );
-    color: white;
-    transform: scale(1.03);
-}
+
+
+
 
 /* =========================================================
    TASKS
@@ -424,7 +420,7 @@ body.dark-mode .chart-block-modern {
     background: linear-gradient(
         135deg,
         var(--accent-soft),
-        transparent
+transparent
     );
     color: var(--text-main);
     font-size: 13px;

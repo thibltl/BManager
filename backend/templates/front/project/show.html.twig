@@ -5,18 +5,47 @@
 {% block body %}
 <div class="container mt-5">
 
+    <!-- Header avec titre et actions -->
+    <div class="d-flex align-items-center justify-content-between mb-4">
+        <h1 class="h4 m-0 page-title">
+            <i class="fa-solid fa-folder-open me-2"></i>
+            Détails du projet
+        </h1>
+
+        <div class="d-flex gap-2">
+            <a href="{{ path('front_project_index') }}" class="btn btn-sm btn-glass-project">
+                <i class="fa-solid fa-arrow-left"></i> Retour
+            </a>
+
+            {% if project.users.contains(app.user) %}
+                <a href="{{ path('front_project_edit', {'id': project.id}) }}" class="btn btn-sm btn-glass-project">
+                    <i class="fa-solid fa-pencil"></i> Modifier
+                </a>
+                {{ include('front/project/_delete_form.html.twig') }}
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Carte du projet -->
     <div class="project-card">
         <div class="card-header">
             <h5 class="project-title">{{ project.projectName }}</h5>
             <span class="project-date">
+                <i class="fa-regular fa-calendar"></i>
                 {{ project.projectCreatedAt ? project.projectCreatedAt|date('d/m/Y') : '' }}
             </span>
         </div>
 
-        <p class="project-desc">{{ project.projectDesc }}</p>
+        <p class="project-desc">
+            <i class="fa-solid fa-align-left me-2"></i>
+            {{ project.projectDesc }}
+        </p>
 
         <div class="project-tasks">
-            <strong>Tâches :</strong>
+            <div class="tasks-header">
+                <i class="fa-solid fa-list-check me-2"></i>
+                <strong>Tableau des tâches</strong>
+            </div>
 
             <div class="kanban-board">
                 {% for status in ['En cours', 'Terminee', 'En attente', 'En retard'] %}
@@ -33,64 +62,58 @@
                     {% endif %}
 
                     <div class="kanban-column" data-status="{{ status }}">
-                        <div class="kanban-title {{ statusClass }}">{{ status }}</div>
+                        <div class="kanban-title {{ statusClass }}">
+                            {{ status }}
+                        </div>
 
-                        {% set tasks = [] %}
-                        {% for task in project.getTasks() %}
-                            {% if task.getTaskStatus() and task.getTaskStatus().statusName == status %}
-                                {% set tasks = tasks|merge([task]) %}
-                            {% endif %}
-                        {% endfor %}
+                        <div class="tasks-list">
+                            {% set tasks = [] %}
+                            {% for task in project.getTasks() %}
+                                {% if task.getTaskStatus() and task.getTaskStatus().statusName == status %}
+                                    {% set tasks = tasks|merge([task]) %}
+                                {% endif %}
+                            {% endfor %}
 
-                        {% if tasks is not empty %}
-                            {% for task in tasks %}
-                                <div class="task-card" data-task-id="{{ task.id }}">
-                                    <div class="task-header drag-handle" title="Glisser pour déplacer">
-                                        <a href="{{ path('front_tasks_show', {'id': task.id}) }}" class="task-title-link">
-                                            <strong class="task-title">{{ task.taskTitle }}</strong>
-                                        </a>
-                                        {% if task.taskDueDate %}
-                                            <span class="task-date">{{ task.taskDueDate|date('d/m/Y') }}</span>
+                            {% if tasks is not empty %}
+                                {% for task in tasks %}
+                                    <div class="task-card" data-task-id="{{ task.id }}">
+                                        <div class="task-header drag-handle" title="Glisser pour déplacer">
+                                            <a href="{{ path('front_tasks_show', {'id': task.id}) }}" class="task-title-link">
+                                                <strong class="task-title">{{ task.taskTitle }}</strong>
+                                            </a>
+                                            {% if task.taskDueDate %}
+                                                <span class="task-date">
+                                                    <i class="fa-regular fa-clock"></i>
+                                                    {{ task.taskDueDate|date('d/m/Y') }}
+                                                </span>
+                                            {% endif %}
+                                        </div>
+
+                                        {% if task.getTaskPriority() %}
+                                            {% set priorityName = task.getTaskPriority().getPriorityName() %}
+                                            {% set priorityMap = {
+                                                'Tres faible': 'tres-faible',
+                                                'Faible': 'faible',
+                                                'Modere': 'modere',
+                                                'Eleve': 'eleve',
+                                                'Tres eleve': 'tres-eleve'
+                                            } %}
+                                            {% set priorityClass = priorityMap[priorityName]|default('') %}
+                                            <span class="priority-badge {{ priorityClass ? 'priority-' ~ priorityClass : '' }}">
+                                                {{ priorityName }}
+                                            </span>
                                         {% endif %}
                                     </div>
-                                    {% if task.getTaskPriority() %}
-                                        {% set priorityName = task.getTaskPriority().getPriorityName() %}
-                                        {% set priorityMap = {
-                                            'Tres faible': 'tres-faible',
-                                            'Faible': 'faible',
-                                            'Modere': 'modere',
-                                            'Eleve': 'eleve',
-                                            'Tres eleve': 'tres-eleve'                                  
-                                        } %}
-                                        {% set priorityClass = priorityMap[priorityName]|default('') %}
-                                        <span class="priority-badge {{ priorityClass ? 'priority-' ~ priorityClass : '' }}">
-                                            {{ priorityName }}
-                                        </span>
-                                    {% endif %}
-                                </div>
-                            {% endfor %}
-                        {% else %}
-                            <p class="text-muted">Aucune tâche</p>
-                        {% endif %}
+                                {% endfor %}
+                            {% else %}
+                                <p class="text-muted empty-state-text">
+                                    <i class="fa-solid fa-inbox"></i>
+                                    Aucune tâche
+                                </p>
+                            {% endif %}
+                        </div>
                     </div>
                 {% endfor %}
-            </div>
-        </div>
-
-        <div class="project-actions mt-4 d-flex justify-content-between">
-            <a href="{{ path('front_project_index') }}" class="btn btn-sm btn-glass-project">
-                <i class="bi bi-arrow-left"></i> Retour à la liste
-            </a>
-
-            <div>
-                {# 🔒 Modifier et supprimer uniquement si membre du projet #}
-                {% if project.users.contains(app.user) %}
-                    <a href="{{ path('front_project_edit', {'id': project.id}) }}" class="btn btn-sm btn-glass-project me-2">
-                        <i class="bi bi-pencil"></i> Modifier
-                    </a>
-
-                    {{ include('front/project/_delete_form.html.twig') }}
-                {% endif %}
             </div>
         </div>
     </div>
@@ -100,7 +123,7 @@
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-    const columns = document.querySelectorAll('.kanban-column');
+    const columns = document.querySelectorAll('.tasks-list');
 
     columns.forEach(column => {
         Sortable.create(column, {
@@ -112,7 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
             onAdd: function (evt) {
                 const item = evt.item;
                 const taskId = item.dataset.taskId;
-                const newStatus = evt.to.dataset.status;
+                const newStatus = evt.to.closest('.kanban-column').dataset.status;
 
                 fetch(`/front/tasks/${taskId}/status`, {
                     method: 'POST',
