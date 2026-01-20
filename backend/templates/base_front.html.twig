@@ -14,6 +14,9 @@
         <link rel="stylesheet" href="{{ asset('css/accueil.css') }}">
         <link rel="stylesheet" href="{{ asset('css/projet.css') }}">
         <link rel="stylesheet" href="{{ asset('css/task.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/user.css') }}">
+
+        
     </head>
 
     <body>
@@ -22,30 +25,40 @@
 
                 <!-- Sidebar -->
                 <nav class="sidebar">
+                    
+                    <!-- HEADER SIDEBAR -->
+                    <div class="sidebar-header">
+                        <!-- Logo -->
+                        <div class="logo-box">
+                            BManager
+                        </div>
 
-                    <!-- Logo + Dark mode -->
-                    <div class="logo-box mb-4">
-                        BManager 
-                        <label class="switch" id="switch">
-                            <input type="checkbox">
-                            <span class="slider"></span>
-                        </label>
+                        <!-- Actions (Notifications + Dark Mode) -->
+                        <div class="sidebar-actions">
+                            <!-- 🔔 Notifications -->
+                            {% if app.user %}
+                                <div class="notif-wrapper">
+                                    <a href="#" class="notif-icon" id="notif-open">
+                                        <i class="fa-solid fa-bell"></i>
+                                        {% set unread = app.user.notifications|filter(n => not n.isRead)|length %}
+                                        {% if unread > 0 %}
+                                            <span class="notif-badge">{{ unread }}</span>
+                                        {% endif %}
+                                    </a>
+                                </div>
+                            {% endif %}
+
+                            <!-- 🌙 Dark Mode -->
+                            <div class="dark-mode-wrapper">
+                                <label class="switch" id="switch">
+                                    <input type="checkbox">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
                     </div>
 
-                    <!-- 🔔 Icône Notifications -->
-                    {% if app.user %}
-                        <div class="notif-wrapper mb-4">
-                            <a href="#" class="notif-icon" id="notif-open">
-                                <i class="fa-solid fa-bell"></i>
-
-                                {% set unread = app.user.notifications|filter(n => not n.isRead)|length %}
-                                {% if unread > 0 %}
-                                    <span class="notif-badge">{{ unread }}</span>
-                                {% endif %}
-                            </a>
-                        </div>
-                    {% endif %}
-
+                    <!-- NAVIGATION -->
                     <ul class="nav flex-column">
 
                         <!-- Dashboard -->
@@ -150,7 +163,7 @@
                 {% for notif in app.user.notifications|sort((a, b) => b.createdAt <=> a.createdAt) %}
                     <div class="notif-item {{ notif.isRead ? 'read' : 'unread' }}">
                         <div class="notif-message">
-                            <strong>{{ notif.createdAt|date('d/m/Y H:i') }}</strong><br>
+                            <strong>{{ notif.createdAt|date('d/m/Y H:i') }}</strong>
                             {{ notif.message }}
                         </div>
 
@@ -253,7 +266,7 @@
                 div.classList.add("notif-item", "unread");
                 div.innerHTML = `
                     <div class="notif-message">
-                        <strong>${data.createdAt}</strong><br>
+                        <strong>${data.createdAt}</strong>
                         ${data.message}
                     </div>
                 `;

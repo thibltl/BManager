@@ -8,7 +8,7 @@
         <div class="card2">
             <form method="post" class="form">
 
-                <h1 id="heading">Welcome Back!</h1>
+                <h1 id="heading">Connecte toi</h1>
 
                 {% if error %}
                     <div style="color: #ff6b6b; font-size: 14px; text-align: center;">
@@ -27,21 +27,16 @@
                     <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                         <path fill-rule="evenodd" d="M5 8a5 5 0 1110 0v2a2 2 0 012 2v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4a2 2 0 012-2V8zm8 0a3 3 0 00-6 0v2h6V8z" clip-rule="evenodd" />
                     </svg>
-                    <input type="password" name="password" class="input-field" placeholder="Password" required>
+                    <input type="password" name="password" class="input-field" placeholder="Mot de passe" required>
                 </div>
 
                 <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
 
-                <div class="field" style="justify-content: flex-start;">
-                    <label style="display: flex; align-items: center; gap: 6px; font-size: 12px;">
-                        <input type="checkbox" name="_remember_me">
-                        Remember me
-                    </label>
-                </div>
+                
 
                 <div class="btn" style="justify-content: center; gap: 1em; margin-top: 2em;">
-                    <button type="submit" class="button">Login</button>
-                    <a href="{{ path('app_register') }}" class="button">Register</a>
+                    <button type="submit" class="button">Se Connecter</button>
+                    <a href="{{ path('app_register') }}" class="button">S'inscrire</a>
                 </div>        
 
             </form>

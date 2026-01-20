@@ -1,42 +1,50 @@
-<!DOCTYPE html>
+{% extends 'base_front.html.twig' %}
 
-<title>User</title>
-
-<link rel="stylesheet" href="{{ asset('css/user.css') }}">
+{% block title %}Détail utilisateur{% endblock %}
 
 {% block body %}
-    <table class="card">
+<div class="user-show">
+
+    <table class="user-card">
         <tbody>
-            <tr class="title">
-                <td class="name">{{ user.name }}</td>
-            </tr>        
-            <tr class="content">
-                <td>{{ user.id }}</td>
+
+            <tr class="user-title">
+                <td class="user-name">{{ user.name }}</td>
             </tr>
-            <tr class="content">
-                <td>{{ user.email }}</td>
+
+            <tr class="user-row">
+                <td><strong>ID :</strong> {{ user.id }}</td>
             </tr>
-            <tr class="content">
+
+            <tr class="user-row">
+                <td><strong>Email :</strong> {{ user.email }}</td>
+            </tr>
+
+            <tr class="user-row">
                 <td>
+                    <strong>Rôles :</strong>
                     {% if user.roles is not empty %}
                         {% for role in user.roles %}
-                            <span class="badge badge-role">{{ role }}</span>
+                            <span class="user-role">{{ role }}</span>
                         {% endfor %}
                     {% else %}
                         Aucun rôle
                     {% endif %}
                 </td>
             </tr>
-            <tr class="content">
-                <td>{{ user.password }}</td>
+
+            <tr class="user-row">
+                <td><strong>Créé le :</strong> {{ user.createdAt|date('d/m/Y') }}</td>
             </tr>
-            <tr class="handle">
-                <td>{{ user.createdAt ? user.createdAt|date('d-m-Y') : '' }}</td>
-            </tr>
+
         </tbody>
     </table>
-    
-    <a href="{{ path('user_index') }}">back to list</a>
-    <a href="{{ path('user_edit', {'id': user.id}) }}">edit</a>
-    {{ include('user/_delete_form.html.twig') }}
+
+    <div class="user-actions">
+        <a href="{{ path('user_index') }}" class="btn-user secondary">Retour</a>
+        <a href="{{ path('user_edit', {'id': user.id}) }}" class="btn-user primary">Modifier</a>
+        {{ include('user/_delete_form.html.twig') }}
+    </div>
+
+</div>
 {% endblock %}
