@@ -35,18 +35,15 @@
 
                         <!-- Actions (Notifications + Dark Mode) -->
                         <div class="sidebar-actions">
-                            <!-- 🔔 Notifications -->
+                            <!-- 🔔 Notifications désactivées -->
                             {% if app.user %}
                                 <div class="notif-wrapper">
-                                    <a href="#" class="notif-icon" id="notif-open">
+                                    <a href="#" class="notif-icon disabled">
                                         <i class="fa-solid fa-bell"></i>
-                                        {% set unread = app.user.notifications|filter(n => not n.isRead)|length %}
-                                        {% if unread > 0 %}
-                                            <span class="notif-badge">{{ unread }}</span>
-                                        {% endif %}
                                     </a>
                                 </div>
                             {% endif %}
+
 
                             <!-- 🌙 Dark Mode -->
                             <div class="dark-mode-wrapper">
@@ -160,27 +157,18 @@
             </div>
 
             <div class="notif-content">
-                {% for notif in app.user.notifications|sort((a, b) => b.createdAt <=> a.createdAt) %}
-                    <div class="notif-item {{ notif.isRead ? 'read' : 'unread' }}">
-                        <div class="notif-message">
-                            <strong>{{ notif.createdAt|date('d/m/Y H:i') }}</strong>
-                            {{ notif.message }}
-                        </div>
-
-                        {% if not notif.isRead %}
-                            <a href="{{ path('notifications_read', {id: notif.id}) }}" class="notif-mark-read">
-                                Marquer comme lu
-                            </a>
-                        {% endif %}
+                <div class="notif-item read">
+                    <div class="notif-message">
+                        <strong>—</strong>
+                        Notifications désactivées
                     </div>
-                {% else %}
-                    <p class="text-muted">Aucune notification.</p>
-                {% endfor %}
+                </div>
             </div>
 
             <div class="notif-footer">
-                <a href="{{ path('notifications_read_all') }}" class="notif-read-all">Tout marquer comme lu</a>
+                <span class="notif-read-all text-muted">Notifications désactivées</span>
             </div>
+
         </div>
         {% endif %}
 

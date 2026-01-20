@@ -50,12 +50,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToMany(targetEntity: Tasks::class, inversedBy: 'users')]
     private Collection $tasks;
 
-    /**
-     * @var Collection<int, Notification>
-     */
-    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Notification::class, cascade: ['remove'])]
-    private Collection $notifications;
-
     #[ORM\Column]
     private bool $isVerified = false;
 
@@ -73,7 +67,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->projects = new ArrayCollection();
         $this->tasks = new ArrayCollection();
-        $this->notifications = new ArrayCollection();
         $this->createdAt = new \DateTimeImmutable();
     }
 
@@ -214,14 +207,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->isVerified = $isVerified;
         return $this;
-    }
-
-    /**
-     * @return Collection<int, Notification>
-     */
-    public function getNotifications(): Collection
-    {
-        return $this->notifications;
     }
 
     public function getNotificationPreferences(): array

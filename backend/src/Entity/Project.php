@@ -44,6 +44,9 @@ class Project
     {
         $this->tasks = new ArrayCollection();
         $this->users = new ArrayCollection();
+
+        // 🔥 Correction : date de création automatique
+        $this->project_createdAt = new \DateTime();
     }
 
     public function getId(): ?int

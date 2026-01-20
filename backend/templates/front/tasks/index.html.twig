@@ -20,20 +20,21 @@
                 {% endif %}
             {% endfor %}
 
-            {% if canCreate %}
-                <a href="{{ path('front_tasks_new') }}" class="btn-glass">
+            {# Construction de la liste des projets #}
+            {% set projects = [] %}
+            {% for t in tasks %}
+                {% if t.getTaskProject() and t.getTaskProject() not in projects %}
+                    {% set projects = projects|merge([t.getTaskProject()]) %}
+                {% endif %}
+            {% endfor %}
+
+            {% if canCreate and projects|length > 0 %}
+                <a href="{{ path('front_tasks_new', { projectId: projects[0].id }) }}" class="btn-glass">
                     <i class="bi bi-plus-circle"></i> Nouvelle tâche
                 </a>
             {% endif %}
         </div>
     </div>
-
-    {% set projects = [] %}
-    {% for t in tasks %}
-        {% if t.getTaskProject() and t.getTaskProject() not in projects %}
-            {% set projects = projects|merge([t.getTaskProject()]) %}
-        {% endif %}
-    {% endfor %}
 
     {# ----------------------------- #
        FILTRES
@@ -188,7 +189,6 @@
                                     <i class="bi bi-eye"></i> Voir
                                 </a>
 
-                                {# 🔒 Modifier et supprimer uniquement si membre du projet #}
                                 {% if t.taskProject.users.contains(app.user) %}
                                     <a href="{{ path('front_tasks_edit', {'id': t.id}) }}" class="btn-glass btn-small">
                                         <i class="bi bi-pencil"></i> Modifier
