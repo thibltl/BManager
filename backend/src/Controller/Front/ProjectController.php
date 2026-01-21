@@ -17,6 +17,8 @@ class ProjectController extends AbstractController
     #[Route('/front/project', name: 'front_project_index')]
     public function index(ProjectRepository $projectRepository): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_USER');
+
         $projects = $projectRepository->findForUser($this->getUser());
 
         return $this->render('front/project/index.html.twig', [
@@ -27,6 +29,8 @@ class ProjectController extends AbstractController
     #[Route('/front/project/{id}', name: 'front_project_show', requirements: ['id' => '\d+'])]
     public function show(Project $project): Response
     {
+        $this->denyAccessUnlessGrantedToProject($project);
+
         return $this->render('front/project/show.html.twig', [
             'project' => $project,
         ]);
@@ -38,12 +42,11 @@ class ProjectController extends AbstractController
         EntityManagerInterface $em,
         UserRepository $userRepository
     ): Response {
+        $this->denyAccessUnlessGranted('ROLE_USER');
+
         $project = new Project();
 
-        $users = $userRepository->findAll();
-        $availableUsers = array_filter($users, fn($u) =>
-            in_array('ROLE_USER', $u->getRoles())
-        );
+        $availableUsers = $userRepository->findByRole('ROLE_USER');
 
         $form = $this->createForm(ProjectType::class, $project, [
             'available_users' => $availableUsers,
@@ -52,6 +55,9 @@ class ProjectController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            $project->addUser($this->getUser());
+
             $em->persist($project);
             $em->flush();
 
@@ -70,11 +76,9 @@ class ProjectController extends AbstractController
         EntityManagerInterface $em,
         UserRepository $userRepository
     ): Response {
+        $this->denyAccessUnlessGrantedToProject($project);
 
-        $users = $userRepository->findAll();
-        $availableUsers = array_filter($users, fn($u) =>
-            in_array('ROLE_USER', $u->getRoles())
-        );
+        $availableUsers = $userRepository->findByRole('ROLE_USER');
 
         $form = $this->createForm(ProjectType::class, $project, [
             'available_users' => $availableUsers,
@@ -100,11 +104,20 @@ class ProjectController extends AbstractController
         Project $project,
         EntityManagerInterface $em
     ): Response {
+        $this->denyAccessUnlessGrantedToProject($project);
+
         if ($this->isCsrfTokenValid('delete'.$project->getId(), $request->request->get('_token'))) {
             $em->remove($project);
             $em->flush();
         }
 
         return $this->redirectToRoute('front_project_index');
+    }
+
+    private function denyAccessUnlessGrantedToProject(Project $project): void
+    {
+        if (!$project->getUsers()->contains($this->getUser())) {
+            throw $this->createAccessDeniedException('Accès refusé.');
+        }
     }
 }

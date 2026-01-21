@@ -3,11 +3,11 @@
 {% block title %}Détails de la tâche{% endblock %}
 
 {% block body %}
+
+{% if task.taskProject.users.contains(app.user) %}
+
 <div class="container mt-5">
 
-    {# =========================
-       CARD TÂCHE (STYLE INDEX)
-       ========================= #}
     <div class="task-card">
 
         <div class="task-header">
@@ -29,12 +29,8 @@
             {% endif %}
         </div>
 
-        {# =========================
-           META (PRIORITÉ / STATUT / DATES)
-           ========================= #}
         <div class="task-meta">
 
-            {# PRIORITÉ #}
             {% if task.getTaskPriority() %}
                 {% set priorityName = task.getTaskPriority().getPriorityName() %}
                 {% set priorityMap = {
@@ -52,7 +48,6 @@
                 </span>
             {% endif %}
 
-            {# STATUT #}
             {% if task.getTaskStatus() %}
                 {% set statusName = task.getTaskStatus().getStatusName() %}
                 {% set statusMap = {
@@ -84,15 +79,14 @@
             {% endif %}
         </div>
 
-        {# =========================
-           ACTIONS
-           ========================= #}
         <div class="task-actions">
 
-            <a href="{{ path('front_tasks_by_project', { id: task.taskProject.id }) }}"
-               class="btn-glass btn-small">
-                <i class="bi bi-arrow-left"></i> Retour
-            </a>
+            {% if task.taskProject.users.contains(app.user) %}
+                <a href="{{ path('front_tasks_by_project', { id: task.taskProject.id }) }}"
+                   class="btn-glass btn-small">
+                    <i class="bi bi-arrow-left"></i> Retour
+                </a>
+            {% endif %}
 
             {% if task.getTaskProject() %}
                 <a href="{{ path('front_project_show', {'id': task.taskProject.id}) }}"
@@ -117,9 +111,6 @@
         </div>
     </div>
 
-    {# =========================
-       HISTORIQUE (STYLE CARD)
-       ========================= #}
     <div class="task-card mt-4">
 
         <div class="kanban-title-t">
@@ -149,4 +140,11 @@
     </div>
 
 </div>
+
+{% else %}
+<div class="alert alert-danger mt-5">
+    Accès refusé.
+</div>
+{% endif %}
+
 {% endblock %}

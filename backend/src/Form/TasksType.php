@@ -17,7 +17,7 @@ class TasksType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $projectUsers = $options['project_users']; // injecté depuis le controller
+        $projectUsers = $options['project_users'];
 
         $builder
             ->add('task_title', null, [
@@ -39,7 +39,7 @@ class TasksType extends AbstractType
 
             ->add('task_priority', EntityType::class, [
                 'class' => Priority::class,
-                'choice_label' => 'priorityName', // 🔥 correction
+                'choice_label' => 'priorityName',
                 'label' => 'Priorité',
                 'placeholder' => 'Choisir une priorité',
                 'required' => true,
@@ -47,7 +47,7 @@ class TasksType extends AbstractType
 
             ->add('task_status', EntityType::class, [
                 'class' => Status::class,
-                'choice_label' => 'statusName', // 🔥 correction
+                'choice_label' => 'statusName',
                 'label' => 'Statut',
                 'placeholder' => 'Choisir un statut',
                 'required' => true,
@@ -67,14 +67,15 @@ class TasksType extends AbstractType
                     'size' => 5,
                 ],
             ]);
-
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => Tasks::class,
-            'project_users' => [], // paramètre custom
+            'project_users' => [],
         ]);
+
+        $resolver->setAllowedTypes('project_users', ['array']);
     }
 }

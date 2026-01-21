@@ -3,6 +3,9 @@
 {% block title %}Nouvelle tâche{% endblock %}
 
 {% block body %}
+
+{% if project.users.contains(app.user) %}
+
 <div class="container mt-5">
 
     <!-- Header avec titre et actions -->
@@ -37,4 +40,11 @@
     </div>
 
 </div>
+
+{% else %}
+<div class="alert alert-danger mt-5">
+    Accès refusé.
+</div>
+{% endif %}
+
 {% endblock %}

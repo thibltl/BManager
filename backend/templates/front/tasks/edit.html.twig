@@ -3,6 +3,9 @@
 {% block title %}Modifier la tâche{% endblock %}
 
 {% block body %}
+
+{% if task.taskProject.users.contains(app.user) %}
+
 <div class="container mt-5">
     <div class="task-card shadow-sm">
 
@@ -25,9 +28,12 @@
         </div>
 
         <div class="task-actions d-flex justify-content-between mt-4">
-            <a href="{{ path('front_tasks_by_project', { id: task.taskProject.id }) }}" class="btn-glass">
-                <i class="bi bi-arrow-left"></i> Retour à la liste
-            </a>
+
+            {% if task.taskProject.users.contains(app.user) %}
+                <a href="{{ path('front_tasks_by_project', { id: task.taskProject.id }) }}" class="btn-glass">
+                    <i class="bi bi-arrow-left"></i> Retour à la liste
+                </a>
+            {% endif %}
 
             <div class="d-flex gap-2">
                 {% if task.taskProject.users.contains(app.user) %}
@@ -48,7 +54,6 @@
 
     </div>
 
-    {# 🟦 BLOC HISTORIQUE DES MODIFICATIONS #}
     <div class="task-card shadow-sm mt-4">
         <h3 class="h5 mb-3">🕒 Historique des modifications</h3>
 
@@ -68,4 +73,11 @@
     </div>
 
 </div>
+
+{% else %}
+<div class="alert alert-danger mt-5">
+    Accès refusé.
+</div>
+{% endif %}
+
 {% endblock %}
