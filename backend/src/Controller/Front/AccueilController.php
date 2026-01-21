@@ -11,7 +11,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 final class AccueilController extends AbstractController
 {
-    #[Route('/', name: 'front_accueil')]
+    #[Route('/front', name: 'front_accueil')]
     public function accueil(
         ProjectRepository $projectRepository,
         TasksRepository $tasksRepository,
