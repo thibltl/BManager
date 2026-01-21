@@ -34,6 +34,15 @@ final class TasksController extends AbstractController
         ]);
     }
 
+    #[Route('/front/tasks', name: 'front_tasks_index')]
+    public function index(TasksRepository $tasksRepository): Response
+    {
+        return $this->render('front/tasks/index.html.twig', [
+            'tasks' => $tasksRepository->findAll(),
+        ]);
+    }
+
+
     /**
      * Création d’une tâche dans un projet
      */
