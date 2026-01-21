@@ -4,27 +4,36 @@
 
 {% block body %}
 <div class="container mt-5">
-    <div class="task-card shadow-sm">
-        <div class="task-header d-flex justify-content-between align-items-start mb-3">
-            <div>
-                <h1 class="h4 mb-1">{{ task.getTaskTitle() }}</h1>
+
+    {# =========================
+       CARD TÂCHE (STYLE INDEX)
+       ========================= #}
+    <div class="task-card">
+
+        <div class="task-header">
+            <div class="task-title-section">
+                <strong class="task-title">{{ task.getTaskTitle() }}</strong>
+
                 {% if task.getTaskDesc() %}
-                    <p class="text-muted mb-1">{{ task.getTaskDesc() }}</p>
+                    <small class="task-description">
+                        {{ task.getTaskDesc() }}
+                    </small>
                 {% endif %}
-            {% if task.getTaskProject() %}
-                <div class="task-actions mt-3">
-                    <a href="{{ path('front_project_show', {'id': task.getTaskProject().id}) }}" class="btn-glass">
-                        <i class="bi bi-eye"></i> Voir le projet : {{ task.getTaskProject().projectName }}
-                    </a>
-                </div>
-            {% endif %}
             </div>
+
             {% if task.getTaskDueDate() %}
-                <span class="task-date">{{ task.getTaskDueDate()|date('d F Y') }}</span>
+                <span class="task-date">
+                    <i class="bi bi-calendar-event"></i>
+                    {{ task.getTaskDueDate()|date('d F Y') }}
+                </span>
             {% endif %}
         </div>
 
-        <div class="task-meta d-flex flex-wrap gap-2 mb-3">
+        {# =========================
+           META (PRIORITÉ / STATUT / DATES)
+           ========================= #}
+        <div class="task-meta">
+
             {# PRIORITÉ #}
             {% if task.getTaskPriority() %}
                 {% set priorityName = task.getTaskPriority().getPriorityName() %}
@@ -36,7 +45,9 @@
                     'Tres eleve': 'tres-eleve'
                 } %}
                 {% set priorityClass = priorityMap[priorityName]|default('') %}
+
                 <span class="priority-badge {{ priorityClass ? 'priority-' ~ priorityClass : '' }}">
+                    <i class="bi bi-flag-fill"></i>
                     {{ priorityName }}
                 </span>
             {% endif %}
@@ -51,56 +62,90 @@
                     'En attente': 'en-attente'
                 } %}
                 {% set statusClass = statusMap[statusName]|default('') %}
+
                 <span class="status-badge {{ statusClass ? 'status-' ~ statusClass : '' }}">
+                    <i class="bi bi-circle-fill status-icon"></i>
                     {{ statusName }}
                 </span>
             {% endif %}
 
             {% if task.getTaskCreatedAt() %}
-                <span class="meta-pill">Créée le {{ task.getTaskCreatedAt()|date('d F Y') }}</span>
+                <span class="meta-pill">
+                    <i class="bi bi-plus-circle"></i>
+                    {{ task.getTaskCreatedAt()|date('d F Y') }}
+                </span>
             {% endif %}
+
             {% if task.getTaskLastChange() %}
-                <span class="meta-pill">Modifiée le {{ task.getTaskLastChange()|date('d F Y') }}</span>
+                <span class="meta-pill">
+                    <i class="bi bi-pencil"></i>
+                    {{ task.getTaskLastChange()|date('d F Y') }}
+                </span>
             {% endif %}
         </div>
 
-        <div class="task-actions d-flex justify-content-between mt-4">
-            <a href="{{ path('front_tasks_by_project', { id: task.taskProject.id }) }}" class="btn-glass">
-                <i class="bi bi-arrow-left"></i> Retour à la liste
+        {# =========================
+           ACTIONS
+           ========================= #}
+        <div class="task-actions">
+
+            <a href="{{ path('front_tasks_by_project', { id: task.taskProject.id }) }}"
+               class="btn-glass btn-small">
+                <i class="bi bi-arrow-left"></i> Retour
             </a>
 
-            <div class="d-flex gap-2">
+            {% if task.getTaskProject() %}
+                <a href="{{ path('front_project_show', {'id': task.taskProject.id}) }}"
+                   class="btn-glass btn-small">
+                    <i class="bi bi-folder2-open"></i>
+                    {{ task.getTaskProject().projectName }}
+                </a>
+            {% endif %}
 
-                {% if task.taskProject.users.contains(app.user) %}
-                    <a href="{{ path('front_tasks_edit', {'id': task.id}) }}" class="btn-glass">
-                        <i class="bi bi-pencil"></i> Modifier
-                    </a>
+            {% if task.taskProject.users.contains(app.user) %}
+                <a href="{{ path('front_tasks_edit', {'id': task.id}) }}"
+                   class="btn-glass btn-small">
+                    <i class="bi bi-pencil"></i> Modifier
+                </a>
 
-                    {{ include('front/tasks/_delete_form.html.twig', { task: task }) }}
-                {% endif %}
+                {{ include('front/tasks/_delete_form.html.twig', {
+                    task: task,
+                    btn_class: 'btn-glass-red btn-small'
+                }) }}
+            {% endif %}
 
-            </div>
         </div>
-
     </div>
 
-    {# 🟦 BLOC HISTORIQUE DES MODIFICATIONS #}
-    <div class="task-card shadow-sm mt-4">
-        <h3 class="h5 mb-3">🕒 Historique des modifications</h3>
+    {# =========================
+       HISTORIQUE (STYLE CARD)
+       ========================= #}
+    <div class="task-card mt-4">
 
-        <ul class="history-list">
-            {% for entry in task.history %}
-                <li>
-                    <strong>{{ entry.thUpdatedAt|date('d/m/Y H:i') }}</strong> — 
-                    {{ entry.thChangelog }}
-                    {% if entry.author %}
-                        <em>(par {{ entry.author.name }})</em>
-                    {% endif %}
-                </li>
-            {% else %}
-                <p class="text-muted">Aucune modification enregistrée.</p>
-            {% endfor %}
-        </ul>
+        <div class="kanban-title-t">
+            <i class="bi bi-clock-history"></i>
+            Historique des modifications
+        </div>
+
+        {% if task.history is not empty %}
+            <div class="task-meta">
+                {% for entry in task.history %}
+                    <span class="meta-pill">
+                        <i class="bi bi-clock"></i>
+                        {{ entry.thUpdatedAt|date('d/m/Y H:i') }}
+                        — {{ entry.thChangelog }}
+                        {% if entry.author %}
+                            ({{ entry.author.name }})
+                        {% endif %}
+                    </span>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="task-description">
+                Aucune modification enregistrée.
+            </p>
+        {% endif %}
+
     </div>
 
 </div>

@@ -4,23 +4,37 @@
 
 {% block body %}
 <div class="container mt-5">
-    <div class="card shadow-sm border-0">
-        <div class="card-header bg-success text-white">
-            <h1 class="h4 mb-0">Créer une nouvelle tâche</h1>
-        </div>
 
-        <div class="card-body">
-            {{ include('front/tasks/_form.html.twig', {
-                button_label: 'Créer',
-                project: project
-            }) }}
-        </div>
+    {# =========================
+       HEADER (STYLE INDEX)
+       ========================= #}
+    <div class="page-header-modern">
+        <div class="header-content">
+            <div class="header-title-section">
+                <h1 class="modern-title">Nouvelle tâche</h1>
+                <p class="header-subtitle">
+                    Projet : {{ project.projectName }}
+                </p>
+            </div>
 
-        <div class="card-footer d-flex justify-content-start gap-2">
-            <a href="{{ path('front_tasks_by_project', { id: project.id }) }}" class="btn-glass">
-                <i class="bi bi-arrow-left"></i> Retour à la liste
+            <a href="{{ path('front_tasks_by_project', { id: project.id }) }}"
+               class="btn-glass">
+                <i class="bi bi-arrow-left"></i> Retour
             </a>
         </div>
     </div>
+
+    {# =========================
+       FORM CARD (STYLE TASK)
+       ========================= #}
+    <div class="task-card">
+
+        {{ include('front/tasks/_form.html.twig', {
+            button_label: 'Créer',
+            project: project
+        }) }}
+
+    </div>
+
 </div>
 {% endblock %}
