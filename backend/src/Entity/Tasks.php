@@ -22,7 +22,7 @@ class Tasks
     #[ORM\Column(type: Types::TEXT)]
     private ?string $task_desc = null;
 
-    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     private ?\DateTimeImmutable $task_dueDate = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
@@ -38,17 +38,12 @@ class Tasks
     private ?Status $task_status = null;
 
     #[ORM\ManyToOne(inversedBy: 'tasks')]
+    #[ORM\JoinColumn(nullable: false)]
     private ?Project $task_project = null;
 
-    /**
-     * @var Collection<int, User>
-     */
     #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'tasks')]
     private Collection $users;
 
-    /**
-     * @var Collection<int, Th>
-     */
     #[ORM\OneToMany(mappedBy: 'task', targetEntity: Th::class, cascade: ['persist', 'remove'])]
     private Collection $history;
 
@@ -97,7 +92,7 @@ class Tasks
         return $this->task_dueDate;
     }
 
-    public function setTaskDueDate(\DateTimeImmutable $task_dueDate): static
+    public function setTaskDueDate(?\DateTimeImmutable $task_dueDate): static
     {
         $this->task_dueDate = $task_dueDate;
         $this->touch();
@@ -162,9 +157,6 @@ class Tasks
         return $this;
     }
 
-    /**
-     * @return Collection<int, User>
-     */
     public function getUsers(): Collection
     {
         return $this->users;
@@ -189,9 +181,6 @@ class Tasks
         return $this;
     }
 
-    /**
-     * @return Collection<int, Th>
-     */
     public function getHistory(): Collection
     {
         return $this->history;
@@ -234,9 +223,9 @@ class Tasks
         }
 
         $now = new \DateTimeImmutable();
-        $isTerminee = $this->task_status && method_exists($this->task_status, 'getName')
-            ? mb_strtolower($this->task_status->getName()) === 'terminée'
-            : false;
+        $isTerminee = $this->task_status
+            && method_exists($this->task_status, 'getStatusName')
+            && mb_strtolower($this->task_status->getStatusName()) === 'terminée';
 
         return $this->task_dueDate < $now && !$isTerminee;
     }

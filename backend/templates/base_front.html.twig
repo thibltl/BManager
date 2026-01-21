@@ -4,13 +4,9 @@
         <meta charset="UTF-8">
         <title>{% block title %}GestionProjet - Front{% endblock %}</title>
 
-        <!-- Bootstrap -->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-
-        <!-- FontAwesome -->
         <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 
-        <!-- Ton CSS personnalisé -->
         <link rel="stylesheet" href="{{ asset('css/accueil.css') }}">
         <link rel="stylesheet" href="{{ asset('css/projet.css') }}">
         <link rel="stylesheet" href="{{ asset('css/task.css') }}">
@@ -21,30 +17,22 @@
         <div class="page-background">
             <div class="layout">
 
-                <!-- Sidebar -->
+                {% if app.user %}
                 <nav class="sidebar">
-                    
-                    <!-- HEADER SIDEBAR -->
+
                     <div class="sidebar-header">
-                        <!-- Logo -->
                         <div class="logo-box">
                             <i class="fa-solid fa-briefcase me-2"></i>
                             BManager
                         </div>
 
-                        <!-- Actions (Notifications + Dark Mode) -->
                         <div class="sidebar-actions">
-                            <!-- 🔔 Notifications désactivées -->
-                            {% if app.user %}
-                                <div class="notif-wrapper">
-                                    <a href="#" class="notif-icon disabled">
-                                        <i class="fa-solid fa-bell"></i>
-                                    </a>
-                                </div>
-                            {% endif %}
+                            <div class="notif-wrapper">
+                                <a href="#" class="notif-icon disabled">
+                                    <i class="fa-solid fa-bell"></i>
+                                </a>
+                            </div>
 
-
-                            <!-- 🌙 Dark Mode -->
                             <div class="dark-mode-wrapper">
                                 <label class="switch" id="switch">
                                     <input type="checkbox">
@@ -54,11 +42,9 @@
                         </div>
                     </div>
 
-                    <!-- NAVIGATION PRINCIPALE -->
                     <div class="sidebar-content">
                         <ul class="nav flex-column">
 
-                            <!-- Dashboard -->
                             <li class="nav-item mb-2">
                                 <a href="{{ path('front_accueil') }}"
                                    class="nav-link {% if app.request.attributes.get('_route') == 'app_accueil' %}active{% endif %}">
@@ -66,7 +52,6 @@
                                 </a>
                             </li>
 
-                            <!-- Menu Projets -->
                             <li class="nav-item mb-2">
                                 <a class="nav-link d-flex justify-content-between align-items-center"
                                    data-bs-toggle="collapse" href="#menuProjets" role="button">
@@ -84,7 +69,6 @@
                                 </div>
                             </li>
 
-                            <!-- Menu Tâches -->
                             <li class="nav-item mb-2">
                                 <a class="nav-link d-flex justify-content-between align-items-center"
                                    data-bs-toggle="collapse" href="#menuTaches" role="button">
@@ -102,7 +86,6 @@
                                 </div>
                             </li>
 
-                            <!-- Menu Stats (admin) -->
                             {% if is_granted('ROLE_ADMIN') %}
                             <li class="nav-item mb-2">
                                 <a class="nav-link d-flex justify-content-between align-items-center"
@@ -111,10 +94,7 @@
                                     <i class="fa-solid fa-chevron-down"></i>
                                 </a>
                             </li>
-                            {% endif %}
 
-                            <!-- Menu Utilisateurs (admin) -->
-                            {% if is_granted('ROLE_ADMIN') %}
                             <li class="nav-item mb-2">
                                 <a class="nav-link d-flex justify-content-between align-items-center"
                                    data-bs-toggle="collapse" href="#menuUsers" role="button">
@@ -133,29 +113,23 @@
                             </li>
                             {% endif %}
 
-                            <!-- Déconnexion -->
-                            {% if app.user %}
                             <li class="nav-item mb-2">
                                 <a href="{{ path('app_logout') }}" class="nav-link">
                                     <i class="fa-solid fa-right-from-bracket me-2"></i> Déconnexion
                                 </a>
                             </li>
-                            {% endif %}
+
                         </ul>
                     </div>
                 </nav>
+                {% endif %}
 
-                <!-- Contenu principal -->
                 <main>
                     {% block body %}{% endblock %}
                 </main>
 
             </div>
         </div>
-
-        <!-- =============================== -->
-        <!-- 🔔 PANEL DE NOTIFICATIONS -->
-        <!-- =============================== -->
 
         {% if app.user %}
         <div id="notif-overlay" class="notif-overlay"></div>
@@ -178,11 +152,9 @@
             <div class="notif-footer">
                 <span class="notif-read-all text-muted">Notifications désactivées</span>
             </div>
-
         </div>
         {% endif %}
 
-        <!-- Scripts -->
         <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
@@ -204,73 +176,45 @@
                     localStorage.setItem('darkMode', 'disabled');
                 }
             });
-
-            // ============================
-            // 🔔 PANEL NOTIFICATIONS JS
-            // ============================
-
-            const notifOpen = document.getElementById("notif-open");
-            const notifPanel = document.getElementById("notif-panel");
-            const notifOverlay = document.getElementById("notif-overlay");
-            const notifClose = document.getElementById("notif-close");
-
-            if (notifOpen) {
-                notifOpen.addEventListener("click", (e) => {
-                    e.preventDefault();
-                    notifPanel.classList.add("open");
-                    notifOverlay.classList.add("visible");
-                });
-            }
-
-            if (notifClose) {
-                notifClose.addEventListener("click", () => {
-                    notifPanel.classList.remove("open");
-                    notifOverlay.classList.remove("visible");
-                });
-            }
-
-            if (notifOverlay) {
-                notifOverlay.addEventListener("click", () => {
-                    notifPanel.classList.remove("open");
-                    notifOverlay.classList.remove("visible");
-                });
-            }
         </script>
+
+        {% if app.user %}
         <script>
-            {% if app.user %}
-            const userId = {{ app.user.id }};
-            const url = "http://localhost:3000/.well-known/mercure?topic=" + encodeURIComponent("user/" + userId + "/notifications");
+            try {
+                const userId = {{ app.user.id }};
+                const url = "http://localhost:3000/.well-known/mercure?topic=" + encodeURIComponent("user/" + userId + "/notifications");
 
-            const eventSource = new EventSource(url);
+                const eventSource = new EventSource(url);
 
-            eventSource.onmessage = function(event) {
-                const data = JSON.parse(event.data);
+                eventSource.onmessage = function(event) {
+                    const data = JSON.parse(event.data);
 
-                // 🔥 Mettre à jour le badge
-                const badge = document.querySelector(".notif-badge");
-                if (badge) {
-                    badge.textContent = parseInt(badge.textContent || 0) + 1;
-                } else {
-                    const icon = document.querySelector(".notif-icon");
-                    const span = document.createElement("span");
-                    span.classList.add("notif-badge");
-                    span.textContent = "1";
-                    icon.appendChild(span);
-                }
+                    const badge = document.querySelector(".notif-badge");
+                    if (badge) {
+                        badge.textContent = parseInt(badge.textContent || 0) + 1;
+                    } else {
+                        const icon = document.querySelector(".notif-icon");
+                        const span = document.createElement("span");
+                        span.classList.add("notif-badge");
+                        span.textContent = "1";
+                        icon.appendChild(span);
+                    }
 
-                // 🔥 Ajouter la notification dans le panneau
-                const panel = document.querySelector(".notif-content");
-                const div = document.createElement("div");
-                div.classList.add("notif-item", "unread");
-                div.innerHTML = `
-                    <div class="notif-message">
-                        <strong>${data.createdAt}</strong>
-                        ${data.message}
-                    </div>
-                `;
-                panel.prepend(div);
-            };
-            {% endif %}
+                    const panel = document.querySelector(".notif-content");
+                    const div = document.createElement("div");
+                    div.classList.add("notif-item", "unread");
+                    div.innerHTML = `
+                        <div class="notif-message">
+                            <strong>${data.createdAt}</strong>
+                            ${data.message}
+                        </div>
+                    `;
+                    panel.prepend(div);
+                };
+            } catch (e) {
+                console.warn("Mercure indisponible.");
+            }
         </script>
+        {% endif %}
     </body>
 </html>

@@ -16,6 +16,8 @@
 
     <div class="projects-grid">
         {% for project in projects %}
+
+            {% if project.users.contains(app.user) %}
             <div class="project-card">
                 <div class="card-header">
                     <h5 class="project-title">{{ project.projectName }}</h5>
@@ -28,8 +30,10 @@
 
                 <div class="project-tasks">
                     <strong>Tâches :</strong>
+
                     {% if project.getTasks() is not empty %}
                         <div class="kanban-board">
+
                             {% for status in ['En cours', 'Terminee', 'En attente', 'En retard'] %}
                                 {% set statusClass = '' %}
                                 {% set statusKey = status|lower %}
@@ -107,8 +111,6 @@
                     </a>
 
                     {% if project.users.contains(app.user) %}
-
-                        {# 🟦 Bouton ajouté : Nouvelle tâche #}
                         <a href="{{ path('front_tasks_new', {'projectId': project.id}) }}"
                            class="btn btn-sm btn-outline-primary me-2">
                             <i class="bi bi-plus-circle"></i> Nouvelle tâche
@@ -122,12 +124,19 @@
                     {% endif %}
                 </div>
             </div>
+            {% endif %}
+
         {% else %}
             <p class="text-muted text-center">Aucun projet trouvé</p>
         {% endfor %}
     </div>
 
 </div>
+
+<!-- CSRF token pour le Kanban -->
+<script>
+const csrfToken = "{{ csrf_token('task_status') }}";
+</script>
 
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 
@@ -162,14 +171,16 @@ document.addEventListener('DOMContentLoaded', () => {
                         'Content-Type': 'application/json',
                         'X-Requested-With': 'XMLHttpRequest'
                     },
-                    body: JSON.stringify({ status: newStatus })
+                    body: JSON.stringify({
+                        status: newStatus,
+                        _token: csrfToken
+                    })
                 })
                 .then(res => {
                     if (!res.ok) throw new Error('HTTP ' + res.status);
                     return res.json();
                 })
                 .then(data => {
-                    console.log('Statut mis à jour :', data);
                     window.location.reload();
                 })
                 .catch(err => {

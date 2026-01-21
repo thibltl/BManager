@@ -3,6 +3,9 @@
 {% block title %}Détails du projet{% endblock %}
 
 {% block body %}
+
+{% if project.users.contains(app.user) %}
+
 <div class="container mt-5">
 
     <!-- Header avec titre et actions -->
@@ -17,12 +20,11 @@
                 <i class="fa-solid fa-arrow-left"></i> Retour
             </a>
 
-            {% if project.users.contains(app.user) %}
-                <a href="{{ path('front_project_edit', {'id': project.id}) }}" class="btn btn-sm btn-glass-project">
-                    <i class="fa-solid fa-pencil"></i> Modifier
-                </a>
-                {{ include('front/project/_delete_form.html.twig') }}
-            {% endif %}
+            <a href="{{ path('front_project_edit', {'id': project.id}) }}" class="btn btn-sm btn-glass-project">
+                <i class="fa-solid fa-pencil"></i> Modifier
+            </a>
+
+            {{ include('front/project/_delete_form.html.twig') }}
         </div>
     </div>
 
@@ -48,6 +50,7 @@
             </div>
 
             <div class="kanban-board">
+
                 {% for status in ['En cours', 'Terminee', 'En attente', 'En retard'] %}
                     {% set statusClass = '' %}
                     {% set statusKey = status|lower %}
@@ -114,11 +117,17 @@
                         </div>
                     </div>
                 {% endfor %}
+
             </div>
         </div>
     </div>
 
 </div>
+
+<!-- CSRF token pour le Kanban -->
+<script>
+const csrfToken = "{{ csrf_token('task_status') }}";
+</script>
 
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 <script>
@@ -143,14 +152,16 @@ document.addEventListener('DOMContentLoaded', () => {
                         'Content-Type': 'application/json',
                         'X-Requested-With': 'XMLHttpRequest'
                     },
-                    body: JSON.stringify({ status: newStatus })
+                    body: JSON.stringify({
+                        status: newStatus,
+                        _token: csrfToken
+                    })
                 })
                 .then(res => {
                     if (!res.ok) throw new Error('Erreur serveur');
                     return res.json();
                 })
                 .then(data => {
-                    console.log('Statut mis à jour :', data);
                     window.location.reload();
                 })
                 .catch(err => {
@@ -162,4 +173,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 </script>
+
+{% else %}
+<div class="alert alert-danger mt-5">
+    Accès refusé.
+</div>
+{% endif %}
+
 {% endblock %}

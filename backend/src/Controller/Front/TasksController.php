@@ -19,11 +19,29 @@ use Symfony\Component\Routing\Attribute\Route;
 final class TasksController extends AbstractController
 {
     /**
+     * Liste globale des tâches de l'utilisateur
+     */
+    #[Route('/', name: 'front_tasks_index', methods: ['GET'])]
+    public function index(TasksRepository $tasksRepository): Response
+    {
+        $this->denyAccessUnlessGranted('ROLE_USER');
+
+        $tasks = $tasksRepository->findForUser($this->getUser());
+
+        return $this->render('front/tasks/index.html.twig', [
+            'tasks' => $tasks,
+            'project' => null,
+        ]);
+    }
+
+    /**
      * Liste des tâches d’un projet
      */
     #[Route('/project/{id}', name: 'front_tasks_by_project', methods: ['GET'])]
     public function byProject(Project $project, TasksRepository $tasksRepository): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_USER');
+
         if (!$project->getUsers()->contains($this->getUser())) {
             throw $this->createAccessDeniedException('Accès refusé.');
         }
@@ -33,15 +51,6 @@ final class TasksController extends AbstractController
             'tasks' => $tasksRepository->findBy(['task_project' => $project]),
         ]);
     }
-
-    #[Route('/front/tasks', name: 'front_tasks_index')]
-    public function index(TasksRepository $tasksRepository): Response
-    {
-        return $this->render('front/tasks/index.html.twig', [
-            'tasks' => $tasksRepository->findAll(),
-        ]);
-    }
-
 
     /**
      * Création d’une tâche dans un projet
@@ -53,6 +62,8 @@ final class TasksController extends AbstractController
         EntityManagerInterface $em,
         TaskHistoryService $history
     ): Response {
+        $this->denyAccessUnlessGranted('ROLE_USER');
+
         $project = $em->getRepository(Project::class)->find($projectId);
 
         if (!$project) {
@@ -66,7 +77,6 @@ final class TasksController extends AbstractController
         $task = new Tasks();
         $task->setTaskProject($project);
 
-        // 🔥 Filtrage des utilisateurs assignables
         $assignableUsers = $project->getUsers()->filter(fn($u) =>
             in_array('ROLE_USER', $u->getRoles())
         )->toArray();
@@ -85,7 +95,6 @@ final class TasksController extends AbstractController
                 }
             }
 
-            // Statut par défaut
             if (!$task->getTaskStatus()) {
                 $defaultStatus = $em->getRepository(Status::class)
                     ->findOneBy(['status_name' => 'À faire']);
@@ -94,7 +103,6 @@ final class TasksController extends AbstractController
                 }
             }
 
-            // Priorité par défaut
             if (!$task->getTaskPriority()) {
                 $defaultPriority = $em->getRepository(Priority::class)
                     ->findOneBy(['priority_name' => 'Moyenne']);
@@ -126,6 +134,8 @@ final class TasksController extends AbstractController
     #[Route('/show/{id}', name: 'front_tasks_show', methods: ['GET'])]
     public function show(Tasks $task): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_USER');
+
         if (!$task->getTaskProject()->getUsers()->contains($this->getUser())) {
             throw $this->createAccessDeniedException('Accès refusé.');
         }
@@ -145,6 +155,8 @@ final class TasksController extends AbstractController
         EntityManagerInterface $em,
         TaskHistoryService $history
     ): Response {
+        $this->denyAccessUnlessGranted('ROLE_USER');
+
         if (!$task->getTaskProject()->getUsers()->contains($this->getUser())) {
             throw $this->createAccessDeniedException('Accès refusé.');
         }
@@ -156,7 +168,6 @@ final class TasksController extends AbstractController
         $oldDueDate  = $task->getTaskDueDate();
         $oldPriority = $task->getTaskPriority();
 
-        // 🔥 Filtrage des utilisateurs assignables
         $assignableUsers = $oldProject->getUsers()->filter(fn($u) =>
             in_array('ROLE_USER', $u->getRoles())
         )->toArray();
@@ -254,13 +265,15 @@ final class TasksController extends AbstractController
         EntityManagerInterface $em,
         TaskHistoryService $history
     ): Response {
+        $this->denyAccessUnlessGranted('ROLE_USER');
+
         if (!$task->getTaskProject()->getUsers()->contains($this->getUser())) {
             throw $this->createAccessDeniedException('Accès refusé.');
         }
 
         $project = $task->getTaskProject();
 
-        if ($this->isCsrfTokenValid('delete'.$task->getId(), $request->getPayload()->getString('_token'))) {
+        if ($this->isCsrfTokenValid('delete'.$task->getId(), $request->request->get('_token'))) {
             $history->log($task, "Tâche supprimée", $this->getUser());
 
             $em->remove($task);
@@ -283,6 +296,8 @@ final class TasksController extends AbstractController
         EntityManagerInterface $em,
         TaskHistoryService $history
     ): Response {
+        $this->denyAccessUnlessGranted('ROLE_USER');
+
         $task = $tasksRepository->find($id);
 
         if (!$task) {

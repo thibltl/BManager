@@ -12,7 +12,7 @@
                 <p class="header-subtitle">Gérez vos projets efficacement</p>
             </div>
 
-            {# 🔒 Bouton visible uniquement si l'utilisateur est membre d'au moins un projet #}
+            {# 🔒 Vérification stricte : l'utilisateur doit appartenir au projet #}
             {% set canCreate = false %}
             {% for t in tasks %}
                 {% if t.taskProject and t.taskProject.users.contains(app.user) %}
@@ -20,10 +20,12 @@
                 {% endif %}
             {% endfor %}
 
-            {# Construction de la liste des projets #}
+            {# 🔒 Construction sécurisée de la liste des projets #}
             {% set projects = [] %}
             {% for t in tasks %}
-                {% if t.getTaskProject() and t.getTaskProject() not in projects %}
+                {% if t.getTaskProject() 
+                    and t.getTaskProject().users.contains(app.user)
+                    and t.getTaskProject() not in projects %}
                     {% set projects = projects|merge([t.getTaskProject()]) %}
                 {% endif %}
             {% endfor %}
@@ -87,7 +89,9 @@
                 <select id="project" class="form-select">
                     <option value="">Tous les projets</option>
                     {% for project in projects %}
-                        <option value="{{ project.projectName }}">{{ project.projectName }}</option>
+                        {% if project.users.contains(app.user) %}
+                            <option value="{{ project.projectName }}">{{ project.projectName }}</option>
+                        {% endif %}
                     {% endfor %}
                 </select>
             </div>
@@ -105,6 +109,7 @@
        ----------------------------- #}
     <div class="kanban-board-t">
         {% for project in projects %}
+            {% if project.users.contains(app.user) %}
             <div class="kanban-column-t">
                 <div class="kanban-title-t">
                     <i class="bi bi-folder2-open"></i>
@@ -113,7 +118,9 @@
 
                 {% set tasksForProject = [] %}
                 {% for t in tasks %}
-                    {% if t.getTaskProject() and t.getTaskProject().id == project.id %}
+                    {% if t.getTaskProject() 
+                        and t.getTaskProject().id == project.id
+                        and t.getTaskProject().users.contains(app.user) %}
                         {% set tasksForProject = tasksForProject|merge([t]) %}
                     {% endif %}
                 {% endfor %}
@@ -202,13 +209,11 @@
                     {% endfor %}
                 {% endif %}
             </div>
+            {% endif %}
         {% endfor %}
     </div>
 </div>
 
-{# ----------------------------- #
-   SCRIPT DE FILTRAGE STRICT + PRIORITÉ
-   ----------------------------- #}
 <script>
 function applyFilters() {
     const search = document.getElementById('search').value.toLowerCase();

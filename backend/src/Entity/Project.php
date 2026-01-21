@@ -19,24 +19,16 @@ class Project
     #[ORM\Column(length: 255)]
     private ?string $project_name = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(type: Types::TEXT)]
     private ?string $project_desc = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTime $project_createdAt = null;
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+    private ?\DateTimeImmutable $project_createdAt = null;
 
-    /**
-     * @var Collection<int, Tasks>
-     */
     #[ORM\OneToMany(targetEntity: Tasks::class, mappedBy: 'task_project', orphanRemoval: true)]
     private Collection $tasks;
 
-    /**
-     * @var Collection<int, User>
-     *
-     * Project est maintenant PROPRIÉTAIRE de la relation ManyToMany.
-     */
-    #[ORM\ManyToMany(targetEntity: User::class)]
+    #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'projects')]
     #[ORM\JoinTable(name: 'project_members')]
     private Collection $users;
 
@@ -44,9 +36,7 @@ class Project
     {
         $this->tasks = new ArrayCollection();
         $this->users = new ArrayCollection();
-
-        // 🔥 Correction : date de création automatique
-        $this->project_createdAt = new \DateTime();
+        $this->project_createdAt = new \DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -76,20 +66,17 @@ class Project
         return $this;
     }
 
-    public function getProjectCreatedAt(): ?\DateTime
+    public function getProjectCreatedAt(): ?\DateTimeImmutable
     {
         return $this->project_createdAt;
     }
 
-    public function setProjectCreatedAt(\DateTime $project_createdAt): static
+    public function setProjectCreatedAt(\DateTimeImmutable $project_createdAt): static
     {
         $this->project_createdAt = $project_createdAt;
         return $this;
     }
 
-    /**
-     * @return Collection<int, Tasks>
-     */
     public function getTasks(): Collection
     {
         return $this->tasks;
@@ -114,9 +101,6 @@ class Project
         return $this;
     }
 
-    /**
-     * @return Collection<int, User>
-     */
     public function getUsers(): Collection
     {
         return $this->users;
@@ -126,13 +110,16 @@ class Project
     {
         if (!$this->users->contains($user)) {
             $this->users->add($user);
+            $user->addProject($this);
         }
         return $this;
     }
 
     public function removeUser(User $user): static
     {
-        $this->users->removeElement($user);
+        if ($this->users->removeElement($user)) {
+            $user->removeProject($this);
+        }
         return $this;
     }
 }
