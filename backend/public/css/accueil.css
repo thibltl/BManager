@@ -437,28 +437,125 @@ transparent
 }
 
 /* =========================================================
-   USERS
+   TABLEAU DES TÂCHES PAR UTILISATEUR
 ========================================================= */
 
-.users-block .user-card {
-    padding: 18px;
+body.dark-mode .table {
+    --bs-table-bg: var(--bg-card);
+    --bs-table-color: var(--text-main);
+    --bs-table-border-color: var(--border-subtle);
+}
+
+
+.user-task-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: var(--accent);
     border-radius: var(--radius-md);
+    overflow: hidden;
+}
+
+.user-task-table thead {
     background: linear-gradient(
-        135deg,
+        90deg,
         var(--primary-soft),
-        transparent
+        var(--accent-soft)
     );
-    text-align: center;
+}
+
+.user-task-table thead th {
+    padding: 1rem;
+    font-weight: 700;
+    text-align: left;
+    color: var(--text-main);
+    border-bottom: 2px solid var(--border-subtle);
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.user-task-table tbody tr {
+    background: var(--bg-panel);
     transition: var(--transition);
 }
 
-.users-block .user-card:hover {
+.user-task-table tbody tr:hover {
     background: linear-gradient(
-        135deg,
-        var(--primary),
-        var(--accent)
+        90deg,
+        var(--primary-soft),
+        transparent
     );
-    color: white;
+    transform: translateX(4px);
+}
+
+.user-task-table tbody td {
+    padding: 1rem;
+    color: var(--text-main);
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.user-task-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Badges dans le tableau */
+.user-task-table .badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 32px;
+    height: 32px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 0.875rem;
+    font-weight: 700;
+    transition: var(--transition);
+}
+
+.user-task-table .badge:hover {
+    transform: scale(1.1);
+}
+
+/* Mode sombre pour le tableau */
+body.dark-mode .user-task-table {
+    background: var(--bg-card);
+}
+
+body.dark-mode .user-task-table thead {
+    background: linear-gradient(
+        90deg,
+        rgba(167,139,250,0.2),
+        rgba(192,132,252,0.2)
+    );
+}
+
+body.dark-mode .user-task-table tbody tr {
+    background: var(--bg-card);
+}
+
+body.dark-mode .user-task-table tbody tr:hover {
+    background: linear-gradient(
+        90deg,
+        rgba(167,139,250,0.15),
+        transparent
+    );
+}
+
+body.dark-mode .user-task-table tbody td {
+    color: var(--text-main);
+    border-bottom-color: var(--border-subtle);
+}
+
+/* Style responsive */
+.table-responsive {
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+}
+
+body.dark-mode .table-responsive {
+    box-shadow: var(--shadow-md);
 }
 
 /* =========================================================

@@ -5,35 +5,35 @@
 {% block body %}
 <div class="container mt-5">
 
-    {# =========================
-       HEADER (STYLE INDEX)
-       ========================= #}
-    <div class="page-header-modern">
-        <div class="header-content">
-            <div class="header-title-section">
-                <h1 class="modern-title">Nouvelle tâche</h1>
-                <p class="header-subtitle">
-                    Projet : {{ project.projectName }}
-                </p>
-            </div>
-
-            <a href="{{ path('front_tasks_by_project', { id: project.id }) }}"
-               class="btn-glass">
-                <i class="bi bi-arrow-left"></i> Retour
-            </a>
+    <!-- Header avec titre et actions -->
+    <div class="d-flex align-items-center justify-content-between mb-4">
+        <div>
+            <h1 class="h4 m-0 page-title">
+                <i class="fa-solid fa-tasks me-2"></i>
+                Nouvelle tâche
+            </h1>
+            <p class="header-subtitle">Projet : {{ project.projectName }}</p>
         </div>
+
+        <a href="{{ path('front_project_show', {'id': project.id}) }}" class="btn btn-sm btn-glass-project">
+            <i class="fa-solid fa-arrow-left"></i> Retour
+        </a>
     </div>
 
-    {# =========================
-       FORM CARD (STYLE TASK)
-       ========================= #}
-    <div class="task-card">
+    <!-- Carte formulaire -->
+    <div class="task-card-form">
+        <div class="task-card-header">
+            <h5 class="task-card-title">
+                <i class="fa-solid fa-file-pen me-2"></i>
+                Informations de la tâche
+            </h5>
+        </div>
 
-        {{ include('front/tasks/_form.html.twig', {
-            button_label: 'Créer',
-            project: project
-        }) }}
-
+        <div class="task-card-body">
+            <div class="task-form">
+                {{ include('front/tasks/_form.html.twig') }}
+            </div>
+        </div>
     </div>
 
 </div>
