@@ -1,0 +1,36 @@
+{% if task is defined %}
+    {% if task.taskProject.users.contains(app.user) %}
+        {{ form_start(form, {'attr': {'class': 'needs-validation'}}) }}
+            <div class="mb-3">
+                {{ form_widget(form, {
+                    'attr': {
+                        'class': 'form-control'
+                    }
+                }) }}
+            </div>
+            <button type="submit" class="btn-glass">
+                <i class="bi bi-check-circle"></i> {{ button_label|default('Enregistrer') }}
+            </button>
+        {{ form_end(form) }}
+    {% else %}
+        <div class="alert alert-danger mt-3">Accès refusé.</div>
+    {% endif %}
+{% else %}
+    {# Cas création : on vérifie l'accès via project #}
+    {% if project.users.contains(app.user) %}
+        {{ form_start(form, {'attr': {'class': 'needs-validation'}}) }}
+            <div class="mb-3">
+                {{ form_widget(form, {
+                    'attr': {
+                        'class': 'form-control'
+                    }
+                }) }}
+            </div>
+            <button type="submit" class="btn-glass">
+                <i class="bi bi-check-circle"></i> {{ button_label|default('Enregistrer') }}
+            </button>
+        {{ form_end(form) }}
+    {% else %}
+        <div class="alert alert-danger mt-3">Accès refusé.</div>
+    {% endif %}
+{% endif %}

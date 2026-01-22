@@ -1,0 +1,25 @@
+{% extends 'base_front.html.twig' %}
+
+{% block title %}Nouveau projet{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+
+    <div class="project-card">
+        <div class="card-header">
+            <h5 class="project-title">Créer un nouveau projet</h5>
+        </div>
+
+        <div class="project-form mt-3">
+            {{ include('front/project/_form.html.twig') }}
+        </div>
+
+        <div class="project-actions mt-4 d-flex justify-content-between">
+            <a href="{{ path('front_project_index') }}" class="btn btn-sm btn-glass-project">
+                <i class="bi bi-arrow-left"></i> Retour à la liste
+            </a>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

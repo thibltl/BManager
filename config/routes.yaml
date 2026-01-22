@@ -1,0 +1,21 @@
+controllers:
+    resource:
+        path: ../src/Controller/
+        namespace: App\Controller
+    type: attribute
+
+admin_projects:
+  path: ../src/Controller/Admin/project
+  controller: App\Controller\Admin\ProjectController::index
+
+front_projects:
+  path: ../src/Controller/Front/project
+  controller: App\Controller\Front\ProjectController::index
+
+admin_tasks:
+  path: ../src/Controller/Admin/tasks
+  controller: App\Controller\Admin\TasksController::index
+
+front_tasks:
+  path: ../src/Controller/Front/tasks
+  controller: App\Controller\Front\TasksController::index

@@ -1,0 +1,13 @@
+{% extends 'base_front.html.twig' %}
+
+{% block body %}
+<div class="dashboard-block">
+    <h2 class="block-title">Préférences de notifications</h2>
+
+    {{ form_start(form) }}
+        {{ form_widget(form) }}
+
+        <button class="btn btn-primary mt-3">Enregistrer</button>
+    {{ form_end(form) }}
+</div>
+{% endblock %}

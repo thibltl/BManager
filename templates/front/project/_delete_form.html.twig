@@ -1,0 +1,8 @@
+<form method="post" action="{{ path('front_project_delete', {'id': project.id}) }}"
+      onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet élément ?');"
+      class="d-inline">
+    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ project.id) }}">
+    <button class="btn btn-sm btn-glass-project">
+        <i class="bi bi-trash"></i> Supprimer
+    </button>
+</form>

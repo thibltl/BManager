@@ -1,0 +1,193 @@
+{% extends 'base_front.html.twig' %}
+{% block title %}Gestion des Utilisateurs{% endblock %}
+
+{% block body %}
+<div class="users-page-wrapper">
+    
+    <!-- Header de la page -->
+    <div class="page-header-modern">
+        <div class="header-content">
+            <div class="header-title-section">
+                <h1 class="modern-title">
+                    <i class="fa-solid fa-users"></i>
+                    Gestion des Utilisateurs
+                </h1>
+                <p class="header-subtitle">Gérez les utilisateurs et leurs permissions</p>
+            </div>
+            <div class="header-actions">
+                <a href="{{ path('user_new') }}" class="btn-glass btn-primary">
+                    <i class="fa-solid fa-plus"></i>
+                    Nouvel utilisateur
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistiques rapides -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fa-solid fa-users"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-value">{{ users|length }}</div>
+                <div class="stat-label">Total Utilisateurs</div>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon admin">
+                <i class="fa-solid fa-user-shield"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-value">
+                    {% set admins = users|filter(u => 'ROLE_ADMIN' in u.roles)|length %}
+                    {{ admins }}
+                </div>
+                <div class="stat-label">Administrateurs</div>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon user">
+                <i class="fa-solid fa-user"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-value">
+                    {% set regularUsers = users|filter(u => 'ROLE_ADMIN' not in u.roles)|length %}
+                    {{ regularUsers }}
+                </div>
+                <div class="stat-label">Utilisateurs</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Table des utilisateurs -->
+    <div class="users-table-wrapper">
+        <div class="table-header">
+            <h2 class="table-title">
+                <i class="fa-solid fa-list"></i>
+                Liste des utilisateurs
+            </h2>
+            <div class="table-filters">
+                <input type="text" class="search-input" placeholder="Rechercher un utilisateur..." id="searchUser">
+            </div>
+        </div>
+
+        {% if users %}
+            <div class="table-responsive">
+                <table class="modern-table">
+                    <thead>
+                        <tr>
+                            <th>
+                                <i class="fa-solid fa-hashtag"></i>
+                                ID
+                            </th>
+                            <th>
+                                <i class="fa-solid fa-user"></i>
+                                Nom
+                            </th>
+                            <th>
+                                <i class="fa-solid fa-envelope"></i>
+                                Email
+                            </th>
+                            <th>
+                                <i class="fa-solid fa-shield-halved"></i>
+                                Rôles
+                            </th>
+                            <th>
+                                <i class="fa-solid fa-calendar"></i>
+                                Créé le
+                            </th>
+                            <th class="text-center">
+                                <i class="fa-solid fa-cog"></i>
+                                Actions
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for user in users %}
+                        <tr class="user-row">
+                            <td class="user-id">
+                                <span class="id-badge">#{{ user.id }}</span>
+                            </td>
+                            <td class="user-name">
+                                <div class="user-avatar">
+                                    {{ user.name|first|upper }}
+                                </div>
+                                <span class="user-name-text">{{ user.name }}</span>
+                            </td>
+                            <td class="user-email">
+                                <a href="mailto:{{ user.email }}" class="email-link">
+                                    {{ user.email }}
+                                </a>
+                            </td>
+                            <td class="user-roles">
+                                {% if 'ROLE_ADMIN' in user.roles %}
+                                    <span class="role-badge role-admin">
+                                        <i class="fa-solid fa-shield"></i>
+                                        Admin
+                                    </span>
+                                {% else %}
+                                    <span class="role-badge role-user">
+                                        <i class="fa-solid fa-user"></i>
+                                        User
+                                    </span>
+                                {% endif %}
+                            </td>
+                            <td class="user-date">
+                                <span class="date-text">
+                                    <i class="fa-regular fa-clock"></i>
+                                    {{ user.createdAt ? user.createdAt|date('d/m/Y') : '-' }}
+                                </span>
+                            </td>
+                            <td class="user-actions">
+                                <div class="action-buttons">
+                                    <a href="{{ path('user_show', {'id': user.id}) }}" 
+                                       class="btn-action btn-view" 
+                                       title="Voir">
+                                        <i class="fa-solid fa-eye"></i>
+                                    </a>
+                                    {% if is_granted('ROLE_ADMIN') %}
+                                        <a href="{{ path('user_edit', {'id': user.id}) }}" 
+                                           class="btn-action btn-edit" 
+                                           title="Modifier">
+                                            <i class="fa-solid fa-pen"></i>
+                                        </a>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <div class="empty-icon">
+                    <i class="fa-solid fa-users-slash"></i>
+                </div>
+                <h3 class="empty-title">Aucun utilisateur</h3>
+                <p class="empty-text">Il n'y a pas encore d'utilisateurs enregistrés.</p>
+                <a href="{{ path('user_new') }}" class="btn-glass btn-primary">
+                    <i class="fa-solid fa-plus"></i>
+                    Créer le premier utilisateur
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+// Recherche en temps réel
+document.getElementById('searchUser')?.addEventListener('input', function(e) {
+    const searchTerm = e.target.value.toLowerCase();
+    const rows = document.querySelectorAll('.user-row');
+    
+    rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        row.style.display = text.includes(searchTerm) ? '' : 'none';
+    });
+});
+</script>
+{% endblock %}

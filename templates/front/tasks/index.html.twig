@@ -1,0 +1,264 @@
+{% extends 'base_front.html.twig' %}
+
+{% block title %}Liste des tâches{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+
+    <div class="page-header-modern">
+        <div class="header-content">
+            <div class="header-title-section">
+                <h1 class="modern-title">Liste des tâches</h1>
+                <p class="header-subtitle">Gérez vos projets efficacement</p>
+            </div>
+
+            {# 🔒 Vérification stricte : l'utilisateur doit appartenir au projet #}
+            {% set canCreate = false %}
+            {% for t in tasks %}
+                {% if t.taskProject and t.taskProject.users.contains(app.user) %}
+                    {% set canCreate = true %}
+                {% endif %}
+            {% endfor %}
+
+            {# 🔒 Construction sécurisée de la liste des projets #}
+            {% set projects = [] %}
+            {% for t in tasks %}
+                {% if t.getTaskProject() 
+                    and t.getTaskProject().users.contains(app.user)
+                    and t.getTaskProject() not in projects %}
+                    {% set projects = projects|merge([t.getTaskProject()]) %}
+                {% endif %}
+            {% endfor %}
+
+            {% if canCreate and projects|length > 0 %}
+                <a href="{{ path('front_tasks_new', { projectId: projects[0].id }) }}" class="btn-glass">
+                    <i class="bi bi-plus-circle"></i> Nouvelle tâche
+                </a>
+            {% endif %}
+        </div>
+    </div>
+
+    {# ----------------------------- #
+       FILTRES
+       ----------------------------- #}
+    <div class="filters-wrapper">
+        <div class="filters-header">
+            <i class="bi bi-funnel"></i>
+            <span>Filtrer les tâches</span>
+        </div>
+        
+        <div class="filters-grid">
+            <div class="filter-item">
+                <label class="filter-label">
+                    <i class="bi bi-search"></i> Recherche
+                </label>
+                <input id="search" class="form-control" placeholder="Rechercher une tâche...">
+            </div>
+
+            <div class="filter-item">
+                <label class="filter-label">
+                    <i class="bi bi-check-circle"></i> Statut
+                </label>
+                <select id="status" class="form-select">
+                    <option value="">Tous les statuts</option>
+                    <option value="En cours">En cours</option>
+                    <option value="Terminee">Terminée</option>
+                    <option value="En retard">En retard</option>
+                    <option value="En attente">En attente</option>
+                </select>
+            </div>
+
+            <div class="filter-item">
+                <label class="filter-label">
+                    <i class="bi bi-exclamation-triangle"></i> Priorité
+                </label>
+                <select id="priority" class="form-select">
+                    <option value="">Toutes les priorités</option>
+                    <option value="Tres faible">Très faible</option>
+                    <option value="Faible">Faible</option>
+                    <option value="Modere">Modérée</option>
+                    <option value="Eleve">Élevée</option>
+                    <option value="Tres eleve">Très élevée</option>
+                </select>
+            </div>
+
+            <div class="filter-item">
+                <label class="filter-label">
+                    <i class="bi bi-folder"></i> Projet
+                </label>
+                <select id="project" class="form-select">
+                    <option value="">Tous les projets</option>
+                    {% for project in projects %}
+                        {% if project.users.contains(app.user) %}
+                            <option value="{{ project.projectName }}">{{ project.projectName }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <div class="filters-actions">
+            <button id="reset-filters" class="btn-reset">
+                <i class="bi bi-arrow-counterclockwise"></i> Réinitialiser les filtres
+            </button>
+        </div>
+    </div>
+
+    {# ----------------------------- #
+       KANBAN
+       ----------------------------- #}
+    <div class="kanban-board-t">
+        {% for project in projects %}
+            {% if project.users.contains(app.user) %}
+            <div class="kanban-column-t">
+                <div class="kanban-title-t">
+                    <i class="bi bi-folder2-open"></i>
+                    {{ project.projectName }}
+                </div>
+
+                {% set tasksForProject = [] %}
+                {% for t in tasks %}
+                    {% if t.getTaskProject() 
+                        and t.getTaskProject().id == project.id
+                        and t.getTaskProject().users.contains(app.user) %}
+                        {% set tasksForProject = tasksForProject|merge([t]) %}
+                    {% endif %}
+                {% endfor %}
+
+                {% if tasksForProject is not empty %}
+                    {% for t in tasksForProject %}
+                        <div class="task-card">
+
+                            <div class="task-header">
+                                <div class="task-title-section">
+                                    <strong class="task-title">{{ t.getTaskTitle() }}</strong>
+                                    {% if t.getTaskDesc() %}
+                                        <small class="task-description">{{ t.getTaskDesc() }}</small>
+                                    {% endif %}
+                                </div>
+                                {% if t.getTaskDueDate() %}
+                                    <span class="task-date">
+                                        <i class="bi bi-calendar-event"></i>
+                                        {{ t.getTaskDueDate()|date('d F Y') }}
+                                    </span>
+                                {% endif %}
+                            </div>
+
+                            <div class="task-meta">
+
+                                {% if t.getTaskPriority() %}
+                                    {% set priorityName = t.getTaskPriority().getPriorityName() %}
+                                    {% set priorityMap = {
+                                        'Tres faible': 'tres-faible',
+                                        'Faible': 'faible',
+                                        'Modere': 'modere',
+                                        'Eleve': 'eleve',
+                                        'Tres eleve': 'tres-eleve'
+                                    } %}
+                                    {% set priorityClass = priorityMap[priorityName]|default('') %}
+                                    <span class="priority-badge {{ priorityClass ? 'priority-' ~ priorityClass : '' }}">
+                                        <i class="bi bi-flag-fill"></i>
+                                        {{ priorityName }}
+                                    </span>
+                                {% endif %}
+
+                                {% if t.getTaskStatus() %}
+                                    {% set statusName = t.getTaskStatus().getStatusName() %}
+                                    {% set statusMap = {
+                                        'En cours': 'en-cours',
+                                        'Terminee': 'termine',
+                                        'En retard': 'retard',
+                                        'En attente': 'en-attente'
+                                    } %}
+                                    {% set statusClass = statusMap[statusName]|default('') %}
+                                    <span class="status-badge {{ statusClass ? 'status-' ~ statusClass : '' }}">
+                                        <i class="bi bi-circle-fill status-icon"></i>
+                                        {{ statusName }}
+                                    </span>
+                                {% endif %}
+
+                                {% if t.getTaskCreatedAt() %}
+                                    <span class="meta-pill">
+                                        <i class="bi bi-plus-circle"></i>
+                                        {{ t.getTaskCreatedAt()|date('d F Y') }}
+                                    </span>
+                                {% endif %}
+                                {% if t.getTaskLastChange() %}
+                                    <span class="meta-pill">
+                                        <i class="bi bi-pencil"></i>
+                                        {{ t.getTaskLastChange()|date('d F Y') }}
+                                    </span>
+                                {% endif %}
+                            </div>
+
+                            <div class="task-actions">
+                                <a href="{{ path('front_tasks_show', {'id': t.id}) }}" class="btn-glass btn-small">
+                                    <i class="bi bi-eye"></i> Voir
+                                </a>
+
+                                {% if t.taskProject.users.contains(app.user) %}
+                                    <a href="{{ path('front_tasks_edit', {'id': t.id}) }}" class="btn-glass btn-small">
+                                        <i class="bi bi-pencil"></i> Modifier
+                                    </a>
+
+                                    {{ include('front/tasks/_delete_form.html.twig', { task: t, btn_class: 'btn-glass-red btn-small' }) }}
+                                {% endif %}
+                            </div>
+
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+function applyFilters() {
+    const search = document.getElementById('search').value.toLowerCase();
+    const status = document.getElementById('status').value;
+    const project = document.getElementById('project').value;
+    const priority = document.getElementById('priority').value;
+
+    document.querySelectorAll('.kanban-column-t').forEach(column => {
+        const columnTitle = column.querySelector('.kanban-title-t').textContent.trim();
+        let visibleTasks = 0;
+
+        column.querySelectorAll('.task-card').forEach(card => {
+            const title = card.querySelector('.task-title').textContent.toLowerCase();
+            const desc = (card.querySelector('.task-description')?.textContent || "").toLowerCase();
+            const cardStatus = card.querySelector('.status-badge').textContent.trim();
+            const cardPriority = card.querySelector('.priority-badge').textContent.trim();
+
+            const matchSearch = !search || title.includes(search) || desc.includes(search);
+            const matchStatus = !status || cardStatus === status;
+            const matchProject = !project || columnTitle === project;
+            const matchPriority = !priority || cardPriority === priority;
+
+            const isVisible = matchSearch && matchStatus && matchProject && matchPriority;
+
+            card.style.display = isVisible ? "block" : "none";
+            if (isVisible) visibleTasks++;
+        });
+
+        column.style.display = visibleTasks > 0 ? "block" : "none";
+    });
+}
+
+["search", "status", "project", "priority"].forEach(id => {
+    document.getElementById(id).addEventListener(id === "search" ? "input" : "change", applyFilters);
+});
+
+document.getElementById("reset-filters").addEventListener("click", () => {
+    document.getElementById("search").value = "";
+    document.getElementById("status").value = "";
+    document.getElementById("project").value = "";
+    document.getElementById("priority").value = "";
+    applyFilters();
+});
+
+window.addEventListener("DOMContentLoaded", applyFilters);
+</script>
+
+{% endblock %}

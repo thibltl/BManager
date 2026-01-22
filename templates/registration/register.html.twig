@@ -1,0 +1,70 @@
+{% extends 'security/login_layout.html.twig' %}
+
+{% block title %}Inscription{% endblock %}
+
+{% block body %}
+<div class="login-wrapper">
+    <div class="card">
+        <div class="card2">
+            <form method="post" class="form">
+
+                <h1 id="heading">Creer votre compte</h1>
+
+                {# Affichage des erreurs éventuelles #}
+                {% for flash_error in app.flashes('verify_email_error') %}
+                    <div style="color: #ff6b6b; font-size: 14px; text-align: center;">
+                        {{ flash_error }}
+                    </div>
+                {% endfor %}
+
+                {# Champ pseudo #}
+                <div class="field">
+                    <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M10 2a6 6 0 100 12A6 6 0 0010 2zM2 18a8 8 0 0116 0H2z" />
+                    </svg>
+                    {{ form_row(registrationForm.name, {
+                        'attr': {
+                            'class': 'input-field',
+                            'placeholder': 'Pseudo'
+                        }
+                    }) }}
+                </div>
+
+                {# Champ email #}
+                <div class="field">
+                    <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M2 5a2 2 0 012-2h12a2 2 0 012 2v10a2 2 0 01-2 2H4a2 2 0 01-2-2V5zm2 0v10h12V5H4zm3 2a1 1 0 100 2h6a1 1 0 100-2H7z" />
+                    </svg>
+                    {{ form_row(registrationForm.email, {
+                        'attr': {
+                            'class': 'input-field',
+                            'placeholder': 'Email'
+                        }
+                    }) }}
+                </div>
+
+                {# Champ mot de passe #}
+                <div class="field">
+                    <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M5 8a5 5 0 1110 0v2a2 2 0 012 2v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4a2 2 0 012-2V8zm8 0a3 3 0 00-6 0v2h6V8z" clip-rule="evenodd" />
+                    </svg>
+                    {{ form_row(registrationForm.plainPassword, {
+                        'attr': {
+                            'class': 'input-field',
+                            'placeholder': 'Mot de passe'
+                        }
+                    }) }}
+                </div>
+
+                
+
+                {# Boutons #}
+                <div class="btn" style="justify-content: center; gap: 1em; margin-top: 2em;">
+                    <button type="submit" class="button">S'inscrire</button>
+                    <a href="{{ path('app_login') }}" class="button">Se Connecter</a>
+                </div>        
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
