@@ -1,0 +1,50 @@
+{% extends 'base_front.html.twig' %}
+
+{% block title %}Nouvel utilisateur{% endblock %}
+
+{% block body %}
+<div class="users-page-wrapper">
+    
+    <!-- Header de la page -->
+    <div class="page-header-modern">
+        <div class="header-content">
+            <div class="header-title-section">
+                <h1 class="modern-title">
+                    <i class="fa-solid fa-user-plus"></i>
+                    Créer un nouvel utilisateur
+                </h1>
+                <p class="header-subtitle">Ajoutez un nouvel utilisateur au système</p>
+            </div>
+            <div class="header-actions">
+                <a href="{{ path('user_index') }}" class="btn-glass btn-secondary">
+                    <i class="fa-solid fa-arrow-left"></i>
+                    Retour
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Formulaire -->
+    <div class="users-table-wrapper">
+        <div class="form-card">
+            <div class="form-header">
+                <h2 class="form-title">
+                    <i class="fa-solid fa-file-pen"></i>
+                    Informations de l'utilisateur
+                </h2>
+            </div>
+            
+            <div class="form-body">
+                {{ include('user/_form.html.twig') }}
+            </div>
+
+            <div class="form-footer">
+                <a href="{{ path('user_index') }}" class="btn-glass btn-secondary">
+                    <i class="fa-solid fa-times"></i>
+                    Annuler
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,83 @@
+{% extends 'base_front.html.twig' %}
+
+{% block title %}Modifier la tâche{% endblock %}
+
+{% block body %}
+
+{% if task.taskProject.users.contains(app.user) %}
+
+<div class="container mt-5">
+    <div class="task-card shadow-sm">
+
+        <div class="task-header d-flex justify-content-between align-items-start mb-3">
+            <div>
+                <h1 class="h4 mb-1">Modifier : {{ task.getTaskTitle() }}</h1>
+
+                {% if task.getTaskProject() %}
+                    <div class="task-actions mt-3">
+                        <a href="{{ path('front_project_show', {'id': task.getTaskProject().id}) }}" class="btn-glass">
+                            <i class="bi bi-eye"></i> Voir le projet : {{ task.getTaskProject().projectName }}
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+
+            {% if task.getTaskDueDate() %}
+                <span class="task-date">{{ task.getTaskDueDate()|date('d F Y') }}</span>
+            {% endif %}
+        </div>
+
+        <div class="task-actions d-flex justify-content-between mt-4">
+
+            {% if task.taskProject.users.contains(app.user) %}
+                <a href="{{ path('front_tasks_by_project', { id: task.taskProject.id }) }}" class="btn-glass">
+                    <i class="bi bi-arrow-left"></i> Retour à la liste
+                </a>
+            {% endif %}
+
+            <div class="d-flex gap-2">
+                {% if task.taskProject.users.contains(app.user) %}
+                    {{ include('front/tasks/_delete_form.html.twig', { task: task }) }}
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="task-form mt-4">
+            {{ form_start(form) }}
+                {{ form_widget(form) }}
+
+                <button class="btn-glass mt-3">
+                    <i class="bi bi-check2"></i> Enregistrer les modifications
+                </button>
+            {{ form_end(form) }}
+        </div>
+
+    </div>
+
+    <div class="task-card shadow-sm mt-4">
+        <h3 class="h5 mb-3">🕒 Historique des modifications</h3>
+
+        <ul class="history-list">
+            {% for entry in task.history %}
+                <li>
+                    <strong>{{ entry.thUpdatedAt|date('d/m/Y H:i') }}</strong> — 
+                    {{ entry.thChangelog }}
+                    {% if entry.author %}
+                        <em>(par {{ entry.author.name }})</em>
+                    {% endif %}
+                </li>
+            {% else %}
+                <p class="text-muted">Aucune modification enregistrée.</p>
+            {% endfor %}
+        </ul>
+    </div>
+
+</div>
+
+{% else %}
+<div class="alert alert-danger mt-5">
+    Accès refusé.
+</div>
+{% endif %}
+
+{% endblock %}

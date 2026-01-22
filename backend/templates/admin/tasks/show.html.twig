@@ -1,0 +1,66 @@
+{% extends 'base_admin.html.twig' %}
+
+{% block title %}Détails de la tâche{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-info text-white">
+            <h1 class="h4 mb-0">Détails de la tâche</h1>
+        </div>
+        <div class="card-body">
+            <table class="table table-striped table-hover align-middle">
+                <tbody>
+                    <tr>
+                        <th scope="row">ID</th>
+                        <td>{{ task.id }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Titre</th>
+                        <td>{{ task.taskTitle }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Description</th>
+                        <td>{{ task.taskDesc }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Échéance</th>
+                        <td>{{ task.taskDueDate ? task.taskDueDate|date('Y-m-d') : '' }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Créée le</th>
+                        <td>{{ task.taskCreatedAt ? task.taskCreatedAt|date('Y-m-d') : '' }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Dernière modification</th>
+                        <td>{{ task.taskLastChange ? task.taskLastChange|date('Y-m-d') : '' }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Priorité</th>
+                        <td>{{ task.getTaskPriority().getPriorityName() }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Statut</th>
+                        <td>{{ task.getTaskStatus().getStatusName() }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Projet</th>
+                        <td>{{ task.getTaskProject().getProjectName() }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="card-footer d-flex justify-content-between">
+            <a href="{{ path('admin_tasks_index') }}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Retour à la liste
+            </a>
+            <div>
+                <a href="{{ path('admin_tasks_edit', {'id': task.id}) }}" class="btn btn-outline-primary me-2">
+                    <i class="bi bi-pencil"></i> Modifier
+                </a>
+                {{ include('admin/tasks/_delete_form.html.twig') }}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

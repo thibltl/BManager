@@ -1,0 +1,716 @@
+/* =========================================================
+   GLASS RADIO GROUP - Style Violet
+========================================================= */
+
+.glass-radio-group {
+  display: flex;
+  position: relative;
+  background: linear-gradient(
+    180deg,
+    var(--bg-card),
+    rgba(255,255,255,0.85)
+  );
+  border-radius: var(--radius-lg);
+  backdrop-filter: blur(12px);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  width: auto;           
+  min-width: 200px;     
+  flex-shrink: 0;
+  border: 1px solid var(--border-subtle);
+}
+
+body.dark-mode .glass-radio-group {
+  background: linear-gradient(
+    180deg,
+    var(--bg-card),
+    #160a3a
+  );
+}
+
+.glass-radio-group input {
+  display: none;
+}
+
+.glass-radio-group .d-flex {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  padding: 0.6rem 1.2rem;
+  cursor: pointer;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  color: var(--text-muted);
+  position: relative;
+  z-index: 2;
+  transition: var(--transition);
+}
+
+.glass-radio-group .d-flex:hover {
+  color: var(--primary);
+}
+
+.glass-radio-group input:checked + .d-flex {
+  color: white;
+}
+
+.glass-glider {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: calc(100% / 3);  
+  border-radius: var(--radius-md);
+  z-index: 1;
+  transition:
+    transform 0.5s cubic-bezier(0.37, 1.95, 0.66, 0.56),
+    background 0.4s ease-in-out,
+    box-shadow 0.4s ease-in-out;
+}
+
+#filter-all:checked ~ .glass-glider {
+  transform: translateX(0%);
+  background: linear-gradient(90deg, var(--primary), var(--accent));
+  box-shadow: var(--shadow-sm);
+}
+
+#filter-recent:checked ~ .glass-glider {
+  transform: translateX(100%);
+  background: linear-gradient(90deg, var(--secondary), #38bdf8);
+  box-shadow: var(--shadow-sm);
+}
+
+#filter-atoz:checked ~ .glass-glider {
+  transform: translateX(200%);
+  background: linear-gradient(90deg, var(--accent), #c084fc);
+  box-shadow: var(--shadow-sm);
+}
+
+/* =========================================================
+   PROJECTS GRID
+========================================================= */
+
+.projects-grid {
+  display: flex;
+  flex-direction: column; 
+  gap: 20px;              
+}
+
+.project-card {
+  width: 100%;
+  background: linear-gradient(
+    180deg,
+    var(--bg-card),
+    rgba(255,255,255,0.85)
+  );
+  border-radius: var(--radius-lg);
+  padding: 26px;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+  border: 1px solid var(--border-subtle);
+}
+
+body.dark-mode .project-card {
+  background: linear-gradient(
+    180deg,
+    var(--bg-card),
+    #160a3a
+  );
+}
+
+.project-card:hover,
+.project-card:focus {
+  background-color: var(--accent);
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-md);
+}
+
+body.dark-mode .project-card:hover,
+body.dark-mode .project-card:focus {
+  background: linear-gradient(
+    180deg,
+    var(--bg-card),
+    #160a3a
+  ) !important;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.project-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin: 0;
+  background: linear-gradient(
+    90deg,
+    var(--primary),
+    var(--accent)
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.project-date {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.project-desc {
+  color: var(--text-main);
+  margin-bottom: 1.5rem;
+}
+
+.project-card .project-desc i {
+  color: var(--primary);
+  margin-right: 0.5rem;
+}
+
+.project-tasks ul {
+  padding-left: 20px;
+  margin: 0;
+}
+
+.task-date {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+/* =========================================================
+   BUTTONS
+========================================================= */
+
+.project-actions .btn-sm {
+  cursor: pointer;
+  position: relative;
+  padding: 10px 24px;
+  font-size: 12px;
+  color: var(--primary);
+  border: 2px solid var(--primary);
+  border-radius: 34px;
+  background-color: transparent;
+  font-weight: 600;
+  transition: all 0.3s cubic-bezier(0.23, 1, 0.320, 1);
+  overflow: hidden;
+}
+
+.project-actions .btn-sm::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 50px;
+  height: 50px;
+  border-radius: inherit;
+  scale: 0;
+  z-index: -1;
+  background: linear-gradient(90deg, var(--primary), var(--accent));
+  transition: all 0.6s cubic-bezier(0.23, 1, 0.320, 1);
+}
+
+.project-actions .btn-sm:hover::before {
+  scale: 3;
+}
+
+.project-actions .btn-sm:hover {
+  color: #ffffff;
+  scale: 1.1;
+  box-shadow: var(--shadow-sm);
+}
+
+.project-actions .btn-sm:active {
+  scale: 1;
+}
+
+/* Nouveau Projet bouton */
+
+.btn-glass-project {
+  cursor: pointer;
+  position: relative;
+  padding: 10px 24px;
+  font-size: 12px;
+  color: var(--primary);
+  border: 2px solid var(--primary);
+  border-radius: 34px;
+  background-color: transparent;
+  font-weight: 600;
+  transition: all 0.3s cubic-bezier(0.23, 1, 0.320, 1);
+  overflow: hidden;
+}
+
+.btn-glass-project::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 50px;
+  height: 50px;
+  border-radius: inherit;
+  scale: 0;
+  z-index: -1;
+  background: linear-gradient(90deg, var(--primary), var(--accent));
+  transition: all 0.6s cubic-bezier(0.23, 1, 0.320, 1);
+}
+
+.btn-glass-project:hover::before {
+  scale: 3;
+}
+
+.btn-glass-project:hover {
+  color: #ffffff;
+  scale: 1.1;
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-glass-project:active {
+  scale: 1;
+}
+
+/* =========================================================
+   PAGE TITLE
+========================================================= */
+
+.page-title {
+  background: linear-gradient(
+    90deg,
+    var(--primary),
+    var(--accent)
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: none;
+  font-weight: 700;
+  font-size: 2rem;
+}
+
+/* =========================================================
+   KANBAN BOARD
+========================================================= */
+
+.kanban-board {
+  display: flex;
+  gap: 20px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.kanban-column {
+  flex: 1;
+  min-width: 200px;
+  background: linear-gradient(
+    180deg,
+    var(--bg-card),
+    rgba(255,255,255,0.85)
+  );
+  backdrop-filter: blur(10px);
+  border-radius: var(--radius-lg);
+  padding: 15px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-subtle);
+}
+
+body.dark-mode .kanban-column {
+  background: linear-gradient(
+    180deg,
+    var(--bg-card),
+    #160a3a
+  );
+}
+
+.kanban-title {
+  text-align: center;
+  font-weight: bold;
+  margin-bottom: 10px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  color: white;
+  font-size: 0.9rem;
+}
+
+.status-en-cours { 
+  background: linear-gradient(90deg, var(--primary), var(--accent));
+}
+
+.status-termine { 
+  background: linear-gradient(90deg, #22c55e, #4ade80);
+}
+
+.status-retard { 
+  background: linear-gradient(90deg, #ef4444, #f97316);
+}
+
+.status-en-attente { 
+  background: linear-gradient(90deg, #facc15, #fb923c);
+}
+
+.task-card {
+  background: var(--bg-panel);
+  border-radius: var(--radius-md);
+  padding: 10px;
+  margin-bottom: 10px;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+}
+
+.task-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+/* =========================================================
+   PRIORITY BADGES
+========================================================= */
+
+.priority-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  transition: var(--transition);
+}
+
+.priority-badge.priority-tres-faible {
+  background-color: rgba(156, 163, 175, 0.15);
+  color: var(--text-muted);
+  border: 1px solid rgba(156, 163, 175, 0.3);
+}
+
+.priority-badge.priority-faible {
+  background-color: var(--primary-soft);
+  color: var(--primary);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.priority-badge.priority-modere {
+  background-color: rgba(251, 191, 36, 0.15);
+  color: #d97706;
+  border: 1px solid rgba(251, 191, 36, 0.3);
+}
+
+.priority-badge.priority-eleve {
+  background-color: rgba(34, 197, 94, 0.15);
+  color: #16a34a;
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.priority-badge.priority-tres-eleve {
+  background-color: rgba(239, 68, 68, 0.15);
+  color: #dc2626;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  animation: pulseBadge 2s infinite;
+}
+
+/* Animation pulse */
+@keyframes pulseBadge {
+  0% { 
+    transform: scale(1); 
+    box-shadow: 0 0 6px rgba(239, 68, 68, 0.4);
+  }
+  50% { 
+    transform: scale(1.05); 
+    box-shadow: 0 0 10px rgba(239, 68, 68, 0.6);
+  }
+  100% { 
+    transform: scale(1); 
+    box-shadow: 0 0 6px rgba(239, 68, 68, 0.4);
+  }
+}
+
+/* =========================================================
+   SHOW PROJECT - AMÉLIORATIONS
+========================================================= */
+
+.tasks-header {
+    display: flex;
+    align-items: center;
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    color: var(--text-main);
+    font-weight: 700;
+}
+
+.tasks-header i {
+    color: var(--primary);
+}
+
+.task-title-link {
+    text-decoration: none;
+    color: var(--text-main);
+    transition: var(--transition);
+}
+
+.task-title-link:hover {
+    color: var(--primary);
+}
+
+.task-title-link:hover .task-title {
+    text-decoration: underline;
+}
+
+.task-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    cursor: grab;
+}
+
+.task-header:active {
+    cursor: grabbing;
+}
+
+.empty-state-text {
+    text-align: center;
+    padding: 2rem 1rem;
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+.empty-state-text i {
+    display: block;
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    opacity: 0.3;
+}
+
+/* Ghost pendant le drag */
+.drag-ghost {
+    opacity: 0.4;
+    background: linear-gradient(
+        90deg,
+        var(--primary-soft),
+        var(--accent-soft)
+    );
+    transform: rotate(2deg);
+}
+
+/* Animation des icônes */
+.fa-folder-open {
+    animation: iconBounce 2s infinite;
+}
+
+@keyframes iconBounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-3px); }
+}
+
+/* =========================================================
+   PROJECT FORM STYLES
+========================================================= */
+
+.project-form {
+    padding: 1.5rem 0;
+}
+
+.project-form .form-group,
+.project-form .mb-3 {
+    margin-bottom: 1.5rem;
+}
+
+.project-form label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    color: var(--text-main);
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+}
+
+.project-form input[type="text"],
+.project-form input[type="date"],
+.project-form textarea,
+.project-form select {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    border: 2px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    background: var(--bg-panel);
+    color: var(--text-main);
+    font-size: 1rem;
+    transition: var(--transition);
+}
+
+.project-form textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+.project-form input:focus,
+.project-form textarea:focus,
+.project-form select:focus {
+    outline: none;
+    border-color: var(--primary);
+    background: linear-gradient(
+        90deg,
+        var(--primary-soft),
+        transparent
+    );
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.project-form .btn,
+.project-form button[type="submit"] {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.875rem 1.75rem;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    border: 2px solid var(--primary);
+    cursor: pointer;
+    transition: var(--transition);
+    background: transparent;
+    color: var(--primary);
+    position: relative;
+    overflow: hidden;
+}
+
+.project-form .btn::before,
+.project-form button[type="submit"]::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    width: 50px;
+    height: 50px;
+    border-radius: inherit;
+    scale: 0;
+    z-index: -1;
+    background: linear-gradient(90deg, var(--primary), var(--accent));
+    transition: all 0.6s cubic-bezier(0.23, 1, 0.320, 1);
+}
+
+.project-form .btn:hover::before,
+.project-form button[type="submit"]:hover::before {
+    scale: 3;
+}
+
+.project-form .btn:hover,
+.project-form button[type="submit"]:hover {
+    color: #ffffff;
+    scale: 1.05;
+    box-shadow: var(--shadow-sm);
+}
+
+/* Messages d'erreur */
+.project-form .invalid-feedback,
+.project-form .form-error-message {
+    color: #ef4444;
+    font-size: 0.85rem;
+    margin-top: 0.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.project-form .invalid-feedback::before,
+.project-form .form-error-message::before {
+    content: '⚠';
+}
+
+.project-form .is-invalid {
+    border-color: #ef4444;
+}
+
+/* Style pour les select multiples */
+.project-form select[multiple] {
+    min-height: 150px;
+}
+
+.project-form select[multiple] option {
+    padding: 0.5rem;
+    border-radius: var(--radius-sm);
+    margin-bottom: 0.25rem;
+}
+
+.project-form select[multiple] option:checked {
+    background: linear-gradient(90deg, var(--primary), var(--accent));
+    color: white;
+}
+
+/* Animation de l'icône folder-plus */
+.fa-folder-plus {
+    animation: iconPulse 2s infinite;
+}
+
+@keyframes iconPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+/* =========================================================
+   DELETE BUTTON FOR PROJECTS
+========================================================= */
+
+.project-actions form {
+    display: inline;
+}
+
+.project-actions .btn-delete,
+.project-actions button[type="submit"].btn-danger,
+.project-actions .btn-sm.btn-outline-danger {
+    cursor: pointer;
+    position: relative;
+    padding: 10px 24px;
+    font-size: 12px;
+    color: #ef4444;
+    border: 2px solid #ef4444;
+    border-radius: 34px;
+    background-color: transparent;
+    font-weight: 600;
+    transition: all 0.3s cubic-bezier(0.23, 1, 0.320, 1);
+    overflow: hidden;
+}
+
+.project-actions .btn-delete::before,
+.project-actions button[type="submit"].btn-danger::before,
+.project-actions .btn-sm.btn-outline-danger::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    width: 50px;
+    height: 50px;
+    border-radius: inherit;
+    scale: 0;
+    z-index: -1;
+    background: linear-gradient(90deg, #ef4444, #dc2626);
+    transition: all 0.6s cubic-bezier(0.23, 1, 0.320, 1);
+}
+
+.project-actions .btn-delete:hover::before,
+.project-actions button[type="submit"].btn-danger:hover::before,
+.project-actions .btn-sm.btn-outline-danger:hover::before {
+    scale: 3;
+}
+
+.project-actions .btn-delete:hover,
+.project-actions button[type="submit"].btn-danger:hover,
+.project-actions .btn-sm.btn-outline-danger:hover {
+    color: #ffffff;
+    scale: 1.1;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+.project-actions .btn-delete:active,
+.project-actions button[type="submit"].btn-danger:active,
+.project-actions .btn-sm.btn-outline-danger:active {
+    scale: 1;
+}
+
+/* Animation de l'icône pen-to-square */
+.fa-pen-to-square {
+    animation: iconRotate 3s infinite;
+}
+
+@keyframes iconRotate {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(-5deg); }
+    75% { transform: rotate(5deg); }
+}
