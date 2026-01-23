@@ -14,6 +14,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/front/tasks')]
@@ -206,6 +207,43 @@ final class TasksController extends AbstractController
             'task' => $task,
             'form' => $form,
         ]);
+    }
+
+    #[Route('/{id}/status', name: 'front_tasks_status', methods: ['POST'])]
+    public function updateStatus(
+        Request $request,
+        Tasks $task,
+        EntityManagerInterface $em,
+        TaskHistoryService $history
+    ): JsonResponse {
+        $this->denyAccessUnlessGranted('ROLE_USER');
+
+        if (!$task->getTaskProject()->getUsers()->contains($this->getUser())) {
+            return new JsonResponse(['error' => 'Accès refusé'], 403);
+        }
+
+        $data = json_decode($request->getContent(), true);
+
+        if (!$this->isCsrfTokenValid('task_status', $data['_token'] ?? '')) {
+            return new JsonResponse(['error' => 'Token CSRF invalide'], 400);
+        }
+
+        $newStatusName = $data['status'] ?? null;
+        if (!$newStatusName) {
+            return new JsonResponse(['error' => 'Statut manquant'], 400);
+        }
+
+        $status = $em->getRepository(Status::class)->findOneBy(['status_name' => $newStatusName]);
+        if (!$status) {
+            return new JsonResponse(['error' => 'Statut inconnu'], 400);
+        }
+
+        $task->setTaskStatus($status);
+        $em->flush();
+
+        $history->log($task, "Statut modifié en : $newStatusName", $this->getUser());
+
+        return new JsonResponse(['success' => true], 200);
     }
 
     #[Route('/{id}/delete', name: 'front_tasks_delete', methods: ['POST'])]

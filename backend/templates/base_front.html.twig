@@ -179,41 +179,16 @@
 
 {% if app.user %}
 <script>
-    function checkNotifications() {
-        fetch("/notification/ajax/unread")
-            .then(response => response.text())
-            .then(html => {
-                const panel = document.querySelector(".notif-content");
-                if (panel) panel.innerHTML = html;
-
-                const tempDiv = document.createElement('div');
-                tempDiv.innerHTML = html;
-                const count = tempDiv.querySelectorAll('.notif-item').length;
-
-                const badge = document.querySelector(".notif-badge");
-                if (badge) {
-                    if (count > 0) {
-                        badge.textContent = count;
-                        badge.style.display = "inline-block";
-                    } else {
-                        badge.style.display = "none";
-                    }
-                }
-            })
-            .catch(err => console.error("Erreur check notifs:", err));
-    }
-
-    document.addEventListener("DOMContentLoaded", checkNotifications);
-    setInterval(checkNotifications, 5000);
-</script>
-
-<script>
 document.addEventListener('DOMContentLoaded', function () {
     const notifOpen = document.getElementById('notif-open');
     const notifPanel = document.getElementById('notif-panel');
     const notifOverlay = document.getElementById('notif-overlay');
     const notifClose = document.getElementById('notif-close');
     const notifContent = document.getElementById('notif-content');
+
+    if (!notifOpen || !notifPanel || !notifOverlay || !notifClose || !notifContent) {
+        return;
+    }
 
     notifOpen.addEventListener('click', function (e) {
         e.preventDefault();
@@ -237,6 +212,35 @@ document.addEventListener('DOMContentLoaded', function () {
         notifOverlay.classList.remove('active');
     });
 });
+</script>
+
+<script>
+function checkNotifications() {
+    fetch("/notification/ajax/unread")
+        .then(response => response.text())
+        .then(html => {
+            const panel = document.querySelector(".notif-content");
+            if (panel) panel.innerHTML = html;
+
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = html;
+            const count = tempDiv.querySelectorAll('.notif-item').length;
+
+            const badge = document.querySelector(".notif-badge");
+            if (badge) {
+                if (count > 0) {
+                    badge.textContent = count;
+                    badge.style.display = "inline-block";
+                } else {
+                    badge.style.display = "none";
+                }
+            }
+        })
+        .catch(err => console.error("Erreur check notifs:", err));
+}
+
+document.addEventListener("DOMContentLoaded", checkNotifications);
+setInterval(checkNotifications, 5000);
 </script>
 {% endif %}
 
