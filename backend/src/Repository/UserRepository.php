@@ -59,19 +59,19 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     //    }
     public function findByRole(string $role): array
     {
-        $pdo = $this->getEntityManager()->getConnection()->getNativeConnection();
+        $conn = $this->getEntityManager()->getConnection();
 
-        $stmt = $pdo->prepare('
+        $sql = '
             SELECT id
             FROM "user"
-            WHERE roles::jsonb @> :role
-        ');
+            WHERE roles::jsonb @> :role::jsonb
+        ';
 
-        $stmt->execute([
-            ':role' => json_encode([$role]),
+        $result = $conn->executeQuery($sql, [
+            'role' => json_encode([$role]),
         ]);
 
-        $ids = array_column($stmt->fetchAll(\PDO::FETCH_ASSOC), 'id');
+        $ids = array_column($result->fetchAllAssociative(), 'id');
 
         if (!$ids) {
             return [];
@@ -79,5 +79,6 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
 
         return $this->findBy(['id' => $ids]);
     }
+
 
 }

@@ -78,7 +78,7 @@ class ProjectController extends AbstractController
     ): Response {
         $this->denyAccessUnlessGrantedToProject($project);
 
-        $availableUsers = $userRepository->findByRole('ROLE_USER');
+        $availableUsers = $userRepository->findAll();
 
         $form = $this->createForm(ProjectType::class, $project, [
             'available_users' => $availableUsers,
