@@ -29,7 +29,7 @@ class ProjectType extends AbstractType
                 'expanded' => true,
                 'required' => false,
                 'label' => 'Membres du projet',
-                'choices' => $options['available_users'], // filtré par le contrôleur
+                'choices' => $options['available_users'], 
                 'by_reference' => false,
             ]);
     }
